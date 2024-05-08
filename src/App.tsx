@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, Select } from "antd";
 import { useState } from "react";
 import InputField from "./InputField";
 
@@ -27,7 +27,7 @@ const App: React.FC = () => {
     initialYearlyExpense: "",
     adjustedYearlyExpenses: "",
     numberOfYears: "",
-    inflationRate: "",
+    inflationRate: "3",
     homePayments: "",
     carPayments: "",
     otherDebts: "",
@@ -196,13 +196,16 @@ const App: React.FC = () => {
             addonAfter="ปี"
             placeholder="20"
           />
-          <InputField
-            label="เงินเฟ้อ"
-            value={formData.inflationRate}
-            onChange={handleInputChange("inflationRate")}
-            addonAfter="%"
-            placeholder="3"
-          />
+          <Form.Item label="เงินเฟ้อ">
+            <Select
+              defaultValue={formData.inflationRate}
+              onChange={handleInputChange("inflationRate")}
+              options={[
+                { value: "3", label: "3 %" },
+                { value: "7", label: "7 %" },
+              ]}
+            />
+          </Form.Item>
           <div className="py-4">
             <InputField
               label="จำนวนเงินที่ครอบครัวต้องการ ถ้าเกิดเป็นอะไร ณ วันนี้"
