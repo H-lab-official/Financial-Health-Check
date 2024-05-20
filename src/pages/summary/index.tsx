@@ -21,15 +21,23 @@ const Summary: React.FC = () => {
     (field: keyof typeof formData) =>
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
-      const parsedValue = parseInt(formattedValue, 10);
-      if (parsedValue >= 1 && parsedValue <= 4) {
+      if (formattedValue === "") {
         const newFormData = { ...formData };
-        const isDuplicate = Object.values(newFormData).some(
-          (val) => parseInt(val as string, 10) && val !== formData[field]
-        );
-        if (!isDuplicate) {
-          newFormData[field] = parsedValue.toString();
-          setFormData(newFormData);
+        newFormData[field] = "";
+        setFormData(newFormData);
+      } else {
+        const parsedValue = parseInt(formattedValue, 10);
+        if (parsedValue >= 1 && parsedValue <= 4) {
+          const newFormData = { ...formData };
+          const isDuplicate = Object.values(newFormData).some(
+            (val) =>
+              parseInt(val as string, 10) === parsedValue &&
+              val !== formData[field]
+          );
+          if (!isDuplicate) {
+            newFormData[field] = parsedValue.toString();
+            setFormData(newFormData);
+          }
         }
       }
     };

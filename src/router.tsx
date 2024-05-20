@@ -15,6 +15,11 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "/",
+        element: <HomePage />,
+        children: [],
+      },
+      {
         path: "/Financial-Health-Check",
         element: <HomePage />,
         children: [],
