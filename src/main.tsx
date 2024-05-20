@@ -1,15 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
+import { RecoilRoot } from "recoil";
 import { BrowserRouter } from "react-router-dom";
 
-const root = ReactDOM.createRoot(document.getElementById("root")!);
+// import "./assets/global.css";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router.tsx";
 
-root.render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter basename={"/financial-health-check/"}>
-      <App />
-    </BrowserRouter>
+    <RecoilRoot>
+      {/* <BrowserRouter basename={"/financial-health-check/"}> */}
+      <RouterProvider router={router} />
+      {/* </BrowserRouter> */}
+    </RecoilRoot>
   </React.StrictMode>
 );
