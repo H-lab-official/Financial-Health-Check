@@ -17,30 +17,38 @@ const { Title, Text } = Typography;
 const Summary: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useRecoilState(questionsState);
+
   const handleInputChange =
     (field: keyof typeof formData) =>
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-      const formattedValue = value.replace(/[^\d\.]/g, "");
+      const formattedValue = value.replace(/[^\d]/g, ""); // Remove any non-digit characters
+
       if (formattedValue === "") {
-        const newFormData = { ...formData };
-        newFormData[field] = "";
-        setFormData(newFormData);
-      } else {
-        const parsedValue = parseInt(formattedValue, 10);
-        if (parsedValue >= 1 && parsedValue <= 4) {
-          const newFormData = { ...formData };
-          const isDuplicate = Object.values(newFormData).some(
-            (val) =>
-              parseInt(val as string, 10) === parsedValue &&
-              val !== formData[field]
-          );
-          if (!isDuplicate) {
-            newFormData[field] = parsedValue.toString();
-            setFormData(newFormData);
-          }
-        }
+        // Allow clearing the field
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [field]: "",
+        }));
+        return;
       }
+
+      const parsedValue = parseInt(formattedValue, 10);
+      if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 4) return; // Check if value is within the valid range
+
+      setFormData((prevFormData) => {
+        const isDuplicate = Object.entries(prevFormData).some(
+          ([key, val]) =>
+            key !== field && parseInt(val as string, 10) === parsedValue
+        );
+        if (isDuplicate) return prevFormData;
+
+        return {
+          ...prevFormData,
+          [field]: formattedValue,
+        };
+      });
     };
+
   const handleRadioChange =
     (field: keyof typeof formData) =>
     ({ target: { value } }: RadioChangeEvent) => {
@@ -195,18 +203,10 @@ const Summary: React.FC = () => {
         <Row align={"middle"} justify={"center"} className="mb-4" gutter={20}>
           <Col>
             <Button
-              onClick={() => navigate("/education-plan")}
-              className="flex items-center justify-center rounded-lg p-5 "
-            >
-              ย้นอกลับ
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              onClick={() => navigate("/summary")}
+              onClick={() => navigate("/export-pdf")}
               className="flex items-center justify-center rounded-lg py-5 px-7 "
             >
-              ถัดไป
+              สรุปผล
             </Button>
           </Col>
         </Row>

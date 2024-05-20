@@ -48,7 +48,7 @@ const HealthPlan: React.FC = () => {
           <Form.Item className="py-2">
             <Row gutter={20} className="">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text>
+                <Text>{"1. กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -65,7 +65,7 @@ const HealthPlan: React.FC = () => {
             </Row>
           </Form.Item>
           <InputField
-            label="ค่าห้องต่อวันประมาณ"
+            label="2. ค่าห้องต่อวันประมาณ"
             value={formData.hospitals}
             onChange={() => {}}
             addonAfter="บาท"
@@ -77,7 +77,7 @@ const HealthPlan: React.FC = () => {
           </Row>
 
           <InputField
-            label="ค่าห้องวันละ"
+            label="3. ค่าห้องวันละ"
             value={formData.hospitals}
             onChange={handleInputChange("roomFeeFromWelfare")}
             readOnly
@@ -85,26 +85,26 @@ const HealthPlan: React.FC = () => {
             addonAfter="บาท"
           />
           <InputField
-            label="ค่าชดเชยรายวัน"
+            label="4. ค่าชดเชยรายวัน"
             value={formData.dailyCompensationFromWelfare}
             onChange={handleInputChange("dailyCompensationFromWelfare")}
             addonAfter="บาท"
             placeholder="2,000.00"
           />
           <InputField
-            label="ค่ารักษาโรคร้ายแรง"
+            label="5 .ค่ารักษาโรคร้ายแรง"
             value={formData.treatingSeriousIllness}
             onChange={handleInputChange("treatingSeriousIllness")}
             addonAfter="บาท"
           />
           <InputField
-            label="ค่ารักษาอุบัติเหตุฉุกเฉิน"
+            label="6. ค่ารักษาอุบัติเหตุฉุกเฉิน"
             value={formData.emergencyCosts}
             onChange={handleInputChange("emergencyCosts")}
             addonAfter="บาท"
           />
           <InputField
-            label="งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+            label="7. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
             value={formData.annualTreatment}
             onChange={handleInputChange("annualTreatment")}
             addonAfter="บาท"
@@ -116,33 +116,33 @@ const HealthPlan: React.FC = () => {
             </Text>
           </Row>
           <InputField
-            label="ค่าห้องวันละ"
+            label="8. ค่าห้องวันละ"
             value={formData.roomFeeFromCompany}
             onChange={handleInputChange("roomFeeFromCompany")}
             placeholder="6,000.00"
             addonAfter="บาท"
           />
           <InputField
-            label="ค่าชดเชยรายวัน"
+            label="9. ค่าชดเชยรายวัน"
             value={formData.dailyCompensationFromCompany}
             onChange={handleInputChange("dailyCompensationFromCompany")}
             addonAfter="บาท"
             placeholder="2,000.00"
           />
           <InputField
-            label="ค่ารักษาโรคร้ายแรง"
+            label="10. ค่ารักษาโรคร้ายแรง"
             value={formData.treatingSeriousIllnessFromCompany}
             onChange={handleInputChange("treatingSeriousIllnessFromCompany")}
             addonAfter="บาท"
           />
           <InputField
-            label="ค่ารักษาอุบัติเหตุฉุกเฉิน"
+            label="11. ค่ารักษาอุบัติเหตุฉุกเฉิน"
             value={formData.emergencyCostsFromCompany}
             onChange={handleInputChange("emergencyCostsFromCompany")}
             addonAfter="บาท"
           />
           <InputField
-            label="งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+            label="12. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
             value={formData.annualTreatmentFromCompany}
             onChange={handleInputChange("annualTreatmentFromCompany")}
             addonAfter="บาท"
@@ -154,7 +154,7 @@ const HealthPlan: React.FC = () => {
             </Text>
           </Row>
           <InputField
-            label="ค่าห้องวันละ"
+            label="13. ค่าห้องวันละ"
             value={additionalRoomFee}
             onChange={() => {}}
             placeholder="6,000.00"
@@ -162,7 +162,7 @@ const HealthPlan: React.FC = () => {
             readOnly
           />
           <InputField
-            label="ค่าชดเชยรายวัน"
+            label="14. ค่าชดเชยรายวัน"
             value={additionalDailyCompensation}
             onChange={() => {}}
             addonAfter="บาท"
@@ -170,21 +170,21 @@ const HealthPlan: React.FC = () => {
             readOnly
           />
           <InputField
-            label="ค่ารักษาโรคร้ายแรง"
+            label="15. ค่ารักษาโรคร้ายแรง"
             value={additionalTreatingSeriousIllness}
             onChange={() => {}}
             readOnly
             addonAfter="บาท"
           />
           <InputField
-            label="ค่ารักษาอุบัติเหตุฉุกเฉิน"
+            label="16. ค่ารักษาอุบัติเหตุฉุกเฉิน"
             value={additionalEmergencyCosts}
             onChange={() => {}}
             readOnly
             addonAfter="บาท"
           />
           <InputField
-            label="งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+            label="17. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
             value={additionalAnnualTreatment}
             onChange={() => {}}
             readOnly

@@ -40,7 +40,7 @@ const EducationPlan: React.FC = () => {
           <Form.Item>
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"ระดับการศึกษาที่คาดหวัง"}</Text>
+                <Text>{"1. ระดับการศึกษาที่คาดหวัง"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -58,7 +58,7 @@ const EducationPlan: React.FC = () => {
           <Form.Item>
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
+                <Text>{"2. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -77,7 +77,7 @@ const EducationPlan: React.FC = () => {
             <Text className="text-xl font-bold">ทุนการศึกษาที่จำเป็น</Text>
           </Row>
           <InputField
-            label="ค่าเล่าเรียน"
+            label="3. ค่าเล่าเรียน"
             value={formData.typeOfeducation}
             onChange={() => {}}
             readOnly
@@ -85,7 +85,7 @@ const EducationPlan: React.FC = () => {
             placeholder="15,000.00"
           />
           <InputField
-            label="ค่าใช้จ่ายระหว่างศึกษา"
+            label="4. ค่าใช้จ่ายระหว่างศึกษา"
             value={(parseFloat(formData.typeOfeducation) * 0.15).toFixed(2)}
             onChange={() => {}}
             readOnly
@@ -93,7 +93,7 @@ const EducationPlan: React.FC = () => {
             placeholder="5,000.00"
           />
           <InputField
-            label="จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
+            label="5. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
             value={formData.yearsOfeducation}
             onChange={handleInputChange("yearsOfeducation")}
             addonAfter="ปี"
@@ -102,7 +102,7 @@ const EducationPlan: React.FC = () => {
           <Form.Item>
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
+                <Text>{"6. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -122,7 +122,7 @@ const EducationPlan: React.FC = () => {
           </Form.Item>
           <div className="pt-4">
             <InputField
-              label="รวมทุนการศึกษาที่จำเป็น"
+              label="8. รวมทุนการศึกษาที่จำเป็น"
               value={requiredScholarships}
               onChange={() => {}}
               readOnly
@@ -135,7 +135,7 @@ const EducationPlan: React.FC = () => {
           </Row>
           <div className="pt-4">
             <InputField
-              label="เงินฝาก"
+              label="9. เงินฝาก"
               value={formData.deposit}
               onChange={handleInputChange("deposit")}
               placeholder="6,000.00"
@@ -143,21 +143,21 @@ const EducationPlan: React.FC = () => {
             />
           </div>
           <InputField
-            label="กรมธรรม์ที่ครบกำหนด"
+            label="10. กรมธรรม์ที่ครบกำหนด"
             value={formData.insuranceFund}
             onChange={handleInputChange("insuranceFund")}
             placeholder="6,000.00"
             addonAfter="บาท"
           />
           <InputField
-            label="อื่นๆ"
+            label="11. อื่นๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
             placeholder="6,000.00"
             addonAfter="บาท"
           />
           <InputField
-            label="รวมทุนการศึกษาที่เตรียมไว้แล้ว"
+            label="12. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
             value={totalPreparationAssets}
             onChange={() => {}}
             readOnly
@@ -166,7 +166,7 @@ const EducationPlan: React.FC = () => {
           />
           <div className="pt-4">
             <InputField
-              label="รวมที่ขาดอยู่"
+              label="13. รวมที่ขาดอยู่"
               value={totalMissing}
               onChange={() => {}}
               readOnly

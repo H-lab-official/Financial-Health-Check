@@ -45,14 +45,14 @@ const ProtectionPlan: React.FC = () => {
           </Row>
 
           <InputField
-            label="ค่าใช้จ่ายภายในครอบครัว"
+            label="1. ค่าใช้จ่ายภายในครอบครัว"
             value={formData.initialMonthlyExpense}
             onChange={handleInputChange("initialMonthlyExpense")}
             addonAfter="บาท"
             placeholder="40,000.00"
           />
           <InputField
-            label="ค่าใช้จ่ายภายในครอบครัวต่อปี"
+            label="2. ค่าใช้จ่ายภายในครอบครัวต่อปี"
             value={initialYearlyExpense}
             onChange={() => {}}
             readOnly
@@ -60,14 +60,14 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
           />
           <InputField
-            label="จำนวนปีที่ต้องการดูแลครอบครัว"
+            label="3. จำนวนปีที่ต้องการดูแลครอบครัว"
             value={formData.numberOfYears}
             onChange={handleInputChange("numberOfYears")}
             addonAfter="ปี"
             placeholder="20"
           />
           <InputField
-            label="ค่าใช้จ่ายเงินก้อนที่จะเกิด (ค่าซ่อมรถ ซ่อมบ้าน เที่ยว เสริมสวย)"
+            label="4. ค่าใช้จ่ายเงินก้อนที่จะเกิด (ค่าซ่อมรถ ซ่อมบ้าน เที่ยว เสริมสวย)"
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
@@ -77,7 +77,7 @@ const ProtectionPlan: React.FC = () => {
           <Form.Item>
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"เงินเฟ้อ"}</Text>
+                <Text>{"5. เงินเฟ้อ"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -97,7 +97,7 @@ const ProtectionPlan: React.FC = () => {
           </Form.Item>
           <div className="py-4">
             <InputField
-              label="จำนวนเงินที่ครอบครัวต้องการ ถ้าเกิดเป็นอะไร ณ วันนี้"
+              label="6. จำนวนเงินที่ครอบครัวต้องการ ถ้าเกิดเป็นอะไร ณ วันนี้"
               value={totalAmount}
               onChange={() => {}}
               readOnly
@@ -109,35 +109,35 @@ const ProtectionPlan: React.FC = () => {
           </Row>
 
           <InputField
-            label="ค่าผ่อนบ้านคงค้างทั้งหมด รวมดอกเบี้ย"
+            label="7. ค่าผ่อนบ้านคงค้างทั้งหมด รวมดอกเบี้ย"
             value={formData.homePayments}
             onChange={handleInputChange("homePayments")}
             addonAfter="บาท"
             placeholder="3,000,000.00"
           />
           <InputField
-            label="ค่าผ่อนรถคงค้างทั้งหมด รวมดอกเบี้ย"
+            label="6. ค่าผ่อนรถคงค้างทั้งหมด รวมดอกเบี้ย"
             value={formData.carPayments}
             onChange={handleInputChange("carPayments")}
             addonAfter="บาท"
             placeholder="300,000.00"
           />
           <InputField
-            label="หนี้สินอื่นๆ"
+            label="8 .หนี้สินอื่นๆ"
             value={formData.otherDebts}
             onChange={handleInputChange("otherDebts")}
             addonAfter="บาท"
             placeholder="50,000.00"
           />
           <InputField
-            label="รวมหนี้สิน"
+            label="9. รวมหนี้สิน"
             value={totalDebts}
             onChange={() => {}}
             addonAfter="บาท"
           />
           <div className="py-4">
             <InputField
-              label="จำนวนเงินที่ต้องการ"
+              label="10 .จำนวนเงินที่ต้องการ"
               value={requiredAmount}
               onChange={() => {}}
               addonAfter="บาท"
@@ -151,35 +151,35 @@ const ProtectionPlan: React.FC = () => {
           </Row>
 
           <InputField
-            label="เงินฝากธนาคาร"
+            label="11. เงินฝากธนาคาร"
             value={formData.bankDeposit}
             onChange={handleInputChange("bankDeposit")}
             addonAfter="บาท"
             placeholder="1,000,000.00"
           />
           <InputField
-            label="ทุนประกันชีวิต"
+            label="12. ทุนประกันชีวิต"
             value={formData.lifeInsuranceFund}
             onChange={handleInputChange("lifeInsuranceFund")}
             addonAfter="บาท"
             placeholder="6,000,000.00"
           />
           <InputField
-            label="ทรัพย์สินอื่น ๆ"
+            label="13. ทรัพย์สินอื่น ๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
             addonAfter="บาท"
             placeholder="3,000,000.00"
           />
           <InputField
-            label="รวมสิ่งที่เตรียมไว้แล้ว"
+            label="14. รวมสิ่งที่เตรียมไว้แล้ว"
             value={totalAssets}
             onChange={() => {}}
             addonAfter="บาท"
           />
           <div className="py-4">
             <InputField
-              label="ความคุ้มครองที่จำเป็น"
+              label="15. ความคุ้มครองที่จำเป็น"
               value={coverage}
               onChange={() => {}}
               addonAfter="บาท"

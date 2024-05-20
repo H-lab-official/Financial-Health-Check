@@ -48,21 +48,21 @@ const RetirementPlan: React.FC = () => {
             <Text className="text-xl font-bold">ค่าใช้จ่ายหลังเกษียณ</Text>
           </Row>
           <InputField
-            label="กินอยู่"
+            label="1. กินอยู่"
             value={formData.livingCosts}
             onChange={handleInputChange("livingCosts")}
             addonAfter="บาท / เดือน"
             placeholder="15,000.00"
           />
           <InputField
-            label="ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
+            label="2. ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
             value={formData.houseCosts}
             onChange={handleInputChange("houseCosts")}
             addonAfter="บาท / เดือน"
             placeholder="5,000.00"
           />
           <InputField
-            label="ค่ามือถือ อินเตอร์เน็ต"
+            label="3. ค่ามือถือ อินเตอร์เน็ต"
             value={formData.internetCosts}
             onChange={handleInputChange("internetCosts")}
             addonAfter="บาท / เดือน"
@@ -71,7 +71,7 @@ const RetirementPlan: React.FC = () => {
 
           <div className="pt-4">
             <InputField
-              label="ค่าเสื้อผ้า"
+              label="4. ค่าเสื้อผ้า"
               value={formData.clothingCosts}
               onChange={handleInputChange("clothingCosts")}
               placeholder="6,000.00"
@@ -79,14 +79,14 @@ const RetirementPlan: React.FC = () => {
             />
           </div>
           <InputField
-            label="ค่ารักษาพยาบาล"
+            label="5. ค่ารักษาพยาบาล"
             value={formData.medicalCosts}
             onChange={handleInputChange("medicalCosts")}
             placeholder="6,000.00"
             addonAfter="บาท / เดือน"
           />
           <InputField
-            label="ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)"
+            label="6. ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)"
             value={formData.otherCosts}
             onChange={handleInputChange("otherCosts")}
             placeholder="6,000.00"
@@ -95,7 +95,7 @@ const RetirementPlan: React.FC = () => {
 
           <div className="pt-4">
             <InputField
-              label="รวมค่าใช้จ่ายต่อปี"
+              label="7. รวมค่าใช้จ่ายต่อปี"
               value={totalCosts}
               onChange={() => {}}
               readOnly
@@ -105,7 +105,7 @@ const RetirementPlan: React.FC = () => {
           </div>
           <div className="pt-4">
             <InputField
-              label="อายุตอนนี้"
+              label="8. อายุตอนนี้"
               value={formData.age}
               onChange={handleInputChange("age")}
               placeholder="34"
@@ -113,14 +113,14 @@ const RetirementPlan: React.FC = () => {
             />
           </div>
           <InputField
-            label="อายุเกษียณ"
+            label="9. อายุเกษียณ"
             value={formData.retireAge}
             onChange={handleInputChange("retireAge")}
             placeholder="65"
             addonAfter="ปี"
           />
           <InputField
-            label="คาดการณ์อายุขัย"
+            label="10. คาดการณ์อายุขัย"
             value={formData.lifExpectancy}
             onChange={handleInputChange("lifExpectancy")}
             placeholder="90"
@@ -128,7 +128,7 @@ const RetirementPlan: React.FC = () => {
           />
           <div className="pt-4">
             <InputField
-              label="จำนวนปีที่ทำงานได้"
+              label="11. จำนวนปีที่ทำงานได้"
               value={workingYears}
               onChange={() => {}}
               readOnly
@@ -137,7 +137,7 @@ const RetirementPlan: React.FC = () => {
             />
           </div>
           <InputField
-            label="จำนวนปีที่ต้องเตรียม"
+            label="12. จำนวนปีที่ต้องเตรียม"
             value={preparationYears}
             onChange={() => {}}
             readOnly
@@ -147,7 +147,7 @@ const RetirementPlan: React.FC = () => {
           <Form.Item className="pt-4">
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <Text>{"เงินเฟ้อ"}</Text>
+                <Text>{"13. เงินเฟ้อ"}</Text>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Select
@@ -166,7 +166,7 @@ const RetirementPlan: React.FC = () => {
             </Row>
           </Form.Item>
           <InputField
-            label="รวมค่าใช้จ่ายที่ต้องเตรียม"
+            label="14. รวมค่าใช้จ่ายที่ต้องเตรียม"
             value={totalPreparation}
             onChange={() => {}}
             readOnly
@@ -181,28 +181,28 @@ const RetirementPlan: React.FC = () => {
           </Row>
 
           <InputField
-            label="เงินฝาก"
+            label="15. เงินฝาก"
             value={formData.deposit}
             onChange={handleInputChange("deposit")}
             addonAfter="บาท"
             placeholder="2,000.00"
           />
           <InputField
-            label="ทุนประกัน"
+            label="16. ทุนประกัน"
             value={formData.insuranceFund}
             onChange={handleInputChange("insuranceFund")}
             addonAfter="บาท"
             placeholder="2,000.00"
           />
           <InputField
-            label="ทรัพย์สินอื่น ๆ"
+            label="17. ทรัพย์สินอื่น ๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
             addonAfter="บาท"
             placeholder="2,000.00"
           />
           <InputField
-            label="รวมสิ่งที่เตรียมไว้แล้ว"
+            label="18. รวมสิ่งที่เตรียมไว้แล้ว"
             value={totalPreparationAssets}
             onChange={() => {}}
             readOnly
@@ -211,7 +211,7 @@ const RetirementPlan: React.FC = () => {
           />
           <div className="pt-4">
             <InputField
-              label="รวมที่ขาดอยู่"
+              label="19. รวมที่ขาดอยู่"
               value={totalMissing}
               onChange={() => {}}
               readOnly
@@ -220,7 +220,7 @@ const RetirementPlan: React.FC = () => {
             />
           </div>
           <InputField
-            label="ต่อปีที่ต้องเก็บได้"
+            label="20. ต่อปีที่ต้องเก็บได้"
             value={mustBeSaved}
             onChange={() => {}}
             readOnly
