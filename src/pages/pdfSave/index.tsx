@@ -34,9 +34,6 @@ import {
 } from "@/recoil/retirementPlanState";
 import { Button, Row, Table, Typography } from "antd";
 import { useRecoilState, useRecoilValue } from "recoil";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import { useRef } from "react";
 
 const { Title } = Typography;
 
@@ -66,8 +63,14 @@ const PDFSave: React.FC = () => {
           justify="space-between"
           style={{ marginBottom: 20, padding: "0px 10px" }}
         >
-          <Title level={5}>ชื่อลูกค้า : xxxxxxxxx xxxx</Title>
+          <Title level={5}></Title>
           <Button>Export as PDF</Button>
+        </Row>
+        <Row
+          justify="space-between"
+          style={{ marginBottom: 20, padding: "0px 10px" }}
+        >
+          <Title level={5}>ชื่อลูกค้า : xxxxxxxxx xxxx</Title>
         </Row>
         <div>
           <Row style={{ marginBottom: 30 }}>

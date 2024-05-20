@@ -194,7 +194,17 @@ const HealthPlan: React.FC = () => {
         <Row align={"middle"} justify={"center"} className="mb-4" gutter={20}>
           <Col>
             <Button
-              onClick={() => navigator("/protection-plan")}
+              onClick={() => {
+                if (
+                  additionalRoomFee &&
+                  additionalDailyCompensation &&
+                  additionalTreatingSeriousIllness &&
+                  additionalEmergencyCosts &&
+                  additionalAnnualTreatment
+                ) {
+                  navigator("/protection-plan");
+                }
+              }}
               className="flex items-center justify-center rounded-lg p-5 "
             >
               ย้นอกลับ

@@ -189,7 +189,9 @@ const ProtectionPlan: React.FC = () => {
         <Row align={"middle"} justify={"center"} className="mb-4" gutter={20}>
           <Col>
             <Button
-              onClick={() => navigator("/health-plan")}
+              onClick={() => {
+                if (coverage) navigator("/health-plan");
+              }}
               className="flex items-center justify-center rounded-lg py-5 px-7 "
             >
               ถัดไป
