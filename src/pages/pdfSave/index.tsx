@@ -55,55 +55,19 @@ const PDFSave: React.FC = () => {
       maximumFractionDigits: 2,
     });
   };
-  const pdfRef = useRef();
-  const tableRef = useRef(null);
-
-  const exportToPDF = () => {
-    const input = tableRef.current;
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const margin = 10; // Define the top and side margin size in mm
-      const bottomMargin = 10; // Define the bottom margin size in mm
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgWidth = pdfWidth - 2 * margin;
-      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-      let heightLeft = imgHeight;
-
-      let position = margin;
-
-      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight - margin - bottomMargin;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight + margin;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight - margin - bottomMargin;
-      }
-
-      pdf.save("financial-health-check.pdf");
-    });
-  };
 
   return (
     <div
       className="flex justify-center"
       style={{ display: "flex", flexDirection: "column" }}
     >
-      <div
-        className="bg-white shadow-md rounded-lg px-10 py-2 mx-6 my-2 max-w-3xl w-full"
-        ref={tableRef}
-      >
+      <div className="bg-white shadow-md rounded-lg px-10 py-2 mx-6 my-2 max-w-3xl w-full">
         <Row
           justify="space-between"
           style={{ marginBottom: 20, padding: "0px 10px" }}
         >
           <Title level={5}>ชื่อลูกค้า : xxxxxxxxx xxxx</Title>
-          <Button onClick={exportToPDF}>Export as PDF</Button>
+          <Button>Export as PDF</Button>
         </Row>
         <div>
           <Row style={{ marginBottom: 30 }}>
