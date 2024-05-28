@@ -1,15 +1,19 @@
 import { Row, Typography, Button } from "antd";
 const { Text, Title } = Typography;
 import { useNavigate } from "react-router";
-
+import homeTop from '@/assets/images/homeTop.png'
 const HomePage: React.FC = () => {
   const navigator = useNavigate();
   return (
     <div className="flex justify-center">
       <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl w-full">
         <Row align={"middle"} justify={"center"}>
-          <Title level={4}>
-            มาทำแบบทดสอบ สุขภาพการเงินกัน Financial Health Check
+          <img src={homeTop} alt="" />
+        </Row>
+        <Row align={"middle"} justify={"center"}>
+         
+          <Title level={4} className=" text-[#243286]">
+            Financial Health Check
           </Title>
         </Row>
         <Row align={"middle"} justify={"center"} className="my-4">
@@ -24,7 +28,7 @@ const HomePage: React.FC = () => {
         <Row align={"middle"} justify={"center"} className="mb-4">
           <Button
             onClick={() => navigator("/protection-plan")}
-            className="flex items-center justify-center rounded-lg p-5 "
+            className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white"
           >
             เริ่มทำแบบทดสอบกัน
           </Button>

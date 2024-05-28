@@ -1,23 +1,26 @@
 import { Button, Col, Form, Row, Select, Typography } from "antd";
+import React, { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import InputField from "@/components/InputField";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import {
   educationPlanState,
   requiredScholarshipsSelector,
   totalPreparationAssetsSelector,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
-
-const { Title, Text } = Typography;
+import Education from "@/assets/images/Education.png"
+const { Text } = Typography;
 
 const EducationPlan: React.FC = () => {
   const navigator = useNavigate();
+  const location = useLocation();
+  const currentStep = location.state?.current || 0;
   const [formData, setFormData] = useRecoilState(educationPlanState);
   const requiredScholarships = useRecoilValue(requiredScholarshipsSelector);
   const totalPreparationAssets = useRecoilValue(totalPreparationAssetsSelector);
   const totalMissing = useRecoilValue(totalMissingSelector);
-
+  const [current, setCurrent] = useState(currentStep);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -26,17 +29,18 @@ const EducationPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
+  const next = () => {
+    setCurrent(current + 1);
+  };
 
-  return (
-    <div className="flex justify-center">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl w-full">
-        <Row>
-          <Title level={3}>เรื่องที่ 4 : Education Plan </Title>
-        </Row>
-        <Form>
-          <Row className="my-2">
-            <Text className="text-xl font-bold">วางแผนเพื่อการศึกษาบุตร</Text>
-          </Row>
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+  const steps = [
+    {
+      title: "วางแผนเพื่อการศึกษาบุตร",
+      content: (
+        <div>
           <Form.Item>
             <Row gutter={20}>
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -79,7 +83,7 @@ const EducationPlan: React.FC = () => {
           <InputField
             label="3. ค่าเล่าเรียน"
             value={formData.typeOfeducation}
-            onChange={() => {}}
+            onChange={() => { }}
             readOnly
             addonAfter="บาท / ปี"
             placeholder="15,000.00"
@@ -87,7 +91,7 @@ const EducationPlan: React.FC = () => {
           <InputField
             label="4. ค่าใช้จ่ายระหว่างศึกษา"
             value={(parseFloat(formData.typeOfeducation) * 0.15).toFixed(2)}
-            onChange={() => {}}
+            onChange={() => { }}
             readOnly
             addonAfter="บาท / ปี"
             placeholder="5,000.00"
@@ -124,15 +128,18 @@ const EducationPlan: React.FC = () => {
             <InputField
               label="8. รวมทุนการศึกษาที่จำเป็น"
               value={requiredScholarships}
-              onChange={() => {}}
+              onChange={() => { }}
               readOnly
               placeholder="309,0630.66"
               addonAfter="บาท"
             />
           </div>
-          <Row className="my-2">
-            <Text className="text-xl font-bold">สิ่งที่เตรียมไว้แล้ว</Text>
-          </Row>
+        </div>
+      )
+    }, {
+      title: "สิ่งที่เตรียมไว้แล้ว",
+      content: (
+        <div>
           <div className="pt-4">
             <InputField
               label="9. เงินฝาก"
@@ -159,7 +166,7 @@ const EducationPlan: React.FC = () => {
           <InputField
             label="12. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
             value={totalPreparationAssets}
-            onChange={() => {}}
+            onChange={() => { }}
             readOnly
             placeholder="6,000.00"
             addonAfter="บาท"
@@ -168,31 +175,60 @@ const EducationPlan: React.FC = () => {
             <InputField
               label="13. รวมที่ขาดอยู่"
               value={totalMissing}
-              onChange={() => {}}
+              onChange={() => { }}
               readOnly
               placeholder="6,000.00"
               addonAfter="บาท"
             />
           </div>
-        </Form>
-        <Row align={"middle"} justify={"center"} className="mb-4" gutter={20}>
-          <Col>
-            <Button
-              onClick={() => navigator("/retirement-plan")}
-              className="flex items-center justify-center rounded-lg p-5 "
-            >
-              ย้นอกลับ
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              onClick={() => navigator("/summary")}
-              className="flex items-center justify-center rounded-lg py-5 px-7 "
-            >
-              ถัดไป
-            </Button>
-          </Col>
-        </Row>
+        </div>
+      )
+    }
+  ]
+  return (
+    <div className="flex justify-center text-[#0E2B81]">
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+        <div className="flex flex-col justify-center items-center gap-3 mb-5">
+          <h1 className=" text-lg font-bold text-center">Education Plan </h1>
+          <img src={Education} alt="" />
+        </div>
+        <div className="steps-content h-auto p-2 shadow-lg rounded-md gap-5 mb-5 w-[375px]">
+          <p className="text-xl mb-3">{steps[current].title}</p>
+          {steps[current].content}
+
+          <div className="steps-action h-20 flex flex-row">
+            {current < steps.length - 1 && (
+              <><Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[180px]" : "w-[180px]"}`}>
+                ถัดไป
+              </Button>
+              </>
+
+
+            )}
+            {current === 0 && (
+              <Button
+                onClick={() => navigator("/retirement-plan", { state: { current: 1 } })}
+                className="bg-white rounded-full w-[180px]"
+              >
+                ย้อนกลับ
+              </Button>
+            )}
+            {current === steps.length - 1 && (
+              <Button
+                onClick={() => navigator("/summary")}
+                className="bg-[#003781] rounded-full w-[180px]"
+              >
+                ถัดไป
+              </Button>
+            )}
+            {current > 0 && (
+              <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+                ย้อนกลับ
+              </Button>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
