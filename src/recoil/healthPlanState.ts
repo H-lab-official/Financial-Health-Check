@@ -23,7 +23,7 @@ export interface HealthPlanData {
 export const healthPlanState = atom<HealthPlanData>({
   key: "healthPlanState",
   default: {
-    hospitals: "1500.00",
+    hospitals: "",
     roomFee: "1500.00",
     roomFeeFromWelfare: "1500.00",
     dailyCompensationFromWelfare: "",

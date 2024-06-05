@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   calculateRequiredScholarships,
   calculateTotalPreparationAssets,
@@ -32,11 +33,19 @@ import {
   retirementPlanState,
   totalRetirementMissingSelector,
 } from "@/recoil/retirementPlanState";
-import { Button, Row, Table, Typography } from "antd";
+import { nameState } from "@/recoil/nameState";
+import { Button, Typography } from "antd";
 import { useRecoilState, useRecoilValue } from "recoil";
-
-const { Title } = Typography;
-
+import { useNavigate, useLocation } from "react-router";
+const { } = Typography;
+import sumpic from "@/assets/images/sumpic.png"
+import homeTop from "@/assets/images/homeTop.png"
+import protection from "@/assets/images/protection.png"
+import health from "@/assets/images/health.png"
+import retirement from "@/assets/images/retirement.png"
+import Education2 from "@/assets/images/Education2.png"
+import download from "@/assets/images/download.png"
+import sent from "@/assets/images/sent.png"
 const PDFSave: React.FC = () => {
   const [questionsData] = useRecoilState(questionsState);
   const [protectionPlanData] = useRecoilState(protectionPlanState);
@@ -46,1130 +55,541 @@ const PDFSave: React.FC = () => {
   const totalMissing = useRecoilValue(totalRetirementMissingSelector);
   const mustBeSaved = useRecoilValue(mustBeSavedSelector);
   const educationMissing = useRecoilValue(totalMissingSelector);
+  const namestate = useRecoilValue(nameState)
+  const navigator = useNavigate();
+  const location = useLocation();
+  const currentStep = location.state?.current || 0;
+  const [current, setCurrent] = useState(currentStep);
   const convertMoney = (value: string) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
   };
+  console.log(current);
+  let allImages
+  let allTitle
+  switch (current) {
+    case 0:
+      allImages = sumpic
+      allTitle = "เย้ ยินดีด้วย"
+      break;
+    case 1:
+      allImages = homeTop
+      allTitle = "Financial Health Check"
+      break;
+    case 2:
+      allImages = protection
+      allTitle = "Protection plan"
+      break;
+    case 3:
+      allImages = health
+      allTitle = "Health Plan"
+      break;
+    case 4:
+      allImages = retirement
+      allTitle = "Retirement Plan"
+      break
+    case 5:
+      allImages = Education2
+      allTitle = "Education Plan"
+      break
+    default:
+      allImages = ""
+      allTitle = "Financial  Health Check"
+      break;
+  }
+  const getPlanText = (order: number) => {
+    switch (order) {
+      case questionsData.educationPlanOrder:
+        return 'การเก็บออมเพื่อค่าเล่าเรียนบุตร';
+      case questionsData.healthPlanOrder:
+        return 'การวางแผนเกี่ยวกับสุขภาพ';
+      case questionsData.protectionPlanOrder:
+        return 'คุ้มครองรายได้ให้กับครอบครัวในกรณีที่ต้องจากไป';
+      case questionsData.retirementPlanOrder:
+        return 'การวางแผนเตรียมเงินไว้ยามเกษียณ';
+      default:
+        return '';
+    }
+  };
+  const next = () => {
+    setCurrent(current + 1);
+  };
 
-  return (
-    <div
-      className="flex justify-center"
-      style={{ display: "flex", flexDirection: "column" }}
-    >
-      <div className="bg-white shadow-md rounded-lg px-10 py-2 mx-6 my-2 max-w-3xl w-full">
-        <Row
-          justify="space-between"
-          style={{ marginBottom: 20, padding: "0px 10px" }}
-        >
-          <Title level={5}></Title>
-          <Button>Export as PDF</Button>
-        </Row>
-        <Row
-          justify="space-between"
-          style={{ marginBottom: 20, padding: "0px 10px" }}
-        >
-          <Title level={5}>ชื่อลูกค้า : xxxxxxxxx xxxx</Title>
-        </Row>
-        <div>
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  title: "ผลลัพธ์ โดยรวม",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  dataIndex: "value",
-                  key: "value",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: 1,
-                  label: "ค่าใช้จ่ายในครอบครัว",
-                  value: convertMoney(calculateCoverage(protectionPlanData)),
-                },
-                {
-                  id: 2,
-                  label: "วางแผนเพื่อสุขภาพ",
-                  value: convertMoney(
-                    calculateAnnualTreatments(healthPlanData)
-                  ),
-                },
-                {
-                  id: 3,
-                  label: "ค่าใช้จ่ายหลังเกษียณ",
-                  value: convertMoney(totalMissing),
-                },
-                {
-                  id: 4,
-                  label: "วางแผนเพื่อการศึกษาบุตร",
-                  value: convertMoney(educationMissing),
-                },
-              ]}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+  const toone=()=>{
+    setCurrent(1)
+  }
+  const steps = [{
+    title: "เย้ ยินดีด้วย",
+    content: (
+      <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">
+        <p>Protection plan</p>
+        <p>Health plan</p>
+        <p>Retirement plan</p>
+        <p>Education plan</p>
+      </div>
+    )
+  }, {
+    title: "Financial  Health Check",
+    content: (
+      <>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
+          <div className=" text-black">
+            <div className="flex flex-row justify-between">
+              <p>ค่าใช้จ่ายในครอบครัว</p>
+              <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>วางแผนเพื่อสุขภาพ</p>
+              <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p></div>
+            <div className="flex flex-row justify-between">
+              <p>ค่าใช้จ่ายหลังเกษียณ</p>
+              <p>{convertMoney(totalMissing)} บาท</p></div>
+            <div className="flex flex-row justify-between">
+              <p>วางแผนเพื่อการศึกษาบุตร</p>
+              <p>{convertMoney(educationMissing)} บาท</p></div>
+          </div>
+        </div>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>ความสำคัญที่คุณเลือกเป็นดังนี้</p></div>
+          <div className=" text-black text-[0.9rem]">
+            <div className="flex flex-row">
+              <p className=" text-red-500 font-bold">1.</p>
+              <p>{getPlanText(1)}</p>
+            </div>
+            <div className="flex flex-row ">
+              <p className=" text-red-500 font-bold">2.</p>
+              <p>{getPlanText(2)}</p>
+            </div>
+            <div className="flex flex-row ">
+              <p className=" text-red-500 font-bold">3.</p>
+              <p>{getPlanText(3)}</p>
+            </div>
+            <div className="flex flex-row ">
+              <p className=" text-red-500 font-bold">4.</p>
+              <p>{getPlanText(4)}</p></div>
+          </div>
 
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  dataIndex: "id",
-                  key: "id",
-                },
-                {
-                  title: "ความสำคัญที่คุณเลือกเป็นดังนี้",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  title: "ความสำคัญที่คุณเลือก",
-                  dataIndex: "value",
-                  key: "value",
-                  align: "center",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: parseInt(questionsData.protectionPlanOrder),
-                  label: "คุ้มครองรายได้ให้กับครอบครัวในกรณีที่ต้องจากไป",
-                  value: [
-                    { value: "1", label: "ต่ำ" },
-                    { value: "2", label: "ปานกลาง" },
-                    { value: "3", label: "มาก" },
-                  ]
-                    .filter((obj) => obj.value == questionsData.protectionPlan)
-                    .map((obj) => obj.label)
-                    .join(","),
-                },
-                {
-                  id: parseInt(questionsData.retirementPlanOrder),
-                  label: "การวางแผนเตรียมเงินไว้ยามเกษียณ",
-                  value: [
-                    { value: "1", label: "ต่ำ" },
-                    { value: "2", label: "ปานกลาง" },
-                    { value: "3", label: "มาก" },
-                  ]
-                    .filter((obj) => obj.value == questionsData.retirementPlan)
-                    .map((obj) => obj.label)
-                    .join(","),
-                },
-                {
-                  id: parseInt(questionsData.healthPlanOrder),
-                  label: "การวางแผนเกี่ยวกับสุขภาพ",
-                  value: [
-                    { value: "1", label: "ต่ำ" },
-                    { value: "2", label: "ปานกลาง" },
-                    { value: "3", label: "มาก" },
-                  ]
-                    .filter((obj) => obj.value == questionsData.healthPlan)
-                    .map((obj) => obj.label)
-                    .join(","),
-                },
-                {
-                  id: parseInt(questionsData.educationPlanOrder),
-                  label: "การเก็บออมเพื่อค่าเล่าเรียนบุตร",
-                  value: [
-                    { value: "1", label: "ต่ำ" },
-                    { value: "2", label: "ปานกลาง" },
-                    { value: "3", label: "มาก" },
-                  ]
-                    .filter((obj) => obj.value == questionsData.educationPlan)
-                    .map((obj) => obj.label)
-                    .join(","),
-                },
-              ].sort((a, b) => a.id - b.id)}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
+        </div>
+      </>
+    )
+  }, {
+    title: "Protection plan",
+    content: (
+      <>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>ค่าใช้จ่าย</p></div>
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between">
+              <p>1.ค่าใช้จ่ายภายในครอบครัว</p>
+              <p>{convertMoney(protectionPlanData.initialMonthlyExpense)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2.ค่าใช้จ่ายภายในครอบครัวบาทต่อปี</p>
+              <p>{convertMoney(calculateInitialYearlyExpense(protectionPlanData))} บาท</p></div>
+            <div className="flex flex-row justify-between">
+              <p>3.จำนวนปีที่ต้องการดูแลครอบครัว</p>
+              <p>{protectionPlanData.numberOfYears} ปี</p></div>
+            <div className="flex flex-row justify-between">
+              <p>4.เงินสำรองฉุกเฉิน (50% ของรายได้บาท/ปี)</p>
+              <p>{convertMoney(protectionPlanData.adjustedYearlyExpenses)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5.เงินเฟ้อ</p>
+              <p>{parseFloat(protectionPlanData.inflationRate) * 100} %</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้</p>
+              <p>{convertMoney(calculateExpenses(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-5">
+              <p>7.ค่าผ่อนบ้านคงค้างทั้งหมด</p>
+              <p>{convertMoney(protectionPlanData.homePayments)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>8.ค่าผ่อนรถคงค้างทั้งหมด</p>
+              <p>{convertMoney(protectionPlanData.carPayments)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9.หนี้สินอื่นๆ</p>
+              <p>{convertMoney(protectionPlanData.otherDebts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10.รวมหนี้สิน</p>
+              <p>{convertMoney(calculateTotalDebts(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>11.จำนวนเงินที่ต้องการ</p>
+              <p>{convertMoney(calculateRequiredAmount(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-5">
+              <p>12.เงินฝากธนาคาร</p>
+              <p>{convertMoney(protectionPlanData.bankDeposit)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>13.ทุนประกันชีวิต</p>
+              <p>{convertMoney(protectionPlanData.lifeInsuranceFund)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>14.ทรัพย์สินอื่น ๆ</p>
+              <p>{convertMoney(protectionPlanData.otherAssets)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>15.รวมสิ่งที่เตรียมไว้แล้ว</p>
+              <p>{convertMoney(calculateTotalAssets(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-5 text-red-500">
+              <p>16.ความคุ้มครองที่จำเป็น</p>
+              <p>{convertMoney(calculateTotalAssets(protectionPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
+            </div>
+          </div>
 
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  dataIndex: "index",
-                  key: "index",
-                },
-                {
-                  title: "คุ้มครองรายได้ให้กับครอบครัวในกรณีที่ต้องจากไป",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  dataIndex: "value",
-                  key: "value",
-                  align: "center",
-                },
-                {
-                  dataIndex: "unit",
-                  key: "unit",
-                },
-                {
-                  title: "หมายเหตุ",
-                  dataIndex: "note",
-                  key: "note",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: 1,
-                  label: "ค่าใช้จ่าย",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 2,
-                  index: 1,
-                  label: "ค่าใช้จ่ายภายในครอบครัว",
-                  value: convertMoney(protectionPlanData.initialMonthlyExpense),
-                  unit: "บาท/เดือน",
-                  note: "",
-                },
-                {
-                  id: 3,
-                  index: 2,
-                  label: "ค่าใช้จ่ายภายในครอบครัวบาท/ปี",
-                  value: convertMoney(
-                    calculateInitialYearlyExpense(protectionPlanData)
-                  ),
-                  unit: "บาท/ปี",
-                  note: "",
-                },
-                {
-                  id: 4,
-                  index: 3,
-                  label: "จำนวนปีที่ต้องการดูแลครอบครัว",
-                  value: protectionPlanData.numberOfYears,
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 5,
-                  index: 4,
-                  label: "เงินสำรองฉุกเฉิน (50% ของ รายได้บาท/ปี)",
-                  value: convertMoney(
-                    protectionPlanData.adjustedYearlyExpenses
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 6,
-                  index: 5,
-                  label: "เงินเฟ้อ",
-                  value: parseFloat(protectionPlanData.inflationRate) * 100,
-                  unit: "%",
-                  note: "",
-                },
-                {
-                  id: 7,
-                  index: 6,
-                  label: "เงินสำรองที่จำเป็นต้องจัดเตรียมไว้",
-                  value: convertMoney(calculateExpenses(protectionPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 8,
+        </div>
 
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 9,
+      </>
+    )
+  }, {
+    title: "Health Plan",
+    content: (
+      <>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อสุขภาพ</p></div>
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between ">
+              <p>1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</p>
+              <p>{[
+                { label: "โรงพยาบาลรัฐ", value: "1500.00" },
+                { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
+                { label: "โรงพยาบาลเอกชน", value: "4000.00" },
+                { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
+              ].filter((obj) => obj.value === healthPlanData.hospitals)
+                .map((obj) => obj.label)
+                .join(",")}</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2.ค่าห้องต่อวันประมาณ</p>
+              <p>{convertMoney(healthPlanData.hospitals)} บาท</p></div>
+            <div className="flex flex-row justify-between mt-6">
+              <p>3.ค่าห้องวันละ</p>
+              <p>{convertMoney(healthPlanData.hospitals)} บาท</p></div>
+            <div className="flex flex-row justify-between">
+              <p>3.1.ค่าชดเชยรายวัน</p>
+              <p>{convertMoney(healthPlanData.dailyCompensationFromWelfare)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>4.ค่ารักษาโรคร้ายแรง</p>
+              <p>{convertMoney(healthPlanData.treatingSeriousIllness)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+              <p>{convertMoney(healthPlanData.emergencyCosts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+              <p>{convertMoney(healthPlanData.annualTreatment)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-6">
+              <p>7.ค่าห้องวันละ</p>
+              <p>{convertMoney(healthPlanData.roomFeeFromCompany)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>7.1.ค่าชดเชยรายวัน</p>
+              <p>{convertMoney(healthPlanData.dailyCompensationFromWelfare)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>8.ค่ารักษาโรคร้ายแรง</p>
+              <p>{convertMoney(healthPlanData.treatingSeriousIllnessFromCompany)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+              <p>{convertMoney(healthPlanData.emergencyCostsFromCompany)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+              <p>{convertMoney(healthPlanData.annualTreatmentFromCompany)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-6">
+              <p>11.ค่าห้องวันละ</p>
+              <p>{convertMoney(calculateAdditionalRoomFee(healthPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>11.1.ค่าชดเชยรายวัน</p>
+              <p>{convertMoney(calculateDailyCompensation(healthPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>12.ค่ารักษาโรคร้ายแรง</p>
+              <p>{convertMoney(calculateTreatingSeriousIllness(healthPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>13.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+              <p>{convertMoney(calculateEmergencyCosts(healthPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>14.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+              <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }, {
+    title: "Retirement Plan",
+    content: (
+      <>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>ค่าใช้จ่ายหลังเกษียณ</p></div>
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between">
+              <p>1.กินอยู่</p>
+              <p>{convertMoney(retirementPlanData.livingCosts)} บาท/เดือน</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน</p>
+              <p>{convertMoney(retirementPlanData.houseCosts)} บาท/ปี</p></div>
+            <div className="flex flex-row justify-between">
+              <p>3.ค่ามือถือ อินเตอร์เน็ต</p>
+              <p>{convertMoney(retirementPlanData.internetCosts)} บาท/เดือน</p></div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>4.ค่าเสื้อผ้า</p>
+              <p>{convertMoney(retirementPlanData.clothingCosts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5.ค่ารักษาพยาบาล</p>
+              <p>{convertMoney(retirementPlanData.medicalCosts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6.ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)</p>
+              <p>{convertMoney(retirementPlanData.otherCosts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>7.รวมค่าใช้จ่ายต่อปี</p>
+              <p>{convertMoney(calculateTotalCosts(retirementPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>8.อายุตอนนี้</p>
+              <p>{retirementPlanData.age} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9.อายุเกษียณ</p>
+              <p>{retirementPlanData.retireAge} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10.คาดการณ์อายุขัย</p>
+              <p>{retirementPlanData.lifExpectancy} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>11.จำนวนปีที่ทำงานได้</p>
+              <p>{calculateWorkingYears(retirementPlanData)} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>12.จำนวนปีที่ต้องเตรียม</p>
+              <p>{calculatePreparationYears(retirementPlanData)} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>13.เงินเฟ้อ</p>
+              <p>{parseFloat(retirementPlanData.inflationRate) * 100} %</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>14.รวมค่าใช้จ่ายที่ต้องเตรียม</p>
+              <p>{convertMoney(calculateTotalPreparation(retirementPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-start mt-7 text-[1.4rem] text-[#0E2B81]">
+              <p>สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)</p>
 
-                  label: "หนี้สินค้างชำระ",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 10,
-                  index: 7,
-                  label: "ค่าผ่อนบ้านคงค้างทั้งหมด",
-                  value: convertMoney(protectionPlanData.homePayments),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 11,
-                  index: 8,
-                  label: "ค่าผ่อนรถคงค้างทั้งหมด",
-                  value: convertMoney(protectionPlanData.carPayments),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 12,
-                  index: 9,
-                  label: "หนี้สินอื่นๆ",
-                  value: convertMoney(protectionPlanData.otherDebts),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 14,
-                  index: 10,
-                  label: "รวมหนี้สิน",
-                  value: convertMoney(calculateTotalDebts(protectionPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 15,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 16,
-                  index: 12,
-                  label: "จำนวนเงินที่ต้องการ",
-                  value: convertMoney(
-                    calculateRequiredAmount(protectionPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 17,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 18,
-                  label: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 19,
-                  index: 13,
-                  label: "เงินฝากธนาคาร",
-                  value: convertMoney(protectionPlanData.bankDeposit),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 20,
-                  index: 14,
-                  label: "ทุนประกันชีวิต",
-                  value: convertMoney(protectionPlanData.lifeInsuranceFund),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 21,
-                  index: 15,
-                  label: "ทรัพย์สินอื่น ๆ",
-                  value: convertMoney(protectionPlanData.otherAssets),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 22,
-                  index: 16,
-                  label: "รวมสิ่งที่เตรียมไว้แล้ว",
-                  value: convertMoney(calculateTotalAssets(protectionPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 23,
-                  label: "",
-                  value: "",
-                  unit: "",
-                },
-                {
-                  id: 24,
-                  index: 17,
-                  label: "ความคุ้มครองที่จำเป็น",
-                  value: convertMoney(calculateCoverage(protectionPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 25,
-                  label: "",
-                  value: "",
-                  unit: "",
-                },
-                {
-                  id: 26,
-                  label: "ผลลัพธ์",
-                  value: convertMoney(calculateCoverage(protectionPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-              ]}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>15.เงินฝาก</p>
+              <p>{convertMoney(retirementPlanData.deposit)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>16.ทุนประกัน</p>
+              <p>{convertMoney(retirementPlanData.insuranceFund)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>17.ทรัพย์สินอื่น ๆ</p>
+              <p>{convertMoney(retirementPlanData.otherAssets)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>18.รวมสิ่งที่เตรียมไว้แล้ว</p>
+              <p>{convertMoney(calculateisTotalPreparationAssets(retirementPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-3">
+              <p>19.รวมที่ขาดอยู่</p>
+              <p>{convertMoney(totalMissing)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>20.ต่อปีที่ต้องเก็บได้</p>
+              <p>{convertMoney(mustBeSaved)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(totalMissing)} บาท</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }, {
+    title: "Education Plan",
+    content: (
+      <div>
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อการศึกษาบุตร</p></div>
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between">
+              <p>1.ระดับการศึกษาที่คาดหวัง</p>
+              <p>{educationPlanData.levelOfeducation}</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+              <p>{[
+                { value: "107000.00", label: "รัฐบาล" },
+                { value: "214900.00", label: "เอกชน" },
+                { value: "500000.00", label: "อินเตอร์" },
+              ]
+                .filter(
+                  (obj) => obj.value === educationPlanData.typeOfeducation
+                )
+                .map((obj) => obj.label)
+                .join(",")}</p></div>
+            <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
+              <p>ทุนการศึกษาที่จำเป็น</p>
 
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  dataIndex: "index",
-                  key: "index",
-                },
-                {
-                  title: "วางแผนเพื่อสุขภาพ",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  dataIndex: "value",
-                  key: "value",
-                  align: "center",
-                },
-                {
-                  dataIndex: "unit",
-                  key: "unit",
-                },
-                {
-                  title: "หมายเหตุ",
-                  dataIndex: "note",
-                  key: "note",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: 1,
-                  label: "กลุ่มโรงพยาบาลที่ใช้บริการประจำ",
-                  value: [
-                    { label: "โรงพยาบาลรัฐ", value: "1500.00" },
-                    { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
-                    { label: "โรงพยาบาลเอกชน", value: "4000.00" },
-                    { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
-                  ]
-                    .filter((obj) => obj.value === healthPlanData.hospitals)
-                    .map((obj) => obj.label)
-                    .join(","),
-                  index: 1,
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 2,
-                  index: 2,
-                  label: "ค่าห้องต่อวันประมาณ",
-                  value: convertMoney(healthPlanData.hospitals),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 3,
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>3.ค่าเล่าเรียน</p>
+              <p>{convertMoney(educationPlanData.typeOfeducation)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>4.ค่าใช้จ่ายระหว่างศึกษา</p>
+              <p>{convertMoney(
+                (
+                  parseFloat(educationPlanData.typeOfeducation) * 0.15
+                ).toFixed(2)
+              )} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5.จำนวนปีการศึกษาของลูกที่จะต้องส่ง</p>
+              <p>{educationPlanData.yearsOfeducation} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6.อัตราการเฟ้อของค่าเทอมต่อปี</p>
+              <p>{parseFloat(educationPlanData.inflationRate) * 100} %</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>7.รวมทุนการศึกษาที่จำเป็น</p>
+              <p>{convertMoney(
+                calculateRequiredScholarships(educationPlanData)
+              )} บาท</p>
+            </div>
+            <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
+              <p>สิ่งที่เตรียมไว้แล้ว</p>
 
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 4,
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>8.เงินฝาก</p>
+              <p>{convertMoney(educationPlanData.deposit)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9.กรมธรรม์ที่ครบกำหนด</p>
+              <p>{convertMoney(educationPlanData.insuranceFund)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10.อื่นๆ</p>
+              <p>{convertMoney(educationPlanData.otherAssets)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>11.รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
+              <p>{convertMoney(calculateTotalPreparationAssets(educationPlanData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>12.รวมที่ขาดอยู่</p>
+              <p>{convertMoney(educationMissing)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(educationMissing)} บาท</p>
+            </div>
+          </div>
+        </div>
 
-                  label: "สวัสดิการที่คาดหวังจะได้",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 5,
-                  index: 3,
-                  label: "ค่าห้องวันละ",
-                  value: convertMoney(healthPlanData.hospitals),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 6,
-                  index: 3.1,
-                  label: "ค่าชดเชยรายวัน",
-                  value: convertMoney(
-                    healthPlanData.dailyCompensationFromWelfare
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 7,
-                  index: 4,
-                  label: "ค่ารักษาโรคร้ายแรง",
-                  value: convertMoney(healthPlanData.treatingSeriousIllness),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 8,
-                  index: 5,
-                  label: "ค่ารักษาอุบัติเหตุฉุกเฉิน",
-                  value: convertMoney(healthPlanData.emergencyCosts),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 9,
-                  index: 6,
-                  label: "งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)",
-                  value: convertMoney(healthPlanData.annualTreatment),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 10,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 11,
-
-                  label: "สวัสดิการปัจจุบันจากบริษัท หรือ จากประกันที่มี",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 12,
-                  index: 7,
-                  label: "ค่าห้องวันละ",
-                  value: convertMoney(healthPlanData.roomFeeFromCompany),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 13,
-                  index: 7.1,
-                  label: "ค่าชดเชยรายวัน",
-                  value: convertMoney(
-                    healthPlanData.dailyCompensationFromWelfare
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 14,
-                  index: 8,
-                  label: "ค่ารักษาโรคร้ายแรง",
-                  value: convertMoney(
-                    healthPlanData.treatingSeriousIllnessFromCompany
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 15,
-                  index: 9,
-                  label: "ค่ารักษาอุบัติเหตุฉุกเฉิน",
-                  value: convertMoney(healthPlanData.emergencyCostsFromCompany),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 16,
-                  index: 10,
-                  label: "งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)",
-                  value: convertMoney(
-                    healthPlanData.annualTreatmentFromCompany
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 17,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 18,
-
-                  label: "สวัสดิการที่ต้องเพิ่มเติม",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 19,
-                  index: 11,
-                  label: "ค่าห้องวันละ",
-                  value: convertMoney(
-                    calculateAdditionalRoomFee(healthPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 20,
-                  index: 11.1,
-                  label: "ค่าชดเชยรายวัน",
-                  value: convertMoney(
-                    calculateDailyCompensation(healthPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 21,
-                  index: 12,
-                  label: "ค่ารักษาโรคร้ายแรง",
-                  value: convertMoney(
-                    calculateTreatingSeriousIllness(healthPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 22,
-                  index: 13,
-                  label: "ค่ารักษาอุบัติเหตุฉุกเฉิน",
-                  value: convertMoney(calculateEmergencyCosts(healthPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 23,
-                  index: 14,
-                  label: "งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)",
-                  value: convertMoney(
-                    calculateAnnualTreatments(healthPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 24,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-
-                {
-                  id: 25,
-                  label: "ผลลัพธ์",
-                  value: convertMoney(
-                    calculateAnnualTreatments(healthPlanData)
-                  ),
-                  unit: "",
-                  note: "",
-                },
-              ]}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
-
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  dataIndex: "index",
-                  key: "index",
-                },
-                {
-                  title: "ค่าใช้จ่ายหลังเกษียณ",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  dataIndex: "value",
-                  key: "value",
-                  align: "center",
-                },
-                {
-                  dataIndex: "unit",
-                  key: "unit",
-                },
-                {
-                  title: "หมายเหตุ",
-                  dataIndex: "note",
-                  key: "note",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: 1,
-                  index: 1,
-                  label: "กินอยู่",
-                  value: convertMoney(retirementPlanData.livingCosts),
-                  unit: "บาท/เดือน",
-                  note: "",
-                },
-                {
-                  id: 2,
-                  index: 2,
-                  label: "ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน",
-                  value: convertMoney(retirementPlanData.houseCosts),
-                  unit: "บาท/เดือน",
-                  note: "",
-                },
-                {
-                  id: 3,
-                  index: 3,
-                  label: "ค่ามือถือ อินเตอร์เน็ต",
-                  value: convertMoney(retirementPlanData.internetCosts),
-                  unit: "บาท/เดือน",
-                  note: "",
-                },
-                {
-                  id: 4,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 5,
-                  index: 4,
-                  label: "ค่าเสื้อผ้า",
-                  value: convertMoney(retirementPlanData.clothingCosts),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 6,
-                  index: 5,
-                  label: "ค่ารักษาพยาบาล",
-                  value: convertMoney(retirementPlanData.medicalCosts),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 7,
-                  index: 6,
-                  label: "ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)",
-                  value: convertMoney(retirementPlanData.otherCosts),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 8,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 9,
-                  index: 7,
-                  label: "รวมค่าใช้จ่ายต่อปี",
-                  value: convertMoney(calculateTotalCosts(retirementPlanData)),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 10,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 11,
-                  index: 8,
-                  label: "อายุตอนนี้",
-                  value: retirementPlanData.age,
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 12,
-                  index: 9,
-                  label: "อายุเกษียณ",
-                  value: retirementPlanData.retireAge,
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 13,
-                  index: 10,
-                  label: "คาดการณ์อายุขัย",
-                  value: retirementPlanData.lifExpectancy,
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 14,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 15,
-                  index: 11,
-                  label: "จำนวนปีที่ทำงานได้",
-                  value: calculateWorkingYears(retirementPlanData),
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 16,
-                  index: 12,
-                  label: "จำนวนปีที่ต้องเตรียม",
-                  value: calculatePreparationYears(retirementPlanData),
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 17,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 18,
-                  index: 13,
-                  label: "เงินเฟ้อ",
-                  value: parseFloat(retirementPlanData.inflationRate) * 100,
-                  unit: "%",
-                  note: "",
-                },
-                {
-                  id: 19,
-                  index: 14,
-                  label: "รวมค่าใช้จ่ายที่ต้องเตรียม",
-                  value: convertMoney(
-                    calculateTotalPreparation(retirementPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 20,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 21,
-                  label: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 22,
-                  index: 15,
-                  label: "เงินฝาก",
-                  value: convertMoney(retirementPlanData.deposit),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 23,
-                  index: 16,
-                  label: "ทรัพย์สินอื่น ๆ",
-                  value: convertMoney(retirementPlanData.otherAssets),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 24,
-                  index: 17,
-                  label: "ทุนประกัน",
-                  value: convertMoney(retirementPlanData.insuranceFund),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 25,
-                  index: 18,
-                  label: "รวมสิ่งที่เตรียมไว้แล้ว",
-                  value: convertMoney(
-                    calculateisTotalPreparationAssets(retirementPlanData)
-                  ),
-
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 26,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 27,
-                  index: 19,
-                  label: "รวมที่ขาดอยู่",
-                  value: convertMoney(totalMissing),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 28,
-                  index: 20,
-                  label: "ต่อปีที่ต้องเก็บได้",
-                  value: convertMoney(mustBeSaved),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 29,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 30,
-                  label: "ผลลัพธ์",
-                  value: convertMoney(totalMissing),
-                  unit: "",
-                  note: "",
-                },
-              ]}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
-
-          <Row style={{ marginBottom: 30 }}>
-            <Table
-              style={{ width: "100%" }}
-              columns={[
-                {
-                  dataIndex: "index",
-                  key: "index",
-                },
-                {
-                  title: "วางแผนเพื่อการศึกษาบุตร",
-                  dataIndex: "label",
-                  key: "label",
-                },
-                {
-                  dataIndex: "value",
-                  key: "value",
-                  align: "center",
-                },
-                {
-                  dataIndex: "unit",
-                  key: "unit",
-                },
-                {
-                  title: "หมายเหตุ",
-                  dataIndex: "note",
-                  key: "note",
-                },
-              ]}
-              dataSource={[
-                {
-                  id: 1,
-                  index: 1,
-                  label: "ระดับการศึกษาที่คาดหวัง",
-                  value: educationPlanData.levelOfeducation,
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 2,
-                  index: 2,
-                  label: "ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง",
-                  value: [
-                    { value: "107000.00", label: "รัฐบาล" },
-                    { value: "214900.00", label: "เอกชน" },
-                    { value: "500000.00", label: "อินเตอร์" },
-                  ]
-                    .filter(
-                      (obj) => obj.value === educationPlanData.typeOfeducation
-                    )
-                    .map((obj) => obj.label)
-                    .join(","),
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 3,
-
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 4,
-
-                  label: "ทุนการศึกษาที่จำเป็น",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 5,
-                  index: 3,
-                  label: "ค่าเล่าเรียน",
-                  value: convertMoney(educationPlanData.typeOfeducation),
-                  unit: "บาทต่อปี",
-                  note: "",
-                },
-                {
-                  id: 6,
-                  index: 4,
-                  label: "ค่าใช้จ่ายระหว่างศึกษา",
-                  value: convertMoney(
-                    (
-                      parseFloat(educationPlanData.typeOfeducation) * 0.15
-                    ).toFixed(2)
-                  ),
-                  unit: "บาทต่อปี",
-                  note: "",
-                },
-                {
-                  id: 7,
-                  index: 5,
-                  label: "จำนวนปีการศึกษาของลูกที่จะต้องส่ง",
-                  value: educationPlanData.yearsOfeducation,
-                  unit: "ปี",
-                  note: "",
-                },
-                {
-                  id: 8,
-                  index: 6,
-                  label: "จำนวนปีการศึกษาของลูกที่จะต้องส่ง",
-                  value: parseFloat(educationPlanData.inflationRate) * 100,
-                  unit: "%",
-                  note: "",
-                },
-                {
-                  id: 9,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 10,
-                  index: 7,
-                  label: "รวมทุนการศึกษาที่จำเป็น",
-                  value: convertMoney(
-                    calculateRequiredScholarships(educationPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-
-                {
-                  id: 11,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 12,
-
-                  label: "สิ่งที่เตรียมไว้แล้ว",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 13,
-                  index: 8,
-                  label: "เงินฝาก",
-                  value: convertMoney(educationPlanData.deposit),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 14,
-                  index: 9,
-                  label: "กรมธรรม์ที่ครบกำหนด",
-                  value: convertMoney(educationPlanData.insuranceFund),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 15,
-                  index: 10,
-                  label: "อื่นๆ",
-                  value: convertMoney(educationPlanData.otherAssets),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 16,
-                  index: 11,
-                  label: "รวมทุนการศึกษาที่เตรียมไว้แล้ว",
-
-                  value: convertMoney(
-                    calculateTotalPreparationAssets(educationPlanData)
-                  ),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 17,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-                {
-                  id: 18,
-                  index: 12,
-                  label: "รวมที่ขาดอยู่",
-                  value: convertMoney(educationMissing),
-                  unit: "บาท",
-                  note: "",
-                },
-                {
-                  id: 19,
-                  label: "",
-                  value: "",
-                  unit: "",
-                  note: "",
-                },
-
-                {
-                  id: 20,
-                  label: "ผลลัพธ์",
-                  value: convertMoney(educationMissing),
-                  unit: "",
-                  note: "",
-                },
-              ]}
-              pagination={false}
-              bordered
-            ></Table>
-          </Row>
+      </div>
+    )
+  }, {
+    title: "Financial  Health Check",
+    content: (
+      <div className="  rounded-lg p-5 shadow-lg mb-5 gap-5 h-[50vh]">
+        <div className="flex flex-row justify-evenly items-center">
+        <div className="p-2 bg-[#003781] h-36 w-36 rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={download} alt="" width={51}/><p className=" text-white">ดาวน์โหลด PDF</p></div>
+        <div className="p-2 bg-[#003781] h-36 w-36 rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">แชร์ผลสรุป</p></div>
         </div>
       </div>
-    </div>
+    )
+  }]
+  return (
+    <>
+      <div className="flex justify-center text-[#0E2B81]">
+        <div className="bg-white rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+          <div className="flex flex-col justify-center items-center gap-3 mb-5">
+            <h1 className=" text-lg font-bold text-center">{allTitle}</h1>
+            <h1 className={` text-lg font-semibold ${current == 0 ? " hidden" : ""} `}>คุณ {namestate.nickname}</h1>
+            <img src={allImages} alt="" width={300} />
+          </div>
+          <div className="steps-content h-auto p-2  rounded-md gap-5 mb-5 w-[375px]">
+            {/* <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p> */}
+
+            {steps[current].content}
+            <div className="steps-action h-20 flex flex-row">
+              {current === 0 && (
+                <Button
+                  onClick={() => next()}
+                  className={`bg-[#003781] rounded-full text-white h-10 ${current === 0 ? "w-full" : "w-[180px]"}`}
+                >
+                  ไปหน้าสรุปผล
+                </Button>
+              )}
+              {current > 0 && (
+                <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+                  ย้อนกลับ
+                </Button>
+              )}
+              {current < steps.length - 1 && (
+                <><Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "hidden" : "w-[180px]"}`}>
+                  ถัดไป
+                </Button>
+                </>
+              )}
+
+              {current === steps.length - 1 && (
+                <Button
+                  // onClick={() => navigator("/export-pdf", { state: { current:1 } })}
+                  onClick={() => toone()}
+                  
+                  className={`bg-[#003781] rounded-full w-[180px] text-white ${current === 0 ? "hidden" : ""}`}
+                >
+                  กลับไปหน้าสรุป
+                </Button>
+              )}
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </>
   );
 };
 
