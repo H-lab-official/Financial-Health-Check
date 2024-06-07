@@ -1,10 +1,10 @@
-import { Row, Typography, Button, Input } from "antd";
+import { Row, Typography, Button } from "antd";
 import React, { useState } from "react";
-const { Text, Title, Paragraph } = Typography;
+const { Text,  Paragraph } = Typography;
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
 import namePic from '@/assets/images/Frame.png'
-import InputField from "@/components/InputField";
+
 import { useRecoilState } from "recoil";
 import { nameState } from "@/recoil/nameState";
 const HomePage: React.FC = () => {
@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
     title: "กรุณากรอกชื่อของคุณ",
     content: (
       <div className="flex flex-col ">
-        <label htmlFor="nickname" className="pl-5 text-gray-500 font-bold">ชื่อเล่น</label>
+        <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
         <input
           value={formData.nickname || ""}
           name="nickname"
@@ -71,7 +71,7 @@ const HomePage: React.FC = () => {
           onChange={(e) => handleInputChange("nickname")(e)}
           className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-2"
         />
-        <label htmlFor="age" className="pl-5 text-gray-500 font-bold">ชื่อเล่น</label>
+        <label htmlFor="age" className="pl-5 my-3 text-gray-500 font-bold">อายุ</label>
         <input
           value={formData.age || ""}
           name="nickname"
@@ -84,17 +84,17 @@ const HomePage: React.FC = () => {
   }]
   return (
     <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
         <Row align={"middle"} justify={"center"}>
-          <img src={current == 0 ? homeTop : namePic} alt="" className="rounded-xl shadow-lg" />
+          <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current===1?"h-[300px]":""}`} height={150} />
         </Row>
-        <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[375px] ">
-          <p className="text-xl mb-3"></p>
+        <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
+          <p className={`text-2xl my-5 text-center ${current===0?"hidden":""}`}>{steps[current].title}</p>
           {steps[current].content}
 
-          <div className="steps-action h-20 flex flex-row">
+          <div className="steps-action h-20 flex flex-row justify-center items-center">
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "hidden" : "w-[180px]"}`}>
+              <Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "hidden" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
             )}
@@ -107,16 +107,16 @@ const HomePage: React.FC = () => {
             </Button>)
             }
             {current > 1 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+              <Button  onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
             {current == 1 && (
               <Button
-                style={{ margin: "0 8px" }}
+                
                 onClick={() => navigator("/protection-plan")}
                 disabled={!formData.nickname || !formData.age}
-                className={`bg-[#003781] rounded-full text-white ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"
+                className={`bg-[#003781] rounded-full text-white mt-10 ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"
                   }`}
               >
                 ถัดไป

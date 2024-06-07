@@ -41,7 +41,7 @@ const InputField: React.FC<InputFieldProps> = ({
               onChange={(event) => onChange(event.target.value.replace(/,/g, ""))}
               placeholder={placeholder}
               readOnly={readOnly}
-              className={`${isRetirementPlan ? 'w-[240px]' : 'w-[280px]'} ${
+              className={`${isRetirementPlan ? 'w-[220px]' : 'w-[260px]'} ${
                 readOnly
                   ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
                   : "none"

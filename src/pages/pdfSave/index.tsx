@@ -160,19 +160,19 @@ const PDFSave: React.FC = () => {
           <div className=" text-black text-[0.9rem]">
             <div className="flex flex-row">
               <p className=" text-red-500 font-bold">1.</p>
-              <p>{getPlanText(1)}</p>
+              <p>{getPlanText(4)}</p>
             </div>
             <div className="flex flex-row ">
               <p className=" text-red-500 font-bold">2.</p>
-              <p>{getPlanText(2)}</p>
-            </div>
-            <div className="flex flex-row ">
-              <p className=" text-red-500 font-bold">3.</p>
               <p>{getPlanText(3)}</p>
             </div>
             <div className="flex flex-row ">
+              <p className=" text-red-500 font-bold">3.</p>
+              <p>{getPlanText(2)}</p>
+            </div>
+            <div className="flex flex-row ">
               <p className=" text-red-500 font-bold">4.</p>
-              <p>{getPlanText(4)}</p></div>
+              <p>{getPlanText(1)}</p></div>
           </div>
 
         </div>
@@ -531,10 +531,11 @@ const PDFSave: React.FC = () => {
   }, {
     title: "Financial  Health Check",
     content: (
-      <div className="  rounded-lg p-5 shadow-lg mb-5 gap-5 h-[50vh]">
-        <div className="flex flex-row justify-evenly items-center">
-        <div className="p-2 bg-[#003781] h-36 w-36 rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={download} alt="" width={51}/><p className=" text-white">ดาวน์โหลด PDF</p></div>
-        <div className="p-2 bg-[#003781] h-36 w-36 rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">แชร์ผลสรุป</p></div>
+      <div className="  rounded-lg p-5 shadow-lg mb-5 gap-5 h-[60vh]">
+        <div className="flex flex-col justify-center items-center gap-5">
+        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={download} alt="" width={51}/><p className=" text-white">ดาวน์โหลด PDF</p></div>
+        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">แชร์ผลสรุป</p></div>
+        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">กลับสู่ Agency Journey</p></div>
         </div>
       </div>
     )

@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Select, Typography } from "antd";
+import { Button, Col, Form, Row, Select, Typography, Progress } from "antd";
 import React, { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import InputField from "@/components/InputField";
@@ -9,7 +9,12 @@ import {
   totalPreparationAssetsSelector,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
+import { progressState } from '@/recoil/progressState';
+import ProgressBar from "@/components/progressBar";
 import Education from "@/assets/images/Education.png"
+import Education1 from "@/assets/images/Education1.png"
+import Education2 from "@/assets/images/Education2.png"
+import DotsComponent from "@/components/DotsComponent";
 const { Text } = Typography;
 
 const EducationPlan: React.FC = () => {
@@ -19,6 +24,7 @@ const EducationPlan: React.FC = () => {
   const [formData, setFormData] = useRecoilState(educationPlanState);
   const requiredScholarships = useRecoilValue(requiredScholarshipsSelector);
   const totalPreparationAssets = useRecoilValue(totalPreparationAssetsSelector);
+  const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const totalMissing = useRecoilValue(totalMissingSelector);
   const [current, setCurrent] = useState(currentStep);
   const handleInputChange =
@@ -29,13 +35,77 @@ const EducationPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
+
+
+  let allImages
+
+  switch (current) {
+    case 1:
+      allImages = Education
+
+      break;
+    case 2:
+      allImages = Education1
+
+      break;
+    case 0:
+      allImages = Education2
+
+      break;
+
+  }
+
   const next = () => {
+    let newPercent = progress.percent;
+
+    if (current === 1) {
+      newPercent += progress.steps;
+    } else if (current === 2) {
+      newPercent += progress.steps;
+    }
+
+    setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current + 1);
   };
 
   const prev = () => {
+    let newPercent = progress.percent;
+
+    if (current === 3) {
+      newPercent -= progress.steps;
+    } else if (current === 2) {
+      newPercent -= progress.steps;
+    }
+
+    setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
   };
+  console.log(progress.percent);
+  const nextlast = () => {
+    let newPercent = progress.percent;
+    newPercent += 3;
+    setProgress({ percent: newPercent, steps: progress.steps })
+    navigator("/summary")
+  }
+  const handleDisabled = () => {
+    if (current === 1) {
+      return (
+        !formData.levelOfeducation ||
+        !formData.typeOfeducation ||
+        !formData.yearsOfeducation ||
+        !formData.inflationRate 
+       
+      );
+    } else if (current === 2) {
+      return (
+        !formData.deposit ||
+        !formData.insuranceFund ||
+        !formData.otherAssets 
+       
+
+      )
+    } 
+  }
   const steps = [{
     title: "แผนที่ 4",
     content: (
@@ -59,15 +129,15 @@ const EducationPlan: React.FC = () => {
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '280px' }}
+                  style={{ width: '260px' }}
                   value={formData.levelOfeducation || undefined}
                   placeholder="กรุณาเลือก"
                   onChange={handleInputChange("levelOfeducation")}
                   options={[
                     { label: "กรุณาเลือก", value: undefined, disabled: !!formData.levelOfeducation },
                     { value: "ปริญญาตรี", label: "ปริญญาตรี" },
-                  { value: "ปริญญาโท", label: "ปริญญาโท" },
-                  { value: "ปริญญาเอก", label: "ปริญญาเอก" },
+                    { value: "ปริญญาโท", label: "ปริญญาโท" },
+                    { value: "ปริญญาเอก", label: "ปริญญาเอก" },
                   ]}
                 />
 
@@ -84,7 +154,7 @@ const EducationPlan: React.FC = () => {
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '280px' }}
+                  style={{ width: '260px' }}
                   value={formData.typeOfeducation || undefined}
                   placeholder="กรุณาเลือก"
                   onChange={handleInputChange("typeOfeducation")}
@@ -100,7 +170,7 @@ const EducationPlan: React.FC = () => {
             </Col>
           </Col>
         </Form.Item>
-       
+
         <Row className="my-2 ">
           <Text className="text-xl font-bold text-[#243286]">ทุนการศึกษาที่จำเป็น</Text>
         </Row>
@@ -109,7 +179,7 @@ const EducationPlan: React.FC = () => {
           value={formData.typeOfeducation}
           onChange={() => { }}
           readOnly
-          addonAfter="บาท / ปี"
+          addonAfter="บาท/ปี"
           placeholder=""
         />
         <InputField
@@ -117,7 +187,7 @@ const EducationPlan: React.FC = () => {
           value={(parseFloat(formData.typeOfeducation) * 0.15).toFixed(2)}
           onChange={() => { }}
           readOnly
-          addonAfter="บาท / ปี"
+          addonAfter="บาท/ปี"
           placeholder=""
         />
         <InputField
@@ -128,7 +198,7 @@ const EducationPlan: React.FC = () => {
           placeholder="กรุณากรอกจำนวนปี"
         />
 
-<Form.Item>
+        <Form.Item>
           <Col>
             <Col>
               <Text className="text-[#243286]">{"6. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
@@ -136,7 +206,7 @@ const EducationPlan: React.FC = () => {
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '280px' }}
+                  style={{ width: '260px' }}
                   value={formData.inflationRate || undefined}
                   placeholder="กรุณาเลือก"
                   onChange={handleInputChange("inflationRate")}
@@ -155,32 +225,32 @@ const EducationPlan: React.FC = () => {
             </Col>
           </Col>
         </Form.Item>
-      
-       
-          <InputField
-            label="7. รวมทุนการศึกษาที่จำเป็น"
-            value={requiredScholarships}
-            onChange={() => { }}
-            readOnly
-            placeholder=""
-            addonAfter="บาท"
-          />
-        
+
+
+        <InputField
+          label="7. รวมทุนการศึกษาที่จำเป็น"
+          value={requiredScholarships}
+          onChange={() => { }}
+          readOnly
+          placeholder=""
+          addonAfter="บาท"
+        />
+
       </div>
     )
   }, {
     title: "สิ่งที่เตรียมไว้แล้ว",
     content: (
       <div>
-   
-          <InputField
-            label="8. เงินฝาก"
-            value={formData.deposit}
-            onChange={handleInputChange("deposit")}
-            placeholder="กรุณากรอกจำนวนเงิน"
-            addonAfter="บาท"
-          />
-       
+
+        <InputField
+          label="8. เงินฝาก"
+          value={formData.deposit}
+          onChange={handleInputChange("deposit")}
+          placeholder="กรุณากรอกจำนวนเงิน"
+          addonAfter="บาท"
+        />
+
         <InputField
           label="9. กรมธรรม์ที่ครบกำหนด"
           value={formData.insuranceFund}
@@ -203,59 +273,60 @@ const EducationPlan: React.FC = () => {
           placeholder=""
           addonAfter="บาท"
         />
-        
-          <InputField
-            label="13. รวมที่ขาดอยู่"
-            value={totalMissing}
-            onChange={() => { }}
-            readOnly
-            placeholder=""
-            addonAfter="บาท"
-          />
-       
+
+        <InputField
+          label="13. รวมที่ขาดอยู่"
+          value={totalMissing}
+          onChange={() => { }}
+          readOnly
+          placeholder=""
+          addonAfter="บาท"
+        />
+
       </div>
     )
   }
   ]
   return (
     <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
-          <h1 className=" text-lg font-bold text-center">{current == 0 ? "แผนที่ 3" : "Education Plan"} </h1>
-          <img src={Education} alt="" />
+          <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 4" : "Education Plan"} </h1>
+          <ProgressBar percent={progress.percent} current={current}/>
+          <img src={allImages} alt="" className="w-[265px] mt-5" />
+          <DotsComponent steps={steps} current={current} />
         </div>
-        <div className="steps-content h-auto p-2 shadow-lg rounded-md gap-5 mb-5 w-[375px]">
+        <div className="steps-content h-auto py-2 px-3 shadow-lg rounded-md gap-5 mb-5 w-[350px]">
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
 
-          <div className="steps-action h-20 flex flex-row">
+          <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
 
             {current === 0 && (
               <Button
                 onClick={() => navigator("/retirement-plan", { state: { current: 2 } })}
-                className="bg-white rounded-full w-[180px]"
+                className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
               </Button>
             )}
             {current > 0 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
-              <><Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[180px]" : "w-[180px]"}`}>
+              <><Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
               </>
-
-
             )}
 
             {current === steps.length - 1 && (
               <Button
-                onClick={() => navigator("/summary")}
-                className="bg-[#003781] rounded-full w-[180px] text-white"
+              disabled={handleDisabled()}
+                onClick={nextlast}
+                className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป
               </Button>

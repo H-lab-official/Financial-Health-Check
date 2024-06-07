@@ -1,9 +1,10 @@
-import { Button, Col, Form, Row, Select, Typography } from "antd";
+import { Button, Col, Form, Select, Typography, Steps } from "antd";
 import React, { useState } from "react";
 import InputField from "@/components/InputField";
 import { useNavigate, useLocation } from "react-router";
 import protection from "@/assets/images/protection.png"
 import { useRecoilState, useRecoilValue } from "recoil";
+import DotsComponent from "@/components/DotsComponent";
 import {
   protectionPlanState,
   totalDebtsSelector,
@@ -13,10 +14,12 @@ import {
   requiredAmountSelector,
   coverageSelector,
 } from "@/recoil/protectionPlanState";
-
-
+import { progressState } from '@/recoil/progressState';
+import protection1 from "@/assets/images/protection1.png"
+import protection2 from "@/assets/images/protection2.png"
+import protection3 from "@/assets/images/protection3.png"
 const { Text } = Typography;
-
+import ProgressBar from "@/components/progressBar";
 const ProtectionPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -29,6 +32,7 @@ const ProtectionPlan: React.FC = () => {
   const requiredAmount = useRecoilValue(requiredAmountSelector);
   const coverage = useRecoilValue(coverageSelector);
   const [current, setCurrent] = useState(currentStep);
+  const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -37,21 +41,84 @@ const ProtectionPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
+  let allImages
 
+  switch (current) {
+    case 0:
+      allImages = protection
+      // if(!formData.initialMonthlyExpense){
+      //   setDisabled==fl
+      // }
+      break;
+    case 1:
+      allImages = protection1
+      // if(!formData.initialMonthlyExpense){
+      //   setDisabled==true
+      // }
+      break;
+    case 2:
+      allImages = protection2
+      break;
+    case 3:
+      allImages = protection3
+      break;
+
+  }
+  const handleDisabled = () => {
+    if (current === 1) {
+      return (
+        !formData.initialMonthlyExpense ||
+        !formData.numberOfYears ||
+        !formData.adjustedYearlyExpenses ||
+        !formData.inflationRate
+      );
+    } else if (current === 2) {
+      return (
+        !formData.homePayments || 
+        !formData.carPayments || 
+        !formData.otherDebts
+      )
+    } else if(current===3){
+      return(
+        !formData.bankDeposit||
+        !formData.lifeInsuranceFund||
+        !formData.otherAssets
+      )
+    }
+  }
   const next = () => {
+    let newPercent = progress.percent;
+    if (current === 1) {
+      newPercent += progress.steps;
+    } else if (current === 2) {
+      newPercent += progress.steps;
+    }
+    setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current + 1);
   };
-
   const prev = () => {
+    let newPercent = progress.percent;
+    if (current === 0) {
+      setProgress({ percent: 0, steps: progress.steps });
+    }
+    if (current === 3) {
+      newPercent -= progress.steps;
+    } else if (current === 2) {
+      newPercent -= progress.steps;
+    }
+    setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
   };
+
+console.log(current);
+
   const steps = [
     {
       title: "แผนที่ 1",
       content: (
         <div className="flex flex-col justify-center items-center text-[2rem] mb-10">
           <h1 className=" font-bold">Protection Plan</h1>
-          <h1 className=" text-center">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว <br />ในกรณีที่ต้องจากไป</h1>
+          <h1 className=" text-center mt-5">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว <br />ในกรณีที่ต้องจากไป</h1>
 
         </div>
       )
@@ -98,8 +165,8 @@ const ProtectionPlan: React.FC = () => {
               </Col>
               <Col>
                 <div className="flex flex-row justify-start items-center gap-5 ">
-                  <Select 
-                     style={{ width: '280px' }}
+                  <Select
+                    style={{ width: '260px' }}
                     defaultValue={formData.inflationRate}
                     onChange={handleInputChange("inflationRate")}
                     options={[
@@ -209,50 +276,49 @@ const ProtectionPlan: React.FC = () => {
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
-            
           />
         </div>
       </>)
     }
 
   ]
+  console.log();
 
   return (
     <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
-          <h1 className={` text-lg font-bold text-center  `}>{current == 0 ? "แผนที่ 1" : "Protection Plan"}</h1>
-          <img src={protection} alt="" className="" />
+          <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "แผนที่ 1" : "Protection Plan"}</h1>
+          <ProgressBar percent={progress.percent} current={current} />
+          <img src={allImages} alt="" className="w-[265px] mt-5" />
+          <DotsComponent steps={steps} current={current} />
         </div>
-
-        <div className="steps-content h-auto p-2 shadow-lg rounded-md gap-5 mb-5 w-[375px]">
+        <div className="steps-content h-auto py-2 px-3 shadow-lg rounded-md gap-5 mb-5 w-[350px] ">
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
-
-          <div className="steps-action h-20 flex flex-row">
-          
+          <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current > 0 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
             {current == 0 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => navigator("/Financial-Health-Check", { state: { current: 1 } })} className={` bg-white rounded-full w-[180px]`}>
+              <Button onClick={() => navigator("/Financial-Health-Check", { state: { current: 1 } })} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[180px]" : "w-[180px]"
-                }`}>
+              <Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
-            )} 
-             {current === steps.length - 1 && (
+            )}
+            {current === steps.length - 1 && (
               <Button
                 type="primary"
+                disabled={handleDisabled()}
                 onClick={() => {
-                  if (coverage) navigator("/health-plan");
-                }} className="bg-[#003781] rounded-full w-[180px]"
+                  navigator("/health-plan");
+                }} className="bg-[#003781] rounded-full w-[120px]"
               >
                 ถัดไป
               </Button>

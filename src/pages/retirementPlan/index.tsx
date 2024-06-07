@@ -1,5 +1,6 @@
-import { Button, Col, Form, Row, Select, Typography } from "antd";
+import { Button, Col, Form, Row, Select, Typography ,Progress} from "antd";
 import InputField from "@/components/InputField";
+import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
 import React, { useState } from "react";
 import {
@@ -12,8 +13,12 @@ import {
   workingYearsSelector,
   mustBeSavedSelector,
 } from "@/recoil/retirementPlanState";
+import DotsComponent from "@/components/DotsComponent";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { progressState } from '@/recoil/progressState';
 import retirement from "@/assets/images/retirement.png"
+import retirement1 from "@/assets/images/retirement1.png"
+import retirement2 from "@/assets/images/retirement2.png"
 const { Text } = Typography;
 
 const RetirementPlan: React.FC = () => {
@@ -21,6 +26,7 @@ const RetirementPlan: React.FC = () => {
   const location = useLocation();
   const currentStep = location.state?.current || 0;
   const [formData, setFormData] = useRecoilState(retirementPlanState);
+  const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const totalCosts = useRecoilValue(totalCostsSelector);
   const workingYears = useRecoilValue(workingYearsSelector);
   const preparationYears = useRecoilValue(preparationYearsSelector);
@@ -39,13 +45,74 @@ const RetirementPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
-  const next = () => {
-    setCurrent(current + 1);
-  };
 
-  const prev = () => {
-    setCurrent(current - 1);
-  };
+    let allImages
+    
+    switch (current) {
+      case 0:
+        allImages = retirement
+       
+        break;
+      case 1:
+        allImages = retirement1
+      
+        break;
+      case 2:
+        allImages = retirement2
+        
+        break;     
+     
+    }
+
+    const next = () => {
+      let newPercent = progress.percent;
+  
+      if (current === 1) {
+        newPercent += progress.steps;
+      } else if (current === 2) {
+        newPercent += progress.steps;
+      }
+  
+      setProgress({ percent: newPercent, steps: progress.steps });
+      setCurrent(current + 1);
+    };
+  
+    const prev = () => {
+      let newPercent = progress.percent;
+  
+      if (current === 3) {
+        newPercent -= progress.steps;
+      } else if (current === 2) {
+        newPercent -= progress.steps;
+      }
+  
+      setProgress({ percent: newPercent, steps: progress.steps });
+      setCurrent(current - 1);
+    };
+    const handleDisabled = () => {
+      if (current === 1) {
+        return (
+          !formData.livingCosts ||
+          !formData.houseCosts ||
+          !formData.internetCosts ||
+          !formData.clothingCosts ||
+          !formData.medicalCosts||
+          !formData.otherCosts||
+          !formData.age||
+          !formData.retireAge||
+          !formData.lifExpectancy||
+          !formData.inflationRate
+        );
+      } else if (current === 2) {
+        return (
+          !formData.deposit ||
+          !formData.insuranceFund ||
+          !formData.otherAssets 
+         
+  
+        )
+      } 
+    }
   const steps = [{
     title: "แผนที่ 3",
     content: (
@@ -165,7 +232,7 @@ const RetirementPlan: React.FC = () => {
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '240px' }}
+                  style={{ width: '220px' }}
                   value={formData.inflationRate || undefined}
                   placeholder="เลือกประเภทโรงพยาบาล"
                   onChange={handleInputChange("inflationRate")}
@@ -252,52 +319,51 @@ const RetirementPlan: React.FC = () => {
   ]
   return (
     <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
-          <h1 className=" text-lg font-bold text-center">{current == 0 ? "แผนที่ 3" : "Retirement Plan"}</h1>
-          <img src={retirement} alt="" />
+          <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 3" : "Retirement Plan"}</h1>
+          
+          <ProgressBar percent={progress.percent} current={current}/>
+          <img src={allImages} alt="" className="w-[265px] mt-5" />
+          <DotsComponent steps={steps} current={current} />
         </div>
-        <div className="steps-content h-auto p-2 shadow-lg rounded-md gap-5 mb-5 w-[375px]">
+        <div className="steps-content h-auto py-2 px-3 shadow-lg rounded-md gap-5 mb-5 w-[350px]">
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
 
-          <div className="steps-action h-20 flex flex-row">
+          <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
 
             {current === 0 && (
               <Button
                 onClick={() => navigator("/health-plan", { state: { current: 3 } })}
-                className="bg-white rounded-full w-[180px]"
+                className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
               </Button>
             )}
 
             {current > 0 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => prev()} className={` bg-white rounded-full w-[180px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
-              <><Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[180px]" : "w-[180px]"}`}>
+              <><Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
               </>
             )}
-
-
-
             {current === steps.length - 1 && (
               <Button
+              disabled={handleDisabled()}
                 onClick={() => navigator("/education-plan")}
-                className="bg-[#003781] rounded-full w-[180px] text-white"
+                className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป
               </Button>
             )}
-
           </div>
         </div>
-
       </div>
     </div>
   );
