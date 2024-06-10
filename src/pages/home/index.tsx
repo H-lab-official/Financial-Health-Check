@@ -1,18 +1,24 @@
 import { Row, Typography, Button } from "antd";
 import React, { useState } from "react";
-const { Text,  Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
 import namePic from '@/assets/images/Frame.png'
-
+import protection from '@/assets/images/protection.png'
+import health from '@/assets/images/health.png'
+import retirement from '@/assets/images/retirement.png'
+import education from '@/assets/images/Education2.png'
 import { useRecoilState } from "recoil";
 import { nameState } from "@/recoil/nameState";
+import { selectedState  } from '@/recoil/progressState';
+
 const HomePage: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
   const currentStep = location.state?.current || 0;
   const [current, setCurrent] = useState(currentStep);
   const [formData, setFormData] = useRecoilState(nameState)
+  const [selectedValue, setSelectedValue] = useRecoilState(selectedState);
   const handleInputChange =
     (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
@@ -29,7 +35,34 @@ const HomePage: React.FC = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
-  console.log(current);
+
+  const toGo = () => {
+    switch (selectedValue) {
+      case '1':
+        navigator('/protection-plan');
+        break;
+      case '5':
+        navigator('/protection-plan');
+        break;
+      case '2':
+        navigator('/health-plan');
+        break;
+      case '3':
+        navigator('/retirement-plan');
+        break;
+      case '4':
+        navigator('/education-plan');
+        break;
+      default:
+        break;
+    }
+  };
+
+
+  const handleChange = (value:string) => {
+    setSelectedValue(value);
+  };
+
 
   const steps = [{
     title: "การตรวจสอบสุขภาพทางการเงิน",
@@ -81,20 +114,105 @@ const HomePage: React.FC = () => {
         />
       </div>
     )
+  }, {
+    title: "เลือกแผนที่คุณต้องการ",
+    content: (
+      <div className="flex flex-col ">
+        <div className="w-full flex flex-col justify-center items-center gap-3">
+          <label className={`custom-radio flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue === '1' ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
+            <input
+              type="radio"
+              value="1"
+              checked={selectedValue === '1'}
+              onChange={() => handleChange('1')}
+              className="hidden"
+            />
+            <div className="flex flex-row ">
+              <div className="flex flex-col">
+              <span className="text-[1.8rem] font-bold">Protection Plan</span>
+              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครอง รายได้ให้กับครอบครัว</span>
+              </div>              
+              <img src={protection} alt="Protection Plan" className="ml-4 w-16" />
+            </div>
+          </label>
+          <label className={`custom-radio flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue === '2' ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
+            <input
+              type="radio"
+              value="1"
+              checked={selectedValue === '2'}
+              onChange={() => handleChange('2')}
+              className="hidden"
+            />
+            <div className="flex flex-row gap-11">
+              <div className="flex flex-col">
+              <span className="text-[1.8rem] font-bold">Health Plan</span>
+              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครองเรื่องสุขภาพ</span>
+              </div>              
+              <img src={health} alt="Protection Plan" className="ml-4 w-16 mr-2" />
+            </div>
+          </label>
+          <label className={`custom-radio flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue === '3' ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
+            <input
+              type="radio"
+              value="1"
+              checked={selectedValue === '3'}
+              onChange={() => handleChange('3')}
+              className="hidden"
+            />
+            <div className="flex flex-row ">
+              <div className="flex flex-col">
+              <span className="text-[1.8rem] font-bold">Retirement Plan</span>
+              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครองเรื่องการเกษียณ</span>
+              </div>              
+              <img src={retirement} alt="Protection Plan" className="ml-2 w-16 mr-2" />
+            </div>
+          </label>
+          <label className={`custom-radio flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue === '4' ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
+            <input
+              type="radio"
+              value="1"
+              checked={selectedValue ==='4'}
+              onChange={() => handleChange('4')}
+              className="hidden"
+            />
+            <div className="flex flex-row ">
+              <div className="flex flex-col">
+              <span className="text-[1.8rem] font-bold">Education Plan</span>
+              <span className="text-[0.7rem] font-semibold">แผนการเก็บออมเพื่อค่าเล่าเรียนบุตร</span>
+              </div>              
+              <img src={education} alt="Protection Plan" className="ml-4 w-16" />
+            </div>
+          </label>
+          
+          <label className={`custom-radio flex justify-start items-center mb-2 py-2 pl-8 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue === '5' ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-100'}`}>
+            <input
+              type="radio"
+              value="4"
+              checked={selectedValue === '5'}
+              onChange={() => handleChange('5')}
+              className="hidden"
+            />
+            <span className="text-[1.6rem] font-bold">เลือกทำทั้งหมด</span>
+            <img src={homeTop} alt="Education Plan" className="ml-4 w-16" />
+
+          </label>
+        </div>
+      </div>
+    )
   }]
   return (
     <div className="flex justify-center text-[#0E2B81]">
       <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
         <Row align={"middle"} justify={"center"}>
-          <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current===1?"h-[300px]":""}`} height={150} />
+          <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current === 1 ? "h-[300px]" : current === 2 ? "hidden" : ""} `} height={150} />
         </Row>
         <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
-          <p className={`text-2xl my-5 text-center ${current===0?"hidden":""}`}>{steps[current].title}</p>
+          <p className={`text-2xl my-5 text-center ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center">
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()} className={`bg-[#003781] rounded-full ${current === 0 ? "hidden" : "w-[120px]"}`}>
+              <Button type="primary" onClick={() => next()}  disabled={!formData.nickname || !formData.age} className={`bg-[#003781] rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
             )}
@@ -106,18 +224,16 @@ const HomePage: React.FC = () => {
               เริ่มทำแบบทดสอบกัน
             </Button>)
             }
-            {current > 1 && (
-              <Button  onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
+            {/* {current > 1 && (
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
-            )}
-            {current == 1 && (
+            )} */}
+            {current == 2 && (
               <Button
-                
-                onClick={() => navigator("/protection-plan")}
-                disabled={!formData.nickname || !formData.age}
-                className={`bg-[#003781] rounded-full text-white mt-10 ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"
-                  }`}
+              onClick={toGo}
+              className={`bg-[#003781] rounded-full text-white mt-10 ${!selectedValue ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
+              disabled={!selectedValue}
               >
                 ถัดไป
               </Button>

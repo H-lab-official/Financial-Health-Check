@@ -11,6 +11,7 @@ import {
   healthPlanState,
   treatingSeriousIllnessSelector,
 } from "@/recoil/healthPlanState";
+import {savehealthPlan} from '@/components/api/savehealthPlan'
 import { progressState } from '@/recoil/progressState';
 import DotsComponent from "@/components/DotsComponent";
 import ProgressBar from "@/components/progressBar";
@@ -18,8 +19,9 @@ import health from "@/assets/images/health.png"
 import health1 from "@/assets/images/health1.png"
 import health2 from "@/assets/images/health2.png"
 import health3 from "@/assets/images/health3.png"
+import { selectedState  } from '@/recoil/progressState';
 const { Text } = Typography;
-
+import { nameState } from "@/recoil/nameState";
 const HealthPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -31,8 +33,10 @@ const HealthPlan: React.FC = () => {
   const additionalTreatingSeriousIllness = useRecoilValue(
     treatingSeriousIllnessSelector
   );
-  const additionalEmergencyCosts = useRecoilValue(emergencyCostsSelector);
+  const selectedValue=useRecoilValue(selectedState)
 
+  const additionalEmergencyCosts = useRecoilValue(emergencyCostsSelector);
+  const dataname=useRecoilValue<nameState>(nameState)
   const additionalAnnualTreatment = useRecoilValue(annualTreatmentSelector);
   const [current, setCurrent] = useState(currentStep);
   const handleInputChange =
@@ -91,7 +95,22 @@ const HealthPlan: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  console.log(current);
+  const letMeback=async()=>{
+    if(selectedValue=='2'){
+      navigator("/Financial-Health-Check", { state: { current: 2 } })
+    }else if(selectedValue=='5'){
+      navigator("/protection-plan", { state: { current: 3 } })
+    }
+  }
+
+  const handleSave = async() => {  
+    await savehealthPlan({ data: formData,nameData: dataname, })
+    if(selectedValue=='2'){
+      navigator("/export-pdf", { state: { current: 3 } })
+    }else if(selectedValue=='5'){
+       navigator("/retirement-plan");
+    }
+   };
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -308,7 +327,7 @@ const HealthPlan: React.FC = () => {
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current === 0 && (
               <Button
-                onClick={() => navigator("/protection-plan", { state: { current: 3 } })}
+              onClick={() => letMeback()}
                 className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
@@ -332,8 +351,9 @@ const HealthPlan: React.FC = () => {
             {current === steps.length - 1 && (
               <Button
                 disabled={handleDisabled()}
-                onClick={() => navigator("/retirement-plan")}
-                className="bg-[#003781] rounded-full w-[180px] text-white"
+                onClick={() => handleSave()}
+               
+                className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป
               </Button>

@@ -13,7 +13,12 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
+    "@types/animejs": "^3.1.12",
+    "animate.css": "^4.1.1",
+    "animejs": "^3.2.2",
     "antd": "^5.17.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "gh-pages": "^6.1.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",

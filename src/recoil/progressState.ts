@@ -5,6 +5,9 @@ export interface progressState {
     steps:number
  
 }
+// export interface selectedState{
+//     selectedValue:string
+// }
 export const progressState = atom<progressState>({
     key: "progressState",
     default: {
@@ -12,3 +15,9 @@ export const progressState = atom<progressState>({
         steps:16
     }
 })
+export const selectedState=atom<string>({
+    key:"selectedState",
+    default:"",
+})
+
+

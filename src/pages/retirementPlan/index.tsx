@@ -15,12 +15,13 @@ import {
 } from "@/recoil/retirementPlanState";
 import DotsComponent from "@/components/DotsComponent";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { progressState } from '@/recoil/progressState';
+import { progressState,selectedState } from '@/recoil/progressState';
 import retirement from "@/assets/images/retirement.png"
 import retirement1 from "@/assets/images/retirement1.png"
 import retirement2 from "@/assets/images/retirement2.png"
 const { Text } = Typography;
-
+import { nameState} from "@/recoil/nameState";
+import { saveRetirementPlan } from "@/components/api/saveretirementPlan";
 const RetirementPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -34,6 +35,8 @@ const RetirementPlan: React.FC = () => {
   const totalPreparationAssets = useRecoilValue(
     totalRetirementPreparationAssetsSelector
   );
+  const selectedValue=useRecoilValue(selectedState)
+  const dataname=useRecoilValue<nameState>(nameState)
   const totalMissing = useRecoilValue(totalRetirementMissingSelector);
   const mustBeSaved = useRecoilValue(mustBeSavedSelector);
   const [current, setCurrent] = useState(currentStep);
@@ -89,6 +92,22 @@ const RetirementPlan: React.FC = () => {
       setProgress({ percent: newPercent, steps: progress.steps });
       setCurrent(current - 1);
     };
+
+    const letMeback=async()=>{
+      if(selectedValue=='3'){
+        navigator("/Financial-Health-Check", { state: { current: 2 } })
+      }else if(selectedValue=='5'){
+       navigator("/health-plan", { state: { current: 3 } })
+      }
+    }
+    const handleSave = async() => {  
+      await saveRetirementPlan({ data: formData,nameData: dataname, })
+      if(selectedValue=='3'){
+        navigator("/export-pdf", { state: { current: 4 } })
+      }else if(selectedValue=='5'){
+         navigator("/education-plan")
+      }
+     };
     const handleDisabled = () => {
       if (current === 1) {
         return (
@@ -335,7 +354,7 @@ const RetirementPlan: React.FC = () => {
 
             {current === 0 && (
               <Button
-                onClick={() => navigator("/health-plan", { state: { current: 3 } })}
+              onClick={() => letMeback()}
                 className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
@@ -356,7 +375,7 @@ const RetirementPlan: React.FC = () => {
             {current === steps.length - 1 && (
               <Button
               disabled={handleDisabled()}
-                onClick={() => navigator("/education-plan")}
+                onClick={() => handleSave()}
                 className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป

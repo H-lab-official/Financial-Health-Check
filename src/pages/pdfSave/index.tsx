@@ -33,6 +33,7 @@ import {
   retirementPlanState,
   totalRetirementMissingSelector,
 } from "@/recoil/retirementPlanState";
+import { selectedState } from '@/recoil/progressState';
 import { nameState } from "@/recoil/nameState";
 import { Button, Typography } from "antd";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -46,6 +47,8 @@ import retirement from "@/assets/images/retirement.png"
 import Education2 from "@/assets/images/Education2.png"
 import download from "@/assets/images/download.png"
 import sent from "@/assets/images/sent.png"
+import 'animate.css'
+import AnimatedSVG from '@/components/AnimatedSVG';
 const PDFSave: React.FC = () => {
   const [questionsData] = useRecoilState(questionsState);
   const [protectionPlanData] = useRecoilState(protectionPlanState);
@@ -56,6 +59,7 @@ const PDFSave: React.FC = () => {
   const mustBeSaved = useRecoilValue(mustBeSavedSelector);
   const educationMissing = useRecoilValue(totalMissingSelector);
   const namestate = useRecoilValue(nameState)
+  const selectedValue = useRecoilValue(selectedState)
   const navigator = useNavigate();
   const location = useLocation();
   const currentStep = location.state?.current || 0;
@@ -66,7 +70,8 @@ const PDFSave: React.FC = () => {
       maximumFractionDigits: 2,
     });
   };
-  console.log(current);
+
+
   let allImages
   let allTitle
   switch (current) {
@@ -120,17 +125,17 @@ const PDFSave: React.FC = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
-  const toone=()=>{
+  const toone = () => {
     setCurrent(1)
   }
   const steps = [{
     title: "เย้ ยินดีด้วย",
     content: (
       <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">
-        <p>Protection plan</p>
-        <p>Health plan</p>
-        <p>Retirement plan</p>
-        <p>Education plan</p>
+        <p className="animate__animated animate__backInUp animate__delay-1s animate__duration-2s">Protection plan</p>
+        <p className="animate__animated animate__backInUp animate__delay-2s animate__duration-2s">Health plan</p>
+        <p className="animate__animated animate__backInUp animate__delay-3s animate__duration-2s">Retirement plan</p>
+        <p className="animate__animated animate__backInUp animate__delay-4s animate__duration-2s">Education plan</p>
       </div>
     )
   }, {
@@ -533,9 +538,9 @@ const PDFSave: React.FC = () => {
     content: (
       <div className="  rounded-lg p-5 shadow-lg mb-5 gap-5 h-[60vh]">
         <div className="flex flex-col justify-center items-center gap-5">
-        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={download} alt="" width={51}/><p className=" text-white">ดาวน์โหลด PDF</p></div>
-        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">แชร์ผลสรุป</p></div>
-        <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51}/><p className=" text-white">กลับสู่ Agency Journey</p></div>
+          <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={download} alt="" width={51} /><p className=" text-white">ดาวน์โหลด PDF</p></div>
+          <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51} /><p className=" text-white">แชร์ผลสรุป</p></div>
+          <div className="p-2 bg-[#003781] h-36 w-full rounded-xl flex flex-col justify-center items-center gap-5 cursor-pointer"><img src={sent} alt="" width={51} /><p className=" text-white">กลับสู่ Agency Journey</p></div>
         </div>
       </div>
     )
@@ -547,17 +552,17 @@ const PDFSave: React.FC = () => {
           <div className="flex flex-col justify-center items-center gap-3 mb-5">
             <h1 className=" text-lg font-bold text-center">{allTitle}</h1>
             <h1 className={` text-lg font-semibold ${current == 0 ? " hidden" : ""} `}>คุณ {namestate.nickname}</h1>
-            <img src={allImages} alt="" width={300} />
+            {current === 0 ? <AnimatedSVG /> : <img src={allImages} alt="" width={300} />}
           </div>
           <div className="steps-content h-auto p-2  rounded-md gap-5 mb-5 w-[375px]">
             {/* <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p> */}
 
             {steps[current].content}
-            <div className="steps-action h-20 flex flex-row">
+            <div className={`steps-action h-20 flex flex-row ${selectedValue === '5' ? "" : "hidden"}`}>
               {current === 0 && (
                 <Button
                   onClick={() => next()}
-                  className={`bg-[#003781] rounded-full text-white h-10 ${current === 0 ? "w-full" : "w-[180px]"}`}
+                  className={`bg-[#003781] rounded-full text-white h-10  ${current === 0 ? "w-full" : "w-[180px]"}`}
                 >
                   ไปหน้าสรุปผล
                 </Button>
@@ -578,7 +583,7 @@ const PDFSave: React.FC = () => {
                 <Button
                   // onClick={() => navigator("/export-pdf", { state: { current:1 } })}
                   onClick={() => toone()}
-                  
+
                   className={`bg-[#003781] rounded-full w-[180px] text-white ${current === 0 ? "hidden" : ""}`}
                 >
                   กลับไปหน้าสรุป

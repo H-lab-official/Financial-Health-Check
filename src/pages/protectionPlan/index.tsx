@@ -14,12 +14,17 @@ import {
   requiredAmountSelector,
   coverageSelector,
 } from "@/recoil/protectionPlanState";
+
 import { progressState } from '@/recoil/progressState';
+import { selectedState  } from '@/recoil/progressState';
+import { nameState} from "@/recoil/nameState";
 import protection1 from "@/assets/images/protection1.png"
 import protection2 from "@/assets/images/protection2.png"
 import protection3 from "@/assets/images/protection3.png"
 const { Text } = Typography;
 import ProgressBar from "@/components/progressBar";
+import { saveProtectionPlan} from "@/components/api/saveProtectionPlan";
+
 const ProtectionPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -33,6 +38,8 @@ const ProtectionPlan: React.FC = () => {
   const coverage = useRecoilValue(coverageSelector);
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
+  const dataname=useRecoilValue<nameState>(nameState)
+  const selectedValue=useRecoilValue(selectedState)
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -45,16 +52,10 @@ const ProtectionPlan: React.FC = () => {
 
   switch (current) {
     case 0:
-      allImages = protection
-      // if(!formData.initialMonthlyExpense){
-      //   setDisabled==fl
-      // }
+      allImages = protection     
       break;
     case 1:
       allImages = protection1
-      // if(!formData.initialMonthlyExpense){
-      //   setDisabled==true
-      // }
       break;
     case 2:
       allImages = protection2
@@ -64,6 +65,14 @@ const ProtectionPlan: React.FC = () => {
       break;
 
   }
+  const handleSave = async() => {  
+   await saveProtectionPlan({ data: formData,nameData: dataname, })
+   if(selectedValue=='1'){
+    navigator("/export-pdf", { state: { current: 2 } })
+  }else if(selectedValue=='5'){
+     navigator("/health-plan")
+  }
+  };
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -109,8 +118,6 @@ const ProtectionPlan: React.FC = () => {
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
   };
-
-console.log(current);
 
   const steps = [
     {
@@ -303,7 +310,7 @@ console.log(current);
               </Button>
             )}
             {current == 0 && (
-              <Button onClick={() => navigator("/Financial-Health-Check", { state: { current: 1 } })} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => navigator("/Financial-Health-Check", { state: { current: 2 } })} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}
@@ -316,9 +323,7 @@ console.log(current);
               <Button
                 type="primary"
                 disabled={handleDisabled()}
-                onClick={() => {
-                  navigator("/health-plan");
-                }} className="bg-[#003781] rounded-full w-[120px]"
+                onClick={() => handleSave()} className="bg-[#003781] rounded-full w-[120px]"
               >
                 ถัดไป
               </Button>

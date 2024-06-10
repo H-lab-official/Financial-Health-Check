@@ -1,29 +1,27 @@
 import { questionsState } from "@/recoil/questionsState";
+import { useRecoilState, useRecoilValue } from "recoil";
 import React, { useState } from "react";
 import {
   Button,
-  Col,
-  Form,
-  Input,
+  
   Radio,
   RadioChangeEvent,
   Row,
-  Typography, Card, Progress
+
 } from "antd";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
-import { useRecoilState } from "recoil";
+
 import { progressState } from '@/recoil/progressState';
 import protection from "@/assets/images/protection.png"
 import health from "@/assets/images/health.png"
 import retirement from "@/assets/images/retirement.png"
 import Education from "@/assets/images/Education.png"
-import summary from "@/assets/images/summary.png"
-import arrow from "@/assets/images/right-arrow.svg"
 
-import './customRadio.css'
-const { Text } = Typography;
+import { nameState} from "@/recoil/nameState";
+import '@/components/css/customRadio.css'
 
+import { saveQuestionsState } from "@/components/api/saveQuestionsState";
 const Summary: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -31,49 +29,8 @@ const Summary: React.FC = () => {
   const [formData, setFormData] = useRecoilState(questionsState);
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
-  const [selectedValue, setSelectedValue] = useState(null)
-  // const handleInputChange =
-  //   (field: keyof typeof formData) =>
-  //     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-  //       const formattedValue = value.replace(/[^\d]/g, ""); // Remove any non-digit characters
 
-  //       if (formattedValue === "") {
-  //         // Allow clearing the field
-  //         setFormData((prevFormData) => ({
-  //           ...prevFormData,
-  //           [field]: "",
-  //         }));
-  //         return;
-  //       }
-
-  //       const parsedValue = parseInt(formattedValue, 10);
-  //       if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 4) return; // Check if value is within the valid range
-
-  //       setFormData((prevFormData) => {
-  //         const isDuplicate = Object.entries(prevFormData).some(
-  //           ([key, val]) =>
-  //             key !== field && parseInt(val as string, 10) === parsedValue
-  //         );
-  //         if (isDuplicate) return prevFormData;
-
-  //         return {
-  //           ...prevFormData,
-  //           [field]: formattedValue,
-  //         };
-  //       });
-  //     };
-
-  // const handleRadioChange =
-  //   (field: keyof typeof formData) =>
-  //     ({ target: { value } }: RadioChangeEvent) => {
-  //       setFormData((prevFormData) => ({
-  //         ...prevFormData,
-  //         [field]: value,
-  //       }));
-  //     };
-  // const next = () => {
-  //   setCurrent(current + 1);
-  // };
+  const dataname=useRecoilValue<nameState>(nameState)
   const handleRadioChange =
     (field: keyof typeof formData) =>
       ({ target: { value } }: RadioChangeEvent) => {
@@ -112,12 +69,17 @@ const Summary: React.FC = () => {
     setProgress({ percent: newPercent, steps: progress.steps })
     navigator("/education-plan", { state: { current: 2 } })
   }
-  const nextlast = () => {
+  const nextlast =async () => {
     let newPercent = progress.percent;
     newPercent += 1;
     setProgress({ percent: newPercent, steps: progress.steps })
+   await handleSave()
     navigator("/export-pdf")
   }
+  const handleSave = async() => {  
+    await saveQuestionsState({ data: formData,nameData: dataname, })
+    
+   };
   const handleDisabled = () => {
     if (current === 0) {
       return (

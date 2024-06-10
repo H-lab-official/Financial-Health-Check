@@ -9,6 +9,7 @@ import {
   totalPreparationAssetsSelector,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
+import { selectedState  } from '@/recoil/progressState';
 import { progressState } from '@/recoil/progressState';
 import ProgressBar from "@/components/progressBar";
 import Education from "@/assets/images/Education.png"
@@ -16,15 +17,18 @@ import Education1 from "@/assets/images/Education1.png"
 import Education2 from "@/assets/images/Education2.png"
 import DotsComponent from "@/components/DotsComponent";
 const { Text } = Typography;
-
+import { nameState} from "@/recoil/nameState";
+import { saveEducationplan } from "@/components/api/saveeducationPlan";
 const EducationPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
   const currentStep = location.state?.current || 0;
   const [formData, setFormData] = useRecoilState(educationPlanState);
   const requiredScholarships = useRecoilValue(requiredScholarshipsSelector);
+  const selectedValue=useRecoilValue(selectedState)
   const totalPreparationAssets = useRecoilValue(totalPreparationAssetsSelector);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
+  const dataname=useRecoilValue<nameState>(nameState)
   const totalMissing = useRecoilValue(totalMissingSelector);
   const [current, setCurrent] = useState(currentStep);
   const handleInputChange =
@@ -35,7 +39,12 @@ const EducationPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
-
+    const handleSelectChange = (field: keyof typeof formData) => (value: string) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [field]: value,
+      }));
+    };
 
   let allImages
 
@@ -54,6 +63,7 @@ const EducationPlan: React.FC = () => {
       break;
 
   }
+console.log(selectedValue);
 
   const next = () => {
     let newPercent = progress.percent;
@@ -80,13 +90,29 @@ const EducationPlan: React.FC = () => {
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
   };
-  console.log(progress.percent);
-  const nextlast = () => {
+
+  const nextlast = async() => {
     let newPercent = progress.percent;
     newPercent += 3;
     setProgress({ percent: newPercent, steps: progress.steps })
+   await handleSave()
+   if(selectedValue=='4'){
+    navigator("/export-pdf", { state: { current: 5 } })
+  }else if(selectedValue=='5'){
     navigator("/summary")
   }
+   
+  }
+  const letMeback=async()=>{
+    if(selectedValue=='4'){
+      navigator("/Financial-Health-Check", { state: { current: 2 } })
+    }else if(selectedValue=='5'){
+      navigator("/retirement-plan", { state: { current: 2 } })
+    }
+  }
+  const handleSave = async() => {  
+    await saveEducationplan({ data: formData,nameData: dataname, })   
+   };
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -106,6 +132,8 @@ const EducationPlan: React.FC = () => {
       )
     } 
   }
+
+  
   const steps = [{
     title: "แผนที่ 4",
     content: (
@@ -130,11 +158,11 @@ const EducationPlan: React.FC = () => {
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
                   style={{ width: '260px' }}
-                  value={formData.levelOfeducation || undefined}
+                  value={formData.levelOfeducation }
                   placeholder="กรุณาเลือก"
-                  onChange={handleInputChange("levelOfeducation")}
+                  onChange={handleSelectChange("levelOfeducation")}
                   options={[
-                    { label: "กรุณาเลือก", value: undefined, disabled: !!formData.levelOfeducation },
+                    
                     { value: "ปริญญาตรี", label: "ปริญญาตรี" },
                     { value: "ปริญญาโท", label: "ปริญญาโท" },
                     { value: "ปริญญาเอก", label: "ปริญญาเอก" },
@@ -155,11 +183,11 @@ const EducationPlan: React.FC = () => {
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
                   style={{ width: '260px' }}
-                  value={formData.typeOfeducation || undefined}
+                  value={formData.typeOfeducation}
                   placeholder="กรุณาเลือก"
-                  onChange={handleInputChange("typeOfeducation")}
+                  onChange={handleSelectChange("typeOfeducation")}
                   options={[
-                    { label: "กรุณาเลือก", value: undefined, disabled: !!formData.typeOfeducation },
+                  
                     { value: "107000.00", label: "รัฐบาล" },
                     { value: "214900.00", label: "เอกชน" },
                     { value: "500000.00", label: "อินเตอร์" },
@@ -207,11 +235,11 @@ const EducationPlan: React.FC = () => {
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
                   style={{ width: '260px' }}
-                  value={formData.inflationRate || undefined}
+                  value={formData.inflationRate }
                   placeholder="กรุณาเลือก"
-                  onChange={handleInputChange("inflationRate")}
+                  onChange={handleSelectChange("inflationRate")}
                   options={[
-                    { label: "กรุณาเลือก", value: undefined, disabled: !!formData.inflationRate },
+                  
                     { value: "0.02", label: "2 %" },
                     { value: "0.03", label: "3 %" },
                     { value: "0.04", label: "4 %" },
@@ -303,8 +331,9 @@ const EducationPlan: React.FC = () => {
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
 
             {current === 0 && (
+             
               <Button
-                onClick={() => navigator("/retirement-plan", { state: { current: 2 } })}
+                onClick={() => letMeback()}
                 className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
