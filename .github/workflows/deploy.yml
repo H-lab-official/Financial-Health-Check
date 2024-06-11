@@ -1,48 +1,53 @@
-name: Deploy Financial-Health-Check
+name: Deploy Next.js App
 
 on:
   push:
     branches:
-      - main
+      - main # Change to your specific branch
+      # - deployprod  # Additional branch for deployment
 
 jobs:
-  web-deploy:
-    name: 🚀 Deploy Api to Dev
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get Latest Code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: 🖥️ Set up Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-      - name: 📦 Install dependencies
-        run: bun install
+      - name: Check Node.js version
+        run: node -v
 
-      - name: 💿 Build the app
-        run: bun run build
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 🔧 Configure SSH
+      - name: Deploy to DigitalOcean
+        env:
+          HOST: ${{ secrets.SERVER_DOMAIN }}
+          USERNAME: ${{ secrets.SERVER_USERNAME }}
+          TARGET_DIR: /var/www/Financial-Health-Check
+          APP_NAME: Financial-Health-Check
+          PORT: 5173
+        
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_DOMAIN }} > ~/.ssh/known_hosts
-
-      - name: 🗓️ Deploy to DigitalOcean
-        run: |
-          rsync -azP --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/app
-
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
-            cd /var/www/html/app
-            echo "${{ secrets.ENV_CONTENT }}" > .env
-            bun install
-            pm2 startOrRestart ecosystem.config.js
-          EOF
-
-      - name: 🔧 Configure Nginx
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
-            sudo cp /var/www/html/app/nginx.conf /etc/nginx/sites-available/default
-            sudo nginx -t
-            sudo systemctl restart nginx
+          ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
+            export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH #'which pm2' command on terminal will give the right path
+            cd $TARGET_DIR
+            git pull origin ${GITHUB_REF#refs/heads/}
+            npm install
+            npx prisma migrate deploy
+            npm run build
+            if pm2 list | grep -q $APP_NAME; then
+              echo "Restarting application: $APP_NAME"
+              pm2 restart $APP_NAME
+            else
+              echo "Starting application: $APP_NAME"
+              pm2 start npm --name $APP_NAME -- start -- --port=$PORT
+            fi            
+            pm2 save
           EOF
