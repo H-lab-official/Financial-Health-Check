@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Api-Merit
 
 on:
   push:
@@ -6,46 +6,33 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build
+  web-deploy:
+    name: 🚀 Deploy Api to Dev
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
+      - name: 🚚 Get Latest Code
+        uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 20
+      - name: 🖥️ Set up Bun
+        uses: oven-sh/setup-bun@v1
 
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+      - name: 📦 Install dependencies
+        run: bun install
 
-      - name: Build project
-        run: npm run build
+      - name: 💿 Build the app
+        run: bun run build
 
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: production-files
-          path: ./dist
+      - name: 🔧 Configure SSH
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_DOMAIN }} > ~/.ssh/known_hosts
 
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+      - name: 🗓️ Deploy to DigitalOcean
+        run: |
+          rsync -azP --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/app
 
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: production-files
-          path: ./dist
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
+            cd ~/app
+            echo "${{ secrets.ENV_CONTENT }}" > .env
+          EOF
