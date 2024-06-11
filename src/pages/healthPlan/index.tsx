@@ -51,7 +51,6 @@ const HealthPlan: React.FC = () => {
       }));
     };
 
-  console.log(dataname.user_params);
 
   let allImages
 
@@ -99,8 +98,7 @@ const HealthPlan: React.FC = () => {
 
       if (value === '5') {
         navigateThroughSequence(urlMap);
-      } else {
-        console.log(value);
+      } else {      
 
         navigateToValue(urlMap, value, '/export-pdf');
       }
@@ -179,7 +177,7 @@ const HealthPlan: React.FC = () => {
       navigator("/protection-plan", { state: { current: 3 } })
     }
   }
-  console.log(current);
+
 
   const toGoBack = () => {
     const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
@@ -199,14 +197,10 @@ const HealthPlan: React.FC = () => {
 
   const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     const value = sortedSelected[0];
-    if (sortedSelected.length === 1 && value !== '5') {
-      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    if (value !== '5') {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
     } else {
-      if (value === '5') {
-        navigateThroughBackSequence(urlMap);
-      } else {
-        navigateBackToValue(urlMap, value);
-      }
+      navigateThroughBackSequence(urlMap);
     }
 
   };

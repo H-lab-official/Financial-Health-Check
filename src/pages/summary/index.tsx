@@ -30,6 +30,7 @@ const Summary: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const sortedSelected = useRecoilValue(sortedSelectedState);
+
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const dataname = useRecoilValue<nameData>(nameState)
   const handleRadioChange =
@@ -219,16 +220,201 @@ const Summary: React.FC = () => {
   };
   const handleDisabled = () => {
     if (current === 0) {
-      return (
-        !formData.protectionPlanOrder ||
-        !formData.healthPlanOrder ||
-        !formData.retirementPlanOrder ||
-        !formData.educationPlanOrder
-
-      );
+      // ตรวจสอบเงื่อนไข sortedSelected.length === 1
+      if (sortedSelected.length === 1) {
+        const value = sortedSelected[0];
+        if (value === '1') {
+          return !formData.protectionPlanOrder;
+        } else if (value === '2') {
+          return !formData.healthPlanOrder;
+        } else if (value === '3') {
+          return !formData.retirementPlanOrder;
+        } else if (value === '4') {
+          return !formData.educationPlanOrder;
+        } else if (value === '5') {
+          return (
+            !formData.protectionPlanOrder ||
+            !formData.healthPlanOrder ||
+            !formData.retirementPlanOrder ||
+            !formData.educationPlanOrder
+          );
+        }
+      } 
+  
+      // ตรวจสอบเงื่อนไข sortedSelected.length >= 1
+      if (sortedSelected.length >= 1) {
+        return (
+          !formData.protectionPlanOrder ||
+          !formData.healthPlanOrder ||
+          !formData.retirementPlanOrder ||
+          !formData.educationPlanOrder
+        );
+      }
     }
-  }
-  console.log(current);
+    return false;
+  };
+  
+
+  const divs: { [key: string]: JSX.Element } = {
+    '1': <div className="protectionPlanOrder flex justify-between items-start">
+      <div className="">
+        <img src={protection} width={70} height={70} />
+        <p className=" text-[12px]">แผนคุ้มครองรายได้ <br />ให้กับครอบครัว<br /> ในกรณีที่ต้องจากไป</p>
+      </div>
+      <div>
+        <div className="flex flex-row gap-16 justify-center items-center">
+          <p>น้อย</p>
+          <div className="long-arrow-right"></div>
+          {/* <img src={arrow} alt="" className=" h-5"/> */}
+          <p>มาก</p>
+        </div>
+        <div className="mt-3 w-[222px]">
+          <Radio.Group
+            onChange={handleRadioChange("protectionPlanOrder")}
+            value={formData.protectionPlanOrder}
+            size="large"
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Radio value={1} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
+            </Radio>
+            <Radio value={2} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={3} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={4} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
+            </Radio>
+          </Radio.Group>
+        </div>
+      </div>
+    </div>,
+    '2': <div className="healthPlanOrder flex justify-between items-start">
+      <div className="">
+        <img src={health} width={70} height={70} />
+        <p className=" text-[12px]">การวางแผนเตรียมเงิน <br /> เรื่องสุขภาพ</p>
+      </div>
+      <div>
+
+        <div className="mt-5 w-[222px]">
+          <Radio.Group
+            onChange={handleRadioChange("healthPlanOrder")}
+            value={formData.healthPlanOrder}
+            size="large"
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Radio value={1} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
+            </Radio>
+            <Radio value={2} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={3} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={4} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
+            </Radio>
+          </Radio.Group>
+        </div>
+      </div>
+    </div>,
+    '3': <div className="retirementPlanOrder flex justify-between items-start">
+      <div className="">
+        <img src={retirement} width={70} height={70} />
+        <p className=" text-[12px]">การวางแผนเตรียมเงิน<br />ไว้ยามเกษียณ </p>
+      </div>
+      <div>
+
+        <div className="mt-5 w-[222px]">
+          <Radio.Group
+            onChange={handleRadioChange("retirementPlanOrder")}
+            value={formData.retirementPlanOrder}
+            size="large"
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Radio value={1} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
+            </Radio>
+            <Radio value={2} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={3} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={4} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
+            </Radio>
+          </Radio.Group>
+        </div>
+      </div>
+    </div>
+    ,
+    '4': <div className="educationPlanOrder flex justify-between items-start">
+      <div className="">
+        <img src={Education} width={70} height={70} />
+        <p className=" text-[12px]">การเก็บออม<br />เพื่อค่าเล่าเรียนบุตร </p>
+      </div>
+      <div>
+
+        <div className="mt-5 w-[222px]">
+          <Radio.Group
+            onChange={handleRadioChange("educationPlanOrder")}
+            value={formData.educationPlanOrder}
+            size="large"
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Radio value={1} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
+            </Radio>
+            <Radio value={2} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={3} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
+            </Radio>
+            <Radio value={4} className="custom-radio">
+              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
+            </Radio>
+          </Radio.Group>
+        </div>
+      </div>
+    </div>,
+  };
+  const renderDivs = (): JSX.Element[] | null => {
+    if (sortedSelected.length === 1) {
+      const value = sortedSelected[0];
+      if (value === '5') {
+        // ถ้า value เป็น '5' ให้แสดงทุกอัน 1-4
+        return Object.keys(divs).map(key => divs[key]);
+      } else if (divs[value]) {
+        // ถ้า value เป็น 1-4 แสดงเฉพาะ value นั้น
+        return [divs[value]];
+      }
+    } else if (sortedSelected.length >= 1 && sortedSelected.length <= 4) {
+      // ถ้ามีการเลือกมากกว่า 1 และไม่เกิน 4 ตัว ให้แสดงทุกตัวที่เลือก
+      return sortedSelected.map(value => divs[value]);
+    }
+    return null; // ไม่มี div ที่จะแสดง
+  };
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className=" fixed top-0 z-40"><NavBar /></div>
@@ -248,153 +434,9 @@ const Summary: React.FC = () => {
 
 
 
-        <div className="flex justify-between items-start">
-          <div className="">
-            <img src={protection} width={70} height={70} />
-            <p className=" text-[12px]">แผนคุ้มครองรายได้ <br />ให้กับครอบครัว<br /> ในกรณีที่ต้องจากไป</p>
-          </div>
-          <div>
-            <div className="flex flex-row gap-16 justify-center items-center">
-              <p>น้อย</p>
-              <div className="long-arrow-right"></div>
-              {/* <img src={arrow} alt="" className=" h-5"/> */}
-              <p>มาก</p>
-            </div>
-            <div className="mt-3 w-[222px]">
-
-              <Radio.Group
-                onChange={handleRadioChange("protectionPlanOrder")}
-                value={formData.protectionPlanOrder}
-                size="large"
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Radio value={1} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-                </Radio>
-                <Radio value={2} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={3} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={4} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-                </Radio>
-              </Radio.Group>
-            </div>
-          </div>
-        </div>
+        {renderDivs()}
 
 
-        <div className="flex justify-between items-start">
-          <div className="">
-            <img src={health} width={70} height={70} />
-            <p className=" text-[12px]">การวางแผนเตรียมเงิน <br /> เรื่องสุขภาพ</p>
-          </div>
-          <div>
-
-            <div className="mt-5 w-[222px]">
-              <Radio.Group
-                onChange={handleRadioChange("healthPlanOrder")}
-                value={formData.healthPlanOrder}
-                size="large"
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Radio value={1} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-                </Radio>
-                <Radio value={2} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={3} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={4} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-                </Radio>
-              </Radio.Group>
-            </div>
-          </div>
-        </div>
-
-
-        <div className="flex justify-between items-start">
-          <div className="">
-            <img src={retirement} width={70} height={70} />
-            <p className=" text-[12px]">การวางแผนเตรียมเงิน<br />ไว้ยามเกษียณ </p>
-          </div>
-          <div>
-
-            <div className="mt-5 w-[222px]">
-              <Radio.Group
-                onChange={handleRadioChange("retirementPlanOrder")}
-                value={formData.retirementPlanOrder}
-                size="large"
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Radio value={1} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-                </Radio>
-                <Radio value={2} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={3} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={4} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-                </Radio>
-              </Radio.Group>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-start">
-          <div className="">
-            <img src={Education} width={70} height={70} />
-            <p className=" text-[12px]">การเก็บออม<br />เพื่อค่าเล่าเรียนบุตร </p>
-          </div>
-          <div>
-
-            <div className="mt-5 w-[222px]">
-              <Radio.Group
-                onChange={handleRadioChange("educationPlanOrder")}
-                value={formData.educationPlanOrder}
-                size="large"
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Radio value={1} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-                </Radio>
-                <Radio value={2} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={3} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-                </Radio>
-                <Radio value={4} className="custom-radio">
-                  {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-                </Radio>
-              </Radio.Group>
-            </div>
-          </div>
-        </div>
 
 
         <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
