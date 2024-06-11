@@ -11,17 +11,18 @@ import {
   healthPlanState,
   treatingSeriousIllnessSelector,
 } from "@/recoil/healthPlanState";
-import {savehealthPlan} from '@/components/api/savehealthPlan'
-import { progressState } from '@/recoil/progressState';
+import { savehealthPlan } from '@/components/api/savehealthPlan'
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import DotsComponent from "@/components/DotsComponent";
 import ProgressBar from "@/components/progressBar";
 import health from "@/assets/images/health.png"
 import health1 from "@/assets/images/health1.png"
 import health2 from "@/assets/images/health2.png"
 import health3 from "@/assets/images/health3.png"
-import { selectedState  } from '@/recoil/progressState';
+
 const { Text } = Typography;
-import { nameState } from "@/recoil/nameState";
+import { nameState, nameData } from "@/recoil/nameState";
+import { NavBar } from "@/components/navbar";
 const HealthPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -33,12 +34,14 @@ const HealthPlan: React.FC = () => {
   const additionalTreatingSeriousIllness = useRecoilValue(
     treatingSeriousIllnessSelector
   );
-  const selectedValue=useRecoilValue(selectedState)
+  const selectedValue = useRecoilValue(selectedState)
 
   const additionalEmergencyCosts = useRecoilValue(emergencyCostsSelector);
-  const dataname=useRecoilValue<nameState>(nameState)
+  const dataname = useRecoilValue<nameData>(nameState)
   const additionalAnnualTreatment = useRecoilValue(annualTreatmentSelector);
   const [current, setCurrent] = useState(currentStep);
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -47,6 +50,9 @@ const HealthPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
+
+  console.log(dataname.user_params);
+
   let allImages
 
   switch (current) {
@@ -69,6 +75,77 @@ const HealthPlan: React.FC = () => {
 
   }
 
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
+  };
+
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator('/export-pdf');
+    } else {
+
+      if (value === '5') {
+        navigateThroughSequence(urlMap);
+      } else {
+        console.log(value);
+
+        navigateToValue(urlMap, value, '/export-pdf');
+      }
+    }
+  };
+
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+    if (urlMap[value]) {
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
   const next = () => {
     let newPercent = progress.percent;
 
@@ -95,22 +172,99 @@ const HealthPlan: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const letMeback=async()=>{
-    if(selectedValue=='2'){
-      navigator("/Financial-Health-Check", { state: { current: 2 } })
-    }else if(selectedValue=='5'){
+  const letMeback = async () => {
+    if (selectedValue.includes('2')) {
+      navigator(`/Financial-Health-Check?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    } else if (selectedValue.includes('5')) {
       navigator("/protection-plan", { state: { current: 3 } })
     }
   }
+  console.log(current);
 
-  const handleSave = async() => {  
-    await savehealthPlan({ data: formData,nameData: dataname, })
-    if(selectedValue=='2'){
-      navigator("/export-pdf", { state: { current: 3 } })
-    }else if(selectedValue=='5'){
-       navigator("/retirement-plan");
+  const toGoBack = () => {
+    const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
+      '1': { path: '/protection-plan', state: { current: 3 } },
+      '2': { path: '/health-plan', state: { current: 3 } },
+      '3': { path: '/retirement-plan', state: { current: 2 } },
+      '4': { path: '/education-plan', state: { current: 2 } },
+      '5': { path: '/protection-plan', state: { current: 3 } },
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleBack(urlMap);
+    } else {
+      handleMultipleBack(urlMap);
     }
-   };
+  };
+
+  const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    } else {
+      if (value === '5') {
+        navigateThroughBackSequence(urlMap);
+      } else {
+        navigateBackToValue(urlMap, value);
+      }
+    }
+
+  };
+
+  const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    if (currentIndex > 1) {
+      const value = sortedSelected[currentIndex - 2];
+      navigateBackToValue(urlMap, value);
+    } else if (currentIndex === 1) {
+      const firstValue = sortedSelected[0];
+      navigateBackToValue(urlMap, firstValue);
+    } else {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      setCurrentIndex(0);
+    }
+  };
+
+  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex > 0) {
+      const previousValue = sequence[currentIndex - 1];
+      navigateBackToValue(urlMap, previousValue);
+    } else {
+      navigator('/'); // Redirect to initial page if at the beginning
+      setCurrentIndex(0);
+    }
+  };
+
+  const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
+    if (urlMap[value]) {
+      navigator(urlMap[value].path, { state: urlMap[value].state });
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+
+
+  const getPagePath = (page: string) => {
+    switch (page) {
+      case '1':
+        return 'protection-plan';
+      case '2':
+        return 'health-plan';
+      case '3':
+        return 'retirement-plan';
+      case '4':
+        return 'education-plan';
+      default:
+        return '';
+    }
+  };
+  const handleSave = async () => {
+
+    await savehealthPlan({ data: formData, nameData: dataname, })
+
+
+    toGoNext()
+  };
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -131,10 +285,10 @@ const HealthPlan: React.FC = () => {
       )
     } else if (current === 3) {
       return (
-        !additionalRoomFee || 
-        !additionalDailyCompensation || 
-        !additionalTreatingSeriousIllness || 
-        !additionalEmergencyCosts || 
+        !additionalRoomFee ||
+        !additionalDailyCompensation ||
+        !additionalTreatingSeriousIllness ||
+        !additionalEmergencyCosts ||
         !additionalAnnualTreatment
       )
     }
@@ -311,8 +465,9 @@ const HealthPlan: React.FC = () => {
     )
   }]
   return (
-    <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
+    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+      <div className=" fixed top-0 z-40"><NavBar /></div>
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 2" : "Health Plan"}</h1>
 
@@ -327,7 +482,7 @@ const HealthPlan: React.FC = () => {
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current === 0 && (
               <Button
-              onClick={() => letMeback()}
+                onClick={() => toGoBack()}
                 className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
@@ -352,7 +507,7 @@ const HealthPlan: React.FC = () => {
               <Button
                 disabled={handleDisabled()}
                 onClick={() => handleSave()}
-               
+
                 className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป

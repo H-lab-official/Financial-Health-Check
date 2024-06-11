@@ -15,16 +15,16 @@ import {
   coverageSelector,
 } from "@/recoil/protectionPlanState";
 
-import { progressState } from '@/recoil/progressState';
-import { selectedState  } from '@/recoil/progressState';
-import { nameState} from "@/recoil/nameState";
+
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
+import { nameState, nameData } from "@/recoil/nameState";
 import protection1 from "@/assets/images/protection1.png"
 import protection2 from "@/assets/images/protection2.png"
 import protection3 from "@/assets/images/protection3.png"
 const { Text } = Typography;
 import ProgressBar from "@/components/progressBar";
-import { saveProtectionPlan} from "@/components/api/saveProtectionPlan";
-
+import { saveProtectionPlan } from "@/components/api/saveProtectionPlan";
+import { NavBar } from "@/components/navbar";
 const ProtectionPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -38,8 +38,10 @@ const ProtectionPlan: React.FC = () => {
   const coverage = useRecoilValue(coverageSelector);
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
-  const dataname=useRecoilValue<nameState>(nameState)
-  const selectedValue=useRecoilValue(selectedState)
+  const dataname = useRecoilValue<nameData>(nameState)
+  const selectedValue = useRecoilValue(selectedState)
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -52,7 +54,7 @@ const ProtectionPlan: React.FC = () => {
 
   switch (current) {
     case 0:
-      allImages = protection     
+      allImages = protection
       break;
     case 1:
       allImages = protection1
@@ -65,14 +67,91 @@ const ProtectionPlan: React.FC = () => {
       break;
 
   }
-  const handleSave = async() => {  
-   await saveProtectionPlan({ data: formData,nameData: dataname, })
-   if(selectedValue=='1'){
-    navigator("/export-pdf", { state: { current: 2 } })
-  }else if(selectedValue=='5'){
-     navigator("/health-plan")
-  }
+
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
   };
+
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+     const value = sortedSelected[0];
+    if (sortedSelected.length === 1&&value!=='5') {
+      navigator('/export-pdf');
+    } else {   
+
+      if (value === '5') {
+        navigateThroughSequence(urlMap);
+      } else {
+        console.log(value);
+
+        navigateToValue(urlMap, value, '/export-pdf');
+      }
+    }
+  };
+
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+   
+    if (urlMap[value]) {
+
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      console.log('3');
+
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
+
+
+
+  const handleSave = async () => {
+
+    await saveProtectionPlan({ data: formData, nameData: dataname });
+    toGoNext();
+  };
+
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -83,14 +162,14 @@ const ProtectionPlan: React.FC = () => {
       );
     } else if (current === 2) {
       return (
-        !formData.homePayments || 
-        !formData.carPayments || 
+        !formData.homePayments ||
+        !formData.carPayments ||
         !formData.otherDebts
       )
-    } else if(current===3){
-      return(
-        !formData.bankDeposit||
-        !formData.lifeInsuranceFund||
+    } else if (current === 3) {
+      return (
+        !formData.bankDeposit ||
+        !formData.lifeInsuranceFund ||
         !formData.otherAssets
       )
     }
@@ -292,8 +371,11 @@ const ProtectionPlan: React.FC = () => {
   console.log();
 
   return (
-    <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
+    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+      <div className=" fixed top-0 z-40"><NavBar /></div>
+
+
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "แผนที่ 1" : "Protection Plan"}</h1>
           <ProgressBar percent={progress.percent} current={current} />
@@ -310,7 +392,10 @@ const ProtectionPlan: React.FC = () => {
               </Button>
             )}
             {current == 0 && (
-              <Button onClick={() => navigator("/Financial-Health-Check", { state: { current: 2 } })} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => {
+                navigator(`/Financial-Health-Check?user_params=${dataname.user_params}`, { state: { current: 2 } })
+                setCurrentIndex((prevIndex) => prevIndex - 1);
+              }} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )}

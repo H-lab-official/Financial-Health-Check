@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Select, Typography ,Progress} from "antd";
+import { Button, Col, Form, Row, Select, Typography, Progress } from "antd";
 import InputField from "@/components/InputField";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
@@ -15,13 +15,14 @@ import {
 } from "@/recoil/retirementPlanState";
 import DotsComponent from "@/components/DotsComponent";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { progressState,selectedState } from '@/recoil/progressState';
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import retirement from "@/assets/images/retirement.png"
 import retirement1 from "@/assets/images/retirement1.png"
 import retirement2 from "@/assets/images/retirement2.png"
 const { Text } = Typography;
-import { nameState} from "@/recoil/nameState";
+import { nameState, nameData } from "@/recoil/nameState";
 import { saveRetirementPlan } from "@/components/api/saveretirementPlan";
+import { NavBar } from "@/components/navbar";
 const RetirementPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -35,11 +36,13 @@ const RetirementPlan: React.FC = () => {
   const totalPreparationAssets = useRecoilValue(
     totalRetirementPreparationAssetsSelector
   );
-  const selectedValue=useRecoilValue(selectedState)
-  const dataname=useRecoilValue<nameState>(nameState)
+  const selectedValue = useRecoilValue(selectedState)
+  const dataname = useRecoilValue<nameData>(nameState)
   const totalMissing = useRecoilValue(totalRetirementMissingSelector);
   const mustBeSaved = useRecoilValue(mustBeSavedSelector);
   const [current, setCurrent] = useState(currentStep);
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -49,89 +52,215 @@ const RetirementPlan: React.FC = () => {
       }));
     };
 
-    let allImages
-    
-    switch (current) {
-      case 0:
-        allImages = retirement
-       
-        break;
-      case 1:
-        allImages = retirement1
-      
-        break;
-      case 2:
-        allImages = retirement2
-        
-        break;     
-     
-    }
+  let allImages
 
-    const next = () => {
-      let newPercent = progress.percent;
-  
-      if (current === 1) {
-        newPercent += progress.steps;
-      } else if (current === 2) {
-        newPercent += progress.steps;
-      }
-  
-      setProgress({ percent: newPercent, steps: progress.steps });
-      setCurrent(current + 1);
-    };
-  
-    const prev = () => {
-      let newPercent = progress.percent;
-  
-      if (current === 3) {
-        newPercent -= progress.steps;
-      } else if (current === 2) {
-        newPercent -= progress.steps;
-      }
-  
-      setProgress({ percent: newPercent, steps: progress.steps });
-      setCurrent(current - 1);
+  switch (current) {
+    case 0:
+      allImages = retirement
+
+      break;
+    case 1:
+      allImages = retirement1
+
+      break;
+    case 2:
+      allImages = retirement2
+
+      break;
+
+  }
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
     };
 
-    const letMeback=async()=>{
-      if(selectedValue=='3'){
-        navigator("/Financial-Health-Check", { state: { current: 2 } })
-      }else if(selectedValue=='5'){
-       navigator("/health-plan", { state: { current: 3 } })
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
+  };
+
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+    const value = sortedSelected[0];
+   if (sortedSelected.length === 1&&value!=='5') {
+     navigator('/export-pdf');
+   } else {   
+
+     if (value === '5') {
+       navigateThroughSequence(urlMap);
+     } else {
+       console.log(value);
+
+       navigateToValue(urlMap, value, '/export-pdf');
+     }
+   }
+ };
+
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+    if (urlMap[value]) {
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
+  const toGoBack = () => {
+    const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
+      '1': { path: '/protection-plan', state: { current: 3 } },
+      '2': { path: '/health-plan', state: { current: 3 } },
+      '3': { path: '/retirement-plan', state: { current: 2 } },
+      '4': { path: '/education-plan', state: { current: 2 } },
+      '5': { path: '/protection-plan', state: { current: 3 } },
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleBack(urlMap);
+    } else {
+      handleMultipleBack(urlMap);
+    }
+  };
+
+  const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    } else {
+      if (value === '5') {
+        navigateThroughBackSequence(urlMap);
+      } else {
+        navigateBackToValue(urlMap, value);
       }
     }
-    const handleSave = async() => {  
-      await saveRetirementPlan({ data: formData,nameData: dataname, })
-      if(selectedValue=='3'){
-        navigator("/export-pdf", { state: { current: 4 } })
-      }else if(selectedValue=='5'){
-         navigator("/education-plan")
-      }
-     };
-    const handleDisabled = () => {
-      if (current === 1) {
-        return (
-          !formData.livingCosts ||
-          !formData.houseCosts ||
-          !formData.internetCosts ||
-          !formData.clothingCosts ||
-          !formData.medicalCosts||
-          !formData.otherCosts||
-          !formData.age||
-          !formData.retireAge||
-          !formData.lifExpectancy||
-          !formData.inflationRate
-        );
-      } else if (current === 2) {
-        return (
-          !formData.deposit ||
-          !formData.insuranceFund ||
-          !formData.otherAssets 
-         
-  
-        )
-      } 
+
+  };
+
+  const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    if (currentIndex > 1) {
+      const value = sortedSelected[currentIndex - 2];
+      navigateBackToValue(urlMap, value);
+    } else if (currentIndex === 1) {
+      const firstValue = sortedSelected[0];
+      navigateBackToValue(urlMap, firstValue);
+    } else {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      setCurrentIndex(0);
     }
+  };
+
+  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex > 0) {
+      const previousValue = sequence[currentIndex - 1];
+      navigateBackToValue(urlMap, previousValue);
+    } else {
+      navigator('/'); // Redirect to initial page if at the beginning
+      setCurrentIndex(0);
+    }
+  };
+
+  const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
+    if (urlMap[value]) {
+      navigator(urlMap[value].path, { state: urlMap[value].state });
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+
+  const next = () => {
+    let newPercent = progress.percent;
+
+    if (current === 1) {
+      newPercent += progress.steps;
+    } else if (current === 2) {
+      newPercent += progress.steps;
+    }
+
+    setProgress({ percent: newPercent, steps: progress.steps });
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    let newPercent = progress.percent;
+
+    if (current === 3) {
+      newPercent -= progress.steps;
+    } else if (current === 2) {
+      newPercent -= progress.steps;
+    }
+
+    setProgress({ percent: newPercent, steps: progress.steps });
+    setCurrent(current - 1);
+  };
+
+  const letMeback = async () => {
+    toGoBack()
+  }
+  const handleSave = async () => {
+
+    await saveRetirementPlan({ data: formData, nameData: dataname, })
+
+    toGoNext()
+  };
+  const handleDisabled = () => {
+    if (current === 1) {
+      return (
+        !formData.livingCosts ||
+        !formData.houseCosts ||
+        !formData.internetCosts ||
+        !formData.clothingCosts ||
+        !formData.medicalCosts ||
+        !formData.otherCosts ||
+        !formData.age ||
+        !formData.retireAge ||
+        !formData.lifExpectancy ||
+        !formData.inflationRate
+      );
+    } else if (current === 2) {
+      return (
+        !formData.deposit ||
+        !formData.insuranceFund ||
+        !formData.otherAssets
+
+
+      )
+    }
+  }
   const steps = [{
     title: "แผนที่ 3",
     content: (
@@ -202,15 +331,15 @@ const RetirementPlan: React.FC = () => {
             addonAfter="บาท"
           />
         </div>
-        
-          <InputField
-            label="8. อายุตอนนี้&nbsp;&nbsp;&nbsp;"
-            value={formData.age}
-            onChange={handleInputChange("age")}
-            placeholder="กรุณากรอกอายุของคุณ"
-            addonAfter="ปี"
-          />
-        
+
+        <InputField
+          label="8. อายุตอนนี้&nbsp;&nbsp;&nbsp;"
+          value={formData.age}
+          onChange={handleInputChange("age")}
+          placeholder="กรุณากรอกอายุของคุณ"
+          addonAfter="ปี"
+        />
+
         <InputField
           label="9. อายุเกษียณ"
           value={formData.retireAge}
@@ -271,7 +400,7 @@ const RetirementPlan: React.FC = () => {
           </Col>
         </Form.Item>
 
-        
+
         <InputField
           label="14. รวมค่าใช้จ่ายที่ต้องเตรียม"
           value={totalPreparation}
@@ -337,12 +466,14 @@ const RetirementPlan: React.FC = () => {
   }
   ]
   return (
-    <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
+    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+      <div className=" fixed top-0 z-40"><NavBar /></div>
+
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 3" : "Retirement Plan"}</h1>
-          
-          <ProgressBar percent={progress.percent} current={current}/>
+
+          <ProgressBar percent={progress.percent} current={current} />
           <img src={allImages} alt="" className="w-[265px] mt-5" />
           <DotsComponent steps={steps} current={current} />
         </div>
@@ -354,7 +485,7 @@ const RetirementPlan: React.FC = () => {
 
             {current === 0 && (
               <Button
-              onClick={() => letMeback()}
+                onClick={() => letMeback()}
                 className="bg-white rounded-full w-[120px]"
               >
                 ย้อนกลับ
@@ -374,7 +505,7 @@ const RetirementPlan: React.FC = () => {
             )}
             {current === steps.length - 1 && (
               <Button
-              disabled={handleDisabled()}
+                disabled={handleDisabled()}
                 onClick={() => handleSave()}
                 className="bg-[#003781] rounded-full w-[120px] text-white"
               >

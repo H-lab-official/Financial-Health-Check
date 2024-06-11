@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import React, { useState } from "react";
 import {
   Button,
-  
+
   Radio,
   RadioChangeEvent,
   Row,
@@ -11,16 +11,16 @@ import {
 } from "antd";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
+import { NavBar } from "@/components/navbar";
 
-import { progressState } from '@/recoil/progressState';
 import protection from "@/assets/images/protection.png"
 import health from "@/assets/images/health.png"
 import retirement from "@/assets/images/retirement.png"
 import Education from "@/assets/images/Education.png"
 
-import { nameState} from "@/recoil/nameState";
+import { nameState, nameData } from "@/recoil/nameState";
 import '@/components/css/customRadio.css'
-
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import { saveQuestionsState } from "@/components/api/saveQuestionsState";
 const Summary: React.FC = () => {
   const navigator = useNavigate();
@@ -29,8 +29,9 @@ const Summary: React.FC = () => {
   const [formData, setFormData] = useRecoilState(questionsState);
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
-
-  const dataname=useRecoilValue<nameState>(nameState)
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
+  const dataname = useRecoilValue<nameData>(nameState)
   const handleRadioChange =
     (field: keyof typeof formData) =>
       ({ target: { value } }: RadioChangeEvent) => {
@@ -50,6 +51,83 @@ const Summary: React.FC = () => {
           return updatedFormData;
         });
       };
+  console.log();
+
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
+  };
+
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator('/export-pdf');
+    } else {
+
+      if (value === '5') {
+        navigateThroughSequence(urlMap);
+      } else {
+        console.log(value);
+
+        navigateToValue(urlMap, value, '/export-pdf');
+      }
+    }
+  };
+
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+
+    if (urlMap[value]) {
+
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      console.log('3');
+
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
   const prev = () => {
     setCurrent(current - 1);
   };
@@ -63,23 +141,82 @@ const Summary: React.FC = () => {
       )
     }
   ]
+  const toGoBack = () => {
+    const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
+      '1': { path: '/protection-plan', state: { current: 3 } },
+      '2': { path: '/health-plan', state: { current: 3 } },
+      '3': { path: '/retirement-plan', state: { current: 2 } },
+      '4': { path: '/education-plan', state: { current: 2 } },
+      '5': { path: '/protection-plan', state: { current: 3 } },
+    };
+
+    if (sortedSelected.length === 1) {
+      handleSingleBack(urlMap);
+    } else {
+      handleMultipleBack(urlMap);
+    }
+  };
+
+  const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const value = sortedSelected[0];
+
+    if (value === '5') {
+      navigateThroughBackSequence(urlMap);
+    } else {
+      navigateBackToValue(urlMap, value);
+    }
+  };
+
+  const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    if (currentIndex > 1) {
+      const value = sortedSelected[currentIndex - 2];
+      navigateBackToValue(urlMap, value);
+    } else if (currentIndex === 1) {
+      const firstValue = sortedSelected[0];
+      navigateBackToValue(urlMap, firstValue);
+    } else {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      setCurrentIndex(0);
+    }
+  };
+
+  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const sequence = ['1', '2', '3', '4'];
+
+    if (currentIndex > 0) {
+      const previousValue = sequence[currentIndex - 1];
+      navigateBackToValue(urlMap, previousValue);
+    } else {
+      console.log('ถึงนี้');
+
+      navigator('/'); // Redirect to initial page if at the beginning
+      setCurrentIndex(0);
+    }
+  };
+
+  const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
+    if (urlMap[value]) {
+      navigator(urlMap[value].path, { state: urlMap[value].state });
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
   const backlast = () => {
     let newPercent = progress.percent;
     newPercent -= 3;
     setProgress({ percent: newPercent, steps: progress.steps })
-    navigator("/education-plan", { state: { current: 2 } })
+    toGoBack()
   }
-  const nextlast =async () => {
+  const nextlast = async () => {
     let newPercent = progress.percent;
     newPercent += 1;
     setProgress({ percent: newPercent, steps: progress.steps })
-   await handleSave()
-    navigator("/export-pdf")
+    await handleSave()
+    toGoNext()
   }
-  const handleSave = async() => {  
-    await saveQuestionsState({ data: formData,nameData: dataname, })
-    
-   };
+  const handleSave = async () => {
+    await saveQuestionsState({ data: formData, nameData: dataname, })
+
+  };
   const handleDisabled = () => {
     if (current === 0) {
       return (
@@ -87,21 +224,24 @@ const Summary: React.FC = () => {
         !formData.healthPlanOrder ||
         !formData.retirementPlanOrder ||
         !formData.educationPlanOrder
-       
+
       );
-    } 
+    }
   }
   console.log(current);
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
+      <div className=" fixed top-0 z-40"><NavBar /></div>
+
+
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
 
 
         <Row className="flex justify-center items-center mb-3 gap-5">
 
           <h1 className="text-[24px] text-center text-[#0E2B81]">การจัดลำดับความสำคัญ</h1>
-         
-          <ProgressBar percent={progress.percent} current={current}/>
+
+          <ProgressBar percent={progress.percent} current={current} />
           {/* <h1 className="text-[24px] text-center text-[#0E2B81]">น้อย--------------------มาก</h1> */}
         </Row>
 
@@ -265,7 +405,7 @@ const Summary: React.FC = () => {
             ย้อนกลับ
           </Button>
           <Button
-          disabled={handleDisabled()}
+            disabled={handleDisabled()}
             onClick={nextlast}
             className="bg-[#003781] rounded-full w-[120px] h-10 text-white"
           >

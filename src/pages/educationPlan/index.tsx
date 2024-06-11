@@ -9,15 +9,15 @@ import {
   totalPreparationAssetsSelector,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
-import { selectedState  } from '@/recoil/progressState';
-import { progressState } from '@/recoil/progressState';
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import ProgressBar from "@/components/progressBar";
 import Education from "@/assets/images/Education.png"
 import Education1 from "@/assets/images/Education1.png"
 import Education2 from "@/assets/images/Education2.png"
 import DotsComponent from "@/components/DotsComponent";
 const { Text } = Typography;
-import { nameState} from "@/recoil/nameState";
+import { nameState, nameData } from "@/recoil/nameState";
+import { NavBar } from "@/components/navbar";
 import { saveEducationplan } from "@/components/api/saveeducationPlan";
 const EducationPlan: React.FC = () => {
   const navigator = useNavigate();
@@ -25,12 +25,14 @@ const EducationPlan: React.FC = () => {
   const currentStep = location.state?.current || 0;
   const [formData, setFormData] = useRecoilState(educationPlanState);
   const requiredScholarships = useRecoilValue(requiredScholarshipsSelector);
-  const selectedValue=useRecoilValue(selectedState)
+  const selectedValue = useRecoilValue(selectedState)
   const totalPreparationAssets = useRecoilValue(totalPreparationAssetsSelector);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
-  const dataname=useRecoilValue<nameState>(nameState)
+  const dataname = useRecoilValue<nameData>(nameState)
   const totalMissing = useRecoilValue(totalMissingSelector);
   const [current, setCurrent] = useState(currentStep);
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -39,12 +41,12 @@ const EducationPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
-    const handleSelectChange = (field: keyof typeof formData) => (value: string) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [field]: value,
-      }));
-    };
+  const handleSelectChange = (field: keyof typeof formData) => (value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [field]: value,
+    }));
+  };
 
   let allImages
 
@@ -63,8 +65,78 @@ const EducationPlan: React.FC = () => {
       break;
 
   }
-console.log(selectedValue);
+  console.log(selectedValue);
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
+  
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
+  };
+  
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+    const value = sortedSelected[0];
+   if (sortedSelected.length === 1&&value!=='5') {
+     navigator('/export-pdf');
+   } else {   
 
+     if (value === '5') {
+       navigateThroughSequence(urlMap);
+     } else {
+       console.log(value);
+
+       navigateToValue(urlMap, value, '/export-pdf');
+     }
+   }
+ };
+  
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+  
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
+  
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+  
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+    if (urlMap[value]) {
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+  
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
   const next = () => {
     let newPercent = progress.percent;
 
@@ -91,49 +163,104 @@ console.log(selectedValue);
     setCurrent(current - 1);
   };
 
-  const nextlast = async() => {
+  const nextlast = async () => {
     let newPercent = progress.percent;
     newPercent += 3;
     setProgress({ percent: newPercent, steps: progress.steps })
-   await handleSave()
-   if(selectedValue=='4'){
-    navigator("/export-pdf", { state: { current: 5 } })
-  }else if(selectedValue=='5'){
-    navigator("/summary")
+    await handleSave()
+    toGoNext()
+
   }
-   
+  const letMeback = async () => {
+    toGoBack()
   }
-  const letMeback=async()=>{
-    if(selectedValue=='4'){
-      navigator("/Financial-Health-Check", { state: { current: 2 } })
-    }else if(selectedValue=='5'){
-      navigator("/retirement-plan", { state: { current: 2 } })
+  const toGoBack = () => {
+    const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
+      '1': { path: '/protection-plan', state: { current: 3 } },
+      '2': { path: '/health-plan', state: { current: 3 } },
+      '3': { path: '/retirement-plan', state: { current: 2 } },
+      '4': { path: '/education-plan', state: { current: 2 } },
+      '5': { path: '/protection-plan', state: { current: 3 } },
+    };
+  
+    if (sortedSelected.length === 1) {
+      handleSingleBack(urlMap);
+    } else {
+      handleMultipleBack(urlMap);
     }
-  }
-  const handleSave = async() => {  
-    await saveEducationplan({ data: formData,nameData: dataname, })   
-   };
+  };
+  
+  const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    } else {
+      if (value === '5') {
+        navigateThroughBackSequence(urlMap);
+      } else {
+        navigateBackToValue(urlMap, value);
+      }
+    }
+
+  };
+  
+  const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    if (currentIndex > 1) {
+      const value = sortedSelected[currentIndex - 2];
+      navigateBackToValue(urlMap, value);
+    } else if (currentIndex === 1) {
+      const firstValue = sortedSelected[0];
+      navigateBackToValue(urlMap, firstValue);
+    } else {
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } }); // Redirect to initial page if at the beginning
+      setCurrentIndex(0);
+    }
+  };
+  
+  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+    const sequence = ['1', '2', '3', '4'];
+  
+    if (currentIndex > 0) {
+      const previousValue = sequence[currentIndex - 1];
+      navigateBackToValue(urlMap, previousValue);
+    } else {
+      navigator('/'); // Redirect to initial page if at the beginning
+      setCurrentIndex(0);
+    }
+  };
+  
+  const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
+    if (urlMap[value]) {
+      navigator(urlMap[value].path, { state: urlMap[value].state });
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+  
+  const handleSave = async () => {  
+      await saveEducationplan({ data: formData, nameData: dataname, })     
+   
+  };
   const handleDisabled = () => {
     if (current === 1) {
       return (
         !formData.levelOfeducation ||
         !formData.typeOfeducation ||
         !formData.yearsOfeducation ||
-        !formData.inflationRate 
-       
+        !formData.inflationRate
+
       );
     } else if (current === 2) {
       return (
         !formData.deposit ||
         !formData.insuranceFund ||
-        !formData.otherAssets 
-       
+        !formData.otherAssets
+
 
       )
-    } 
+    }
   }
 
-  
+
   const steps = [{
     title: "แผนที่ 4",
     content: (
@@ -158,11 +285,11 @@ console.log(selectedValue);
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
                   style={{ width: '260px' }}
-                  value={formData.levelOfeducation }
+                  value={formData.levelOfeducation}
                   placeholder="กรุณาเลือก"
                   onChange={handleSelectChange("levelOfeducation")}
                   options={[
-                    
+
                     { value: "ปริญญาตรี", label: "ปริญญาตรี" },
                     { value: "ปริญญาโท", label: "ปริญญาโท" },
                     { value: "ปริญญาเอก", label: "ปริญญาเอก" },
@@ -187,7 +314,7 @@ console.log(selectedValue);
                   placeholder="กรุณาเลือก"
                   onChange={handleSelectChange("typeOfeducation")}
                   options={[
-                  
+
                     { value: "107000.00", label: "รัฐบาล" },
                     { value: "214900.00", label: "เอกชน" },
                     { value: "500000.00", label: "อินเตอร์" },
@@ -235,11 +362,11 @@ console.log(selectedValue);
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
                   style={{ width: '260px' }}
-                  value={formData.inflationRate }
+                  value={formData.inflationRate}
                   placeholder="กรุณาเลือก"
                   onChange={handleSelectChange("inflationRate")}
                   options={[
-                  
+
                     { value: "0.02", label: "2 %" },
                     { value: "0.03", label: "3 %" },
                     { value: "0.04", label: "4 %" },
@@ -316,11 +443,13 @@ console.log(selectedValue);
   }
   ]
   return (
-    <div className="flex justify-center text-[#0E2B81]">
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[400px] gap-3 border border-red-400">
+    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+      <div className=" fixed top-0 z-40"><NavBar /></div>
+
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 4" : "Education Plan"} </h1>
-          <ProgressBar percent={progress.percent} current={current}/>
+          <ProgressBar percent={progress.percent} current={current} />
           <img src={allImages} alt="" className="w-[265px] mt-5" />
           <DotsComponent steps={steps} current={current} />
         </div>
@@ -331,7 +460,7 @@ console.log(selectedValue);
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
 
             {current === 0 && (
-             
+
               <Button
                 onClick={() => letMeback()}
                 className="bg-white rounded-full w-[120px]"
@@ -353,7 +482,7 @@ console.log(selectedValue);
 
             {current === steps.length - 1 && (
               <Button
-              disabled={handleDisabled()}
+                disabled={handleDisabled()}
                 onClick={nextlast}
                 className="bg-[#003781] rounded-full w-[120px] text-white"
               >

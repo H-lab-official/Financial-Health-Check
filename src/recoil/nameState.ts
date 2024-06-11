@@ -1,15 +1,19 @@
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
 
-export interface nameState {
-    user_params:string,
-    nickname: string,
-    age: string
+
+export interface nameData {
+  user_params: string;
+  nickname: string;
+  age: string;
 }
-export const nameState = atom<nameState>({
-    key: "nameState",
-    default: {
-        user_params:"4685tccb",
-        nickname: "",
-        age: ""
-    }
-})
+
+export const nameState = atom<nameData>({
+  key: "nameState",
+  default: {
+    user_params: "",
+    nickname: "",
+    age: "",
+  },
+});
+
+

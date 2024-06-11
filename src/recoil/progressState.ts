@@ -15,9 +15,20 @@ export const progressState = atom<progressState>({
         steps:16
     }
 })
-export const selectedState=atom<string>({
-    key:"selectedState",
-    default:"",
-})
+export const selectedState = atom<string[]>({
+    key: 'selectedState',
+    default: [],
+  });
+  
+ export const sortedSelectedState = selector<string[]>({
+    key: 'sortedSelectedState',
+    get: ({ get }) => {
+      const selected = get(selectedState);
+      return [...selected].sort();
+    },
+  });
 
-
+ export const currentIndexState = atom<number>({
+    key: 'currentIndexState',
+    default: 0,
+  });

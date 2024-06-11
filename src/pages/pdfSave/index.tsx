@@ -33,11 +33,13 @@ import {
   retirementPlanState,
   totalRetirementMissingSelector,
 } from "@/recoil/retirementPlanState";
-import { selectedState } from '@/recoil/progressState';
+
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import { nameState } from "@/recoil/nameState";
 import { Button, Typography } from "antd";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate, useLocation } from "react-router";
+import { NavBar } from "@/components/navbar";
 const { } = Typography;
 import sumpic from "@/assets/images/sumpic.png"
 import homeTop from "@/assets/images/homeTop.png"
@@ -62,6 +64,8 @@ const PDFSave: React.FC = () => {
   const selectedValue = useRecoilValue(selectedState)
   const navigator = useNavigate();
   const location = useLocation();
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const currentStep = location.state?.current || 0;
   const [current, setCurrent] = useState(currentStep);
   const convertMoney = (value: string) => {
@@ -104,6 +108,34 @@ const PDFSave: React.FC = () => {
       allTitle = "Financial  Health Check"
       break;
   }
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
+
+    if (currentIndex < sortedSelected.length) {
+      const value = sortedSelected[currentIndex];
+      if (urlMap[value]) {
+        navigator(urlMap[value]);
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+      }
+    } else if (currentIndex === sortedSelected.length) {
+      if (sortedSelected.length === 1) {
+        navigator('/export-pdf');
+      } else {
+        navigator('/summary');
+      }
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
   const getPlanText = (order: number) => {
     switch (order) {
       case questionsData.educationPlanOrder:
@@ -128,14 +160,43 @@ const PDFSave: React.FC = () => {
   const toone = () => {
     setCurrent(1)
   }
+  const texts: { [key: string]: string } = {
+    '1': 'Protection plan',
+    '2': 'Health plan',
+    '3': 'Retirement plan',
+    '4': 'Education plan',
+  };
+  const renderTexts = (): JSX.Element[] | null => {
+    if (sortedSelected.length === 1) {
+      const value = sortedSelected[0];
+      if (value === '5') {
+        // ถ้า value เป็น '5' ให้แสดงทุกอัน 1-4
+        return Object.keys(texts).map(key => (
+          <p key={key} className={`animate__animated animate__backInUp animate__delay-${key}s animate__duration-2s`}>{texts[key]}</p>
+        ));
+      } else if (texts[value]) {
+        // ถ้า value เป็น 1-4 แสดงเฉพาะ value นั้น
+        return [<p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>];
+      }
+    } else if (sortedSelected.length >= 1 && sortedSelected.length <= 4) {
+      // ถ้ามีการเลือกมากกว่า 1 และไม่เกิน 4 ตัว ให้แสดงทุกตัวที่เลือก
+      return sortedSelected.map(value => (
+        <p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>
+      ));
+    }
+    return null; // ไม่มีข้อความที่จะแสดง
+  };
   const steps = [{
     title: "เย้ ยินดีด้วย",
     content: (
       <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">
-        <p className="animate__animated animate__backInUp animate__delay-1s animate__duration-2s">Protection plan</p>
+        {/* <p className="animate__animated animate__backInUp animate__delay-1s animate__duration-2s">Protection plan</p>
         <p className="animate__animated animate__backInUp animate__delay-2s animate__duration-2s">Health plan</p>
         <p className="animate__animated animate__backInUp animate__delay-3s animate__duration-2s">Retirement plan</p>
-        <p className="animate__animated animate__backInUp animate__delay-4s animate__duration-2s">Education plan</p>
+        <p className="animate__animated animate__backInUp animate__delay-4s animate__duration-2s">Education plan</p> */}
+        {renderTexts()}
+
+
       </div>
     )
   }, {
@@ -547,8 +608,11 @@ const PDFSave: React.FC = () => {
   }]
   return (
     <>
-      <div className="flex justify-center text-[#0E2B81]">
-        <div className="bg-white rounded-lg px-6 py-2 mx-6 my-2 max-w-2xl h-auto flex flex-col w-[425px] gap-3 border border-red-400">
+      <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+        <div className=" fixed top-0 z-40"><NavBar /></div>
+
+
+        <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
           <div className="flex flex-col justify-center items-center gap-3 mb-5">
             <h1 className=" text-lg font-bold text-center">{allTitle}</h1>
             <h1 className={` text-lg font-semibold ${current == 0 ? " hidden" : ""} `}>คุณ {namestate.nickname}</h1>
@@ -558,7 +622,7 @@ const PDFSave: React.FC = () => {
             {/* <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p> */}
 
             {steps[current].content}
-            <div className={`steps-action h-20 flex flex-row ${selectedValue === '5' ? "" : "hidden"}`}>
+            <div className={`steps-action h-20 flex flex-row `}>
               {current === 0 && (
                 <Button
                   onClick={() => next()}
