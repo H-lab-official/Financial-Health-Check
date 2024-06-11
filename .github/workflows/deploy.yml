@@ -40,7 +40,7 @@ jobs:
             cd $TARGET_DIR
             git pull origin ${GITHUB_REF#refs/heads/}
             npm install
-            npx prisma migrate deploy
+         
             npm run build
             if pm2 list | grep -q $APP_NAME; then
               echo "Restarting application: $APP_NAME"
