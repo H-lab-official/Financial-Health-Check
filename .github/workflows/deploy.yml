@@ -1,4 +1,4 @@
-name: Deploy Api-Merit
+name: Deploy Financial-Health-Check
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
             cd /var/www/html/app
             echo "${{ secrets.ENV_CONTENT }}" > .env
-            bun install --production
+            bun install
             pm2 startOrRestart ecosystem.config.js
           EOF
 
