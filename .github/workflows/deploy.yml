@@ -33,6 +33,16 @@ jobs:
           rsync -azP --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/app
 
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
-            cd ~/app
+            cd /var/www/html/app
             echo "${{ secrets.ENV_CONTENT }}" > .env
+            bun install --production
+            pm2 startOrRestart ecosystem.config.js
+          EOF
+
+      - name: 🔧 Configure Nginx
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_DOMAIN }} 'bash -s' << EOF
+            sudo cp /var/www/html/app/nginx.conf /etc/nginx/sites-available/default
+            sudo nginx -t
+            sudo systemctl restart nginx
           EOF
