@@ -38,7 +38,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
             export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH
             cd $TARGET_DIR
-            git pull origin ${GITHUB_REF#refs/heads/}
+            git pull origin main
             npm install
             mv ecosystem.config.js ecosystem.config.cjs
             npm run build
