@@ -40,14 +40,14 @@ jobs:
             cd $TARGET_DIR
             git pull origin ${GITHUB_REF#refs/heads/}
             npm install
-         
+            mv ecosystem.config.js ecosystem.config.cjs
             npm run build
             if pm2 list | grep -q $APP_NAME; then
               echo "Restarting application: $APP_NAME"
               pm2 restart $APP_NAME
             else
               echo "Starting application: $APP_NAME"
-             pm2 start ecosystem.config.js
+             pm2 start ecosystem.config.cjs
             fi            
             pm2 save
           EOF
