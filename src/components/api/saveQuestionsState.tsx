@@ -15,7 +15,7 @@ export const saveQuestionsState = async (planData: SaveQuestionPlanData) => {
       if(nickname===planData.nameData.nickname&&age===planData.nameData.age){
         console.log('Data in localStorage is the same as the new data.');
       }else{
-        const response= await axios.post(`http://localhost:3000/importance`, planData);
+        const response= await axios.post(`${import.meta.env.VITE_API_URL}/importance`, planData);
         console.log("response1"+response);
         const dataToStore = {
           id: response.data.id,
@@ -27,7 +27,7 @@ export const saveQuestionsState = async (planData: SaveQuestionPlanData) => {
         console.log('Data in localStorage has been updated.');
       }
     }else{
-      const response= await axios.post(`http://localhost:3000/importance`, planData);
+      const response= await axios.post(`${import.meta.env.VITE_API_URL}/importance`, planData);
       console.log("response2"+response);
       const dataToStore = {
         id: response.data.id,
