@@ -608,7 +608,7 @@ const PDFSave: React.FC = () => {
   }]
   return (
     <>
-      <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+      <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
@@ -622,11 +622,11 @@ const PDFSave: React.FC = () => {
             {/* <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p> */}
 
             {steps[current].content}
-            <div className={`steps-action h-20 flex flex-row `}>
+            <div className={`steps-action h-20 flex flex-row font-sans `}>
               {current === 0 && (
                 <Button
                   onClick={() => next()}
-                  className={`bg-[#003781] rounded-full text-white h-10  ${current === 0 ? "w-full" : "w-[180px]"}`}
+                  className={`bg-[#003781] font-sans rounded-full text-white h-10  ${current === 0 ? "w-full" : "w-[180px]"}`}
                 >
                   ไปหน้าสรุปผล
                 </Button>

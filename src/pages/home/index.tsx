@@ -1,22 +1,34 @@
-import { Row, Typography, Button } from "antd";
-import React, { useState,useEffect } from "react";
-const { Text, Paragraph } = Typography;
+import { Row, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import LabelImages from '@/components/LabelImages'
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
 import namePic from '@/assets/images/Frame.png'
-import protection from '@/assets/images/protection.png'
-import health from '@/assets/images/health.png'
-import retirement from '@/assets/images/retirement.png'
-import education from '@/assets/images/Education2.png'
+
 import { useRecoilState, useRecoilValue } from "recoil";
-import {  nameState } from "@/recoil/nameState";
-import { selectedState ,sortedSelectedState,currentIndexState} from '@/recoil/progressState';
+import { nameState } from "@/recoil/nameState";
+import { selectedState, sortedSelectedState, currentIndexState } from '@/recoil/progressState';
 import { NavBar } from "@/components/navbar";
 import { useLocalStorage } from '@/components/localStoreage';
+import EducationPlanActive from '@/assets/images/imagesButton/EducationPlanActive.svg'
+import EducationPlanNormal from '@/assets/images/imagesButton/EducationPlanNormal.svg'
+import EducationPlanHover from '@/assets/images/imagesButton/EducationPlanHover.svg'
+import FHCAllPlanActive from '@/assets/images/imagesButton/FHCAllPlanActive.svg'
+import FHCAllPlanHover from '@/assets/images/imagesButton/FHCAllPlanHover.svg'
+import FHCAllPlanNormal from '@/assets/images/imagesButton/FHCAllPlanNormal.svg'
+import HealthPlanActive from '@/assets/images/imagesButton/HealthPlanActive.svg'
+import HealthPlanHover from '@/assets/images/imagesButton/HealthPlanHover.svg'
+import HealthPlanNormal from '@/assets/images/imagesButton/HealthPlanNormal.svg'
+import ProtectionPlanActive from '@/assets/images/imagesButton/ProtectionPlanActive.svg'
+import ProtectionPlanHover from '@/assets/images/imagesButton/ProtectionPlanHover.svg'
+import ProtectionPlanNormal from '@/assets/images/imagesButton/ProtectionPlanNormal.svg'
+import RetirementPlanActive from '@/assets/images/imagesButton/RetirementPlanActive.svg'
+import RetirementPlanHover from '@/assets/images/imagesButton/RetirementPlanHover.svg'
+import RetirementPlanNormal from '@/assets/images/imagesButton/RetirementPlanNormal.svg'
 const HomePage: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
-  const { loadData} = useLocalStorage();
+  const { loadData } = useLocalStorage();
   const currentStep = location.state?.current || 0;
   const [current, setCurrent] = useState(currentStep);
   const [formData, setFormData] = useRecoilState(nameState)
@@ -36,138 +48,81 @@ const HomePage: React.FC = () => {
   const next = () => {
     setCurrent(current + 1);
   };
-const beforeNext=async()=>{
-  loadData()
-  setCurrent(current + 1);
-}
+  const beforeNext = async () => {
+    loadData()
+    setCurrent(current + 1);
+  }
   const prev = () => {
     setCurrent(current - 1);
   };
-console.log(sortedSelected);
+  console.log(sortedSelected);
 
-// const toGoNext = () => {
-//   const urlMap: { [key: string]: string } = {
-//     '1': '/protection-plan',
-//     '2': '/health-plan',
-//     '3': '/retirement-plan',
-//     '4': '/education-plan',
-//     '5': '/protection-plan',
-//   };
 
-//   if (sortedSelected.length === 1) {
-//     const value = sortedSelected[0];
-//     if (value === '5') {
-//       const sequence = ['1', '2', '3', '4'];
-//       if (currentIndex < sequence.length) {
-//         const currentValue = sequence[currentIndex];
-//         if (urlMap[currentValue]) {
-//           navigator(urlMap[currentValue]);
-//           setCurrentIndex((prevIndex) => prevIndex + 1);
-//         }
-//       } else if (currentIndex === sequence.length) {
-//         navigator('/summary');
-//         setCurrentIndex((prevIndex) => prevIndex + 1);
-//       }
-//     } else {
-//       if (currentIndex === 0) {
-//         if (urlMap[value]) {
-//           navigator(urlMap[value]);
-//           setCurrentIndex((prevIndex) => prevIndex + 1);
-//         }
-//       } else if (currentIndex === 1) {
-//         navigator('/export-pdf');
-//         setCurrentIndex((prevIndex) => prevIndex + 1);
-//       }
-//     }
-//   } else {
-//     if (currentIndex < sortedSelected.length - 1) {
-//       const value = sortedSelected[currentIndex];
-//       if (urlMap[value]) {
-//         navigator(urlMap[value]);
-//         setCurrentIndex((prevIndex) => prevIndex + 1);
-//       }
-//     } else if (currentIndex === sortedSelected.length - 1) {
-//       const lastValue = sortedSelected[currentIndex];
-//       if (urlMap[lastValue]) {
-//         navigator(urlMap[lastValue]);
-//         setCurrentIndex((prevIndex) => prevIndex + 1);
-//       }
-//     } else if (currentIndex === sortedSelected.length) {
-//       navigator('/summary');
-//       setCurrentIndex((prevIndex) => prevIndex + 1);
-//     }
-//   }
-// };
-// const toGoFirst = () => {
-//   setCurrentIndex(0);
-//   toGoNext();
-// };
+  const toGoNext = () => {
+    const urlMap: { [key: string]: string } = {
+      '1': '/protection-plan',
+      '2': '/health-plan',
+      '3': '/retirement-plan',
+      '4': '/education-plan',
+      '5': '/protection-plan',
+    };
 
-const toGoNext = () => {
-  const urlMap: { [key: string]: string } = {
-    '1': '/protection-plan',
-    '2': '/health-plan',
-    '3': '/retirement-plan',
-    '4': '/education-plan',
-    '5': '/protection-plan',
+    if (sortedSelected.length === 1) {
+      handleSingleSelection(urlMap);
+    } else {
+      handleMultipleSelections(urlMap);
+    }
   };
 
-  if (sortedSelected.length === 1) {
-    handleSingleSelection(urlMap);
-  } else {
-    handleMultipleSelections(urlMap);
-  }
-};
+  const handleSingleSelection = (urlMap: { [key: string]: string }) => {
+    const value = sortedSelected[0];
 
-const handleSingleSelection = (urlMap: { [key: string]: string }) => {
-  const value = sortedSelected[0];
+    if (value === '5') {
+      navigateThroughSequence(urlMap);
+    } else {
+      navigateToValue(urlMap, value, '/export-pdf');
+    }
+  };
 
-  if (value === '5') {
-    navigateThroughSequence(urlMap);
-  } else {
-    navigateToValue(urlMap, value, '/export-pdf');
-  }
-};
+  const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
+    if (currentIndex < sortedSelected.length - 1) {
+      const value = sortedSelected[currentIndex];
+      navigateToValue(urlMap, value);
+    } else if (currentIndex === sortedSelected.length - 1) {
+      const lastValue = sortedSelected[currentIndex];
+      navigateToValue(urlMap, lastValue);
+    } else if (currentIndex === sortedSelected.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
 
-const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
-  if (currentIndex < sortedSelected.length - 1) {
-    const value = sortedSelected[currentIndex];
-    navigateToValue(urlMap, value);
-  } else if (currentIndex === sortedSelected.length - 1) {
-    const lastValue = sortedSelected[currentIndex];
-    navigateToValue(urlMap, lastValue);
-  } else if (currentIndex === sortedSelected.length) {
-    navigator('/summary');
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  }
-};
+  const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
+    const sequence = ['1', '2', '3', '4'];
 
-const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
-  const sequence = ['1', '2', '3', '4'];
+    if (currentIndex < sequence.length) {
+      const currentValue = sequence[currentIndex];
+      navigateToValue(urlMap, currentValue);
+    } else if (currentIndex === sequence.length) {
+      navigator('/summary');
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
 
-  if (currentIndex < sequence.length) {
-    const currentValue = sequence[currentIndex];
-    navigateToValue(urlMap, currentValue);
-  } else if (currentIndex === sequence.length) {
-    navigator('/summary');
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  }
-};
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
+    if (urlMap[value]) {
+      navigator(urlMap[value]);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (currentIndex === 0) {
+      navigator(finalDestination);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
 
-const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
-  if (urlMap[value]) {
-    navigator(urlMap[value]);
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  } else if (currentIndex === 0) {
-    navigator(finalDestination);
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  }
-};
-
-const toGoFirst = () => {
-  setCurrentIndex(0);
-  toGoNext();
-};
+  const toGoFirst = () => {
+    setCurrentIndex(0);
+    toGoNext();
+  };
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -180,49 +135,82 @@ const toGoFirst = () => {
       }));
       // setCurrent(0)
     } else {
-      navigator('/error'); 
+      navigator('/error');
     }
-  }, []); 
+  }, []);
 
   const handleOptionChange = (value: string) => {
     setSelectedValue((prevSelected) => {
-      if (prevSelected.includes(value)) {
-        return prevSelected.filter((item) => item !== value);
+      if (value === '5') {
+        if (prevSelected.includes('5')) {
+          return [];
+        } else {
+          return ['5'];
+        }
       } else {
-        return [...prevSelected, value];
+        if (prevSelected.includes('5')) {
+          return [value];
+        } else {
+          if (prevSelected.includes(value)) {
+            return prevSelected.filter((item) => item !== value);
+          } else {
+            return [...prevSelected, value];
+          }
+        }
       }
     });
   };
-console.log(formData);
+  console.log(formData);
 
+  // useEffect(() => {
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === 'hidden') {
+  //       alert('Warning: You might be trying to take a screenshot. This is prohibited due to security reasons.');
+
+  //       // Optionally, you could hide content here
+  //       document.body.style.visibility = 'hidden';
+  //     } else {
+  //       // Restore visibility when the document is visible again
+  //       document.body.style.visibility = 'visible';
+  //     }
+  //   };
+
+  //   document.addEventListener('visibilitychange', handleVisibilityChange);
+
+  //   return () => {
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  // }, []);
 
   const steps = [{
     title: "การตรวจสอบสุขภาพทางการเงิน",
     content: (
-      <div className="flex flex-col ">
+      <div className="flex flex-col font-sans w-full">
 
-        <Text className=" text-[#243286] text-center font-bold text-[1.5rem]">
+        <p className="text-[#243286] text-center font-bold text-[1.5rem] font-sans">
           Financial Health Check
-        </Text>
-        <Text className="text-[#243286] text-center text-[1.2rem] mb-3"> การตรวจสอบสุขภาพทางการเงิน</Text>
+        </p>
+        <p className="text-[#243286] text-center text-[1.2rem] mb-3 font-sans">การตรวจสอบสุขภาพทางการเงิน</p>
 
-        <Text className="mb-3 text-[#243286]">
-          การตรวจสอบสุขภาพทางการเงิน เป็นกระบวนการที่สำคัญในการประเมินและทำความเข้าใจสถานะทางการเงินของคุณ สามารถช่วยให้คุณเห็นภาพรวมของการจัดการเงินส่วนบุคคล และระบุจุดที่ต้องปรับปรุงเพื่อเพิ่มความมั่นคงทางการเงิน โดย
-        </Text>
-        <Paragraph className="text-[#243286]">
-
-
-          - การวางแผนการเงิน ช่วยให้คุณสามารถวางแผนการเงินได้อย่างมีประสิทธิภาพ ทั้งในระยะสั้นและระยะยาว <br />
-
-          - การจัดการหนี้สิน ทำให้คุณเห็นภาพรวมของหนี้สินและสามารถวางแผนการชำระหนี้ได้ดีขึ้น <br />
-
-          - การประหยัดและการลงทุน ช่วยให้คุณสามารถวางแผนการออมและการลงทุนเพื่ออนาคตได้อย่างมีประสิทธิภาพ <br />
-
-          - การเพิ่มความมั่นคงทางการเงิน ทำให้คุณมีความมั่นคงทางการเงินมากขึ้น ลดความเสี่ยงทางการเงิน
-
-
-        </Paragraph>
+        <p className="mb-3 text-[#243286] font-sans text-[0.85rem]">
+          &nbsp;&nbsp;&nbsp;&nbsp;                                                    การตรวจสอบสุขภาพทางการเงิน เป็นกระบวนการที่สำคัญ<br />
+          ในการประเมินและทำความเข้าใจสถานะทางการเงินของคุณ<br />
+          สามารถช่วยให้คุณเห็นภาพรวมของการจัดการเงินส่วนบุคคล<br />
+          และระบุจุดที่ต้องปรับปรุงเพื่อเพิ่มความมั่นคงทางการเงินโดย
+        </p>
+        <div className="font-sans text-[#243286] text-[0.85rem]">
+          <ul>
+            <li>• การวางแผนการเงิน ช่วยให้คุณสามารถวางแผนการเงินได้ <br />&nbsp;&nbsp;อย่างมีประสิทธิภาพทั้งในระยะสั้นและระยะยาว</li>
+            <li>• การจัดการหนี้สิน ทำให้คุณเห็นภาพรวมของหนี้สินและ<br />&nbsp;&nbsp;สามารถวางแผน
+              การชำระหนี้ได้ดีขึ้น</li>
+            <li>• การประหยัดและการลงทุน ช่วยให้คุณสามารถวางแผน<br />&nbsp;&nbsp;การออมและการลงทุน
+              เพื่ออนาคตได้อย่างมีประสิทธิภาพ</li>
+            <li>• การเพิ่มความมั่นคงทางการเงิน ทำให้คุณมีความมั่นคง<br />&nbsp;&nbsp;ทางการเงินมากขึ้น
+              ลดความเสี่ยงทางการเงิน</li>
+          </ul>
+        </div>
       </div>
+
     )
   }, {
     title: "กรุณากรอกชื่อของคุณ",
@@ -250,90 +238,72 @@ console.log(formData);
     title: "เลือกแผนที่คุณต้องการ",
     content: (
       <div className="flex flex-col">
-      <div className="w-full flex flex-col justify-center items-center gap-3">
-        <label className={`custom-checkbox flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue.includes('1') ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
-          <input
-            type="checkbox"
+        <div className="w-full flex flex-col justify-center items-center gap-3">
+         
+          <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={ProtectionPlanNormal}
+            hoverImage={ProtectionPlanHover}
+            activeImage={ProtectionPlanActive}
+            selectedImage={ProtectionPlanActive}
             value="1"
-            checked={selectedValue.includes('1')}
-            onChange={() => handleOptionChange('1')}
-            className="hidden"
+            width="320px"
+            height="96px"
           />
-          <div className="flex flex-row">
-            <div className="flex flex-col">
-              <span className="text-[1.8rem] font-bold">Protection Plan</span>
-              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครอง รายได้ให้กับครอบครัว</span>
-            </div>
-            <img src={protection} alt="Protection Plan" className="ml-4 w-16" />
-          </div>
-        </label>
-        <label className={`custom-checkbox flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue.includes('2') ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
-          <input
-            type="checkbox"
+           <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={HealthPlanNormal}
+            hoverImage={HealthPlanHover}
+            activeImage={HealthPlanActive}
+            selectedImage={HealthPlanActive}
             value="2"
-            checked={selectedValue.includes('2')}
-            onChange={() => handleOptionChange('2')}
-            className="hidden"
+            width="320px"
+            height="96px"
           />
-          <div className="flex flex-row gap-11">
-            <div className="flex flex-col">
-              <span className="text-[1.8rem] font-bold">Health Plan</span>
-              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครองเรื่องสุขภาพ</span>
-            </div>
-            <img src={health} alt="Health Plan" className="ml-4 w-16 mr-2" />
-          </div>
-        </label>
-        <label className={`custom-checkbox flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue.includes('3') ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
-          <input
-            type="checkbox"
+           <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={RetirementPlanNormal}
+            hoverImage={RetirementPlanHover}
+            activeImage={RetirementPlanActive}
+            selectedImage={RetirementPlanActive}
             value="3"
-            checked={selectedValue.includes('3')}
-            onChange={() => handleOptionChange('3')}
-            className="hidden"
+            width="320px"
+            height="96px"
           />
-          <div className="flex flex-row">
-            <div className="flex flex-col">
-              <span className="text-[1.8rem] font-bold">Retirement Plan</span>
-              <span className="text-[0.7rem] font-semibold">แผนการคุ้มครองเรื่องการเกษียณ</span>
-            </div>
-            <img src={retirement} alt="Retirement Plan" className="ml-2 w-16 mr-2" />
-          </div>
-        </label>
-        <label className={`custom-checkbox flex justify-start items-center mb-2 py-2 pl-5 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue.includes('4') ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-50'}`}>
-          <input
-            type="checkbox"
+           <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={EducationPlanNormal}
+            hoverImage={EducationPlanHover}
+            activeImage={EducationPlanActive}
+            selectedImage={EducationPlanActive}
             value="4"
-            checked={selectedValue.includes('4')}
-            onChange={() => handleOptionChange('4')}
-            className="hidden"
+            width="320px"
+            height="96px"
           />
-          <div className="flex flex-row">
-            <div className="flex flex-col">
-              <span className="text-[1.8rem] font-bold">Education Plan</span>
-              <span className="text-[0.7rem] font-semibold">แผนการเก็บออมเพื่อค่าเล่าเรียนบุตร</span>
-            </div>
-            <img src={education} alt="Education Plan" className="ml-4 w-16" />
-          </div>
-        </label>
-
-        <label className={`custom-checkbox flex justify-start items-center mb-2 py-2 pl-8 rounded-xl shadow-lg cursor-pointer h-24 w-80 ${selectedValue.includes('5') ? 'bg-[#D5D7F8]' : 'bg-[#F2F3FF] hover:bg-gray-100'}`}>
-          <input
-            type="checkbox"
+           <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={FHCAllPlanNormal}
+            hoverImage={FHCAllPlanHover}
+            activeImage={FHCAllPlanActive}
+            selectedImage={FHCAllPlanActive}
             value="5"
-            checked={selectedValue.includes('5')}
-            onChange={() => handleOptionChange('5')}
-            className="hidden"
+            width="320px"
+            height="96px"
           />
-          <span className="text-[1.6rem] font-bold">เลือกทำทั้งหมด</span>
-          <img src={homeTop} alt="เลือกทำทั้งหมด" className="ml-4 w-16" />
-        </label>
+       
+          
+        </div>
       </div>
-    </div>
     )
   }]
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
-<div className=" fixed top-0 z-40"><NavBar /></div>
+      <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
       <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-12 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
@@ -347,14 +317,14 @@ console.log(formData);
 
           <div className="steps-action h-20 flex flex-row justify-center items-center">
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={()=>beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
+              <Button type="primary" onClick={() => beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
             )}
             {current == 0 && (<Button
               onClick={() => next()}
               // onClick={() => navigator("/protection-plan")}
-              className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white w-full"
+              className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white w-full font-sans"
             >
               เริ่มทำแบบทดสอบกัน
             </Button>)
@@ -366,12 +336,12 @@ console.log(formData);
             )} */}
             {current == 2 && (
               <Button
-              onClick={toGoFirst}
-              className={`bg-[#003781] rounded-full text-white mt-10 ${(selectedValue.length===0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
-              disabled={selectedValue.length===0 || (selectedValue.includes('5') && selectedValue.length > 1)}
-            >
-              ถัดไป
-            </Button>
+                onClick={toGoFirst}
+                className={`bg-[#003781] rounded-full text-white mt-10 ${(selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
+                disabled={selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)}
+              >
+                ถัดไป
+              </Button>
             )}
           </div>
         </div>

@@ -31,10 +31,10 @@ const InputField: React.FC<InputFieldProps> = ({
     <Form.Item>
       <Row gutter={10}>
         <Col>
-          <Text className={`${label.startsWith("16. ความคุ้มครองที่จำเป็น"||"19."||"20.") ? "text-red-600" : "text-[#243286]"} `}>{label}</Text>
+          <Text className={`font-sans ${label.startsWith("16. ความคุ้มครองที่จำเป็น"||"19."||"20.") ? "text-red-600" : "text-[#243286]"} `}>{label}</Text>
         </Col>
         <Col>
-          <div className="flex flex-row justify-center items-center gap-5">
+          <div className="flex flex-row justify-center items-center gap-5 font-sans">
             <Input
               type="text"
               value={formatNumber(value)}
