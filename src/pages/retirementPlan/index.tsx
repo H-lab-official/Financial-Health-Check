@@ -171,15 +171,22 @@ const RetirementPlan: React.FC = () => {
   };
 
   const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+     console.log("currentIndex"+currentIndex);    
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
+      console.log("value"+value);      
       navigateBackToValue(urlMap, value);
     } else if (currentIndex === 1) {
       const firstValue = sortedSelected[0];
+      console.log("firstValue"+firstValue);
+      
       navigateBackToValue(urlMap, firstValue);
-    } else {
-      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+    } else if (currentIndex === 0) {
+      console.log("Current index is 0");      
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
+    } else {
+      console.log("Unexpected index value");     
     }
   };
 
@@ -196,8 +203,8 @@ const RetirementPlan: React.FC = () => {
   };
 
   const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
-    if (urlMap[value]) {
-      navigator(urlMap[value].path, { state: urlMap[value].state });
+    if (urlMap[+value]) {
+      navigator(urlMap[+value].path, { state: urlMap[+value].state });
       setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };

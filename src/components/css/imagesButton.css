@@ -1,0 +1,14 @@
+.image-button {
+    background-image: url('normal-3.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+  }
+  .image-button:hover {
+    background-image: url('hover-1.svg');
+  }
+  .image-button:active {
+    background-image: url('active-2.svg');
+  }
