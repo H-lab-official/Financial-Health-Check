@@ -453,14 +453,14 @@ const EducationPlan: React.FC = () => {
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className=" fixed top-0 z-40"><NavBar /></div>
 
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+      <div className="bg-white rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
-          <h1 className=" text-2xl font-bold text-center">{current == 0 ? "แผนที่ 4" : "Education Plan"} </h1>
+          <h1 className=" text-2xl font-bold text-center">{current == 0 ? "Education Plan" : "Education Plan"} </h1>
           <ProgressBar percent={progress.percent} current={current} />
           <img src={allImages} alt="" className="w-[265px] mt-5" />
           <DotsComponent steps={steps} current={current} />
         </div>
-        <div className="steps-content h-auto py-2 px-3 shadow-lg rounded-md gap-5 mb-5 w-[350px]">
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current==0?"":"shadow-xl"}`}>
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
 
