@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import LabelImages from '@/components/LabelImages'
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
-import namePic from '@/assets/images/Frame.png'
+import namePic from '@/assets/images/Frame.svg'
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import { nameState } from "@/recoil/nameState";
@@ -317,7 +317,7 @@ const HomePage: React.FC = () => {
 
           <div className="steps-action h-20 flex flex-row justify-center items-center">
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
+              <Button type="primary" onClick={() => beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] font-sans rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
                 ถัดไป
               </Button>
             )}
@@ -337,7 +337,7 @@ const HomePage: React.FC = () => {
             {current == 2 && (
               <Button
                 onClick={toGoFirst}
-                className={`bg-[#003781] rounded-full text-white mt-10 ${(selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
+                className={`bg-[#003781] font-sans rounded-full text-white mt-10 ${(selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
                 disabled={selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)}
               >
                 ถัดไป
