@@ -206,19 +206,19 @@ const HealthPlan: React.FC = () => {
   };
 
   const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
-    console.log("currentIndex"+currentIndex);    
+     
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
-      console.log("value"+value);      
+       
       navigateBackToValue(urlMap, value);
     } else if (currentIndex === 1) {
       const firstValue = sortedSelected[0];
-      console.log("firstValue"+firstValue);
+  
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
       // navigateBackToValue(urlMap, firstValue);
     } else if (currentIndex === 0) {
-      console.log("Current index is 0");      
+      
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     } else {
