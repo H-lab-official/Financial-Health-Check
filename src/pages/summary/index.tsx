@@ -184,13 +184,19 @@ const Summary: React.FC = () => {
   const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     const sequence = ['1', '2', '3', '4'];
 
+console.log(currentIndex); //5
+
     if (currentIndex > 0) {
-      const previousValue = sequence[currentIndex - 1];
+      console.log(currentIndex);
+      const previousValue = sequence[currentIndex - 2];
+    console.log(previousValue); //undefined
+    
+      
       navigateBackToValue(urlMap, previousValue);
     } else {
-      console.log('ถึงนี้');
+      
 
-      navigator('/'); // Redirect to initial page if at the beginning
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
       setCurrentIndex(0);
     }
   };

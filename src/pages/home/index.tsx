@@ -223,15 +223,37 @@ const HomePage: React.FC = () => {
           placeholder="กรุณากรอกชื่อของคุณ"
           onChange={(e) => handleInputChange("nickname")(e)}
           className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-2"
+          pattern="[a-zA-Z0-9ก-๙]{1,50}"
+          title="ชื่อเล่นต้องประกอบด้วยตัวอักษรภาษาอังกฤษ ตัวเลข หรืออักขระภาษาไทย และมีความยาวไม่เกิน 50 ตัวอักษร"
+          required
         />
-        <label htmlFor="age" className="pl-5 my-3 text-gray-500 font-bold">อายุ</label>
-        <input
-          value={formData.age || ""}
-          name="nickname"
-          placeholder="กรุณากรอกอายุของคุณ"
-          onChange={(e) => handleInputChange("age")(e)}
-          className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-5"
-        />
+        <div>
+          <label htmlFor="age" className="pl-5 my-3 text-gray-500 font-bold">อายุ</label>
+
+          <style>
+            {`
+          .no-spinner::-webkit-outer-spin-button,
+          .no-spinner::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          .no-spinner {
+            -moz-appearance: textfield; /* Firefox */
+          }
+        `}
+          </style>
+          <input
+            type="number"
+            value={formData.age || ""}
+            name="age"
+            placeholder="กรุณากรอกอายุของคุณ"
+            onChange={(e) => handleInputChange("age")(e)}
+            className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-5 no-spinner peer"
+            min="0"
+            max="3"
+            required
+          />
+        </div>
       </div>
     )
   }, {
@@ -239,7 +261,7 @@ const HomePage: React.FC = () => {
     content: (
       <div className="flex flex-col">
         <div className="w-full flex flex-col justify-center items-center gap-3">
-         
+
           <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
@@ -251,7 +273,7 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-           <LabelImages
+          <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
             normalImage={HealthPlanNormal}
@@ -262,7 +284,7 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-           <LabelImages
+          <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
             normalImage={RetirementPlanNormal}
@@ -273,7 +295,7 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-           <LabelImages
+          <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
             normalImage={EducationPlanNormal}
@@ -284,7 +306,7 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-           <LabelImages
+          <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
             normalImage={FHCAllPlanNormal}
@@ -295,8 +317,8 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-       
-          
+
+
         </div>
       </div>
     )
