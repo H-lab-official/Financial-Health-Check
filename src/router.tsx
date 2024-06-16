@@ -8,6 +8,7 @@ import RetirementPlan from "@/pages/retirementPlan";
 import HomePage from "@/pages/home";
 import PDFSave from "@/pages/pdfSave";
 import Summary from "@/pages/summary";
+import Showdata from "@/pages/showdata";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
       {
         path: "/export-pdf",
         element: <PDFSave />,
+        children: [],
+      }, {
+        path: "/showdata",
+        element: <Showdata />,
         children: [],
       },
     ],
