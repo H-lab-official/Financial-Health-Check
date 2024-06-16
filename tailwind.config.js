@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Kanit', 'sans-serif'],
+        sans: ['New_AllianzNeo', 'sans-serif'],
+       
       },
     },
     screens: {
