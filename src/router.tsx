@@ -9,7 +9,16 @@ import HomePage from "@/pages/home";
 import PDFSave from "@/pages/pdfSave";
 import Summary from "@/pages/summary";
 import Showdata from "@/pages/showdata";
-
+//edit
+import Editeducationplan from "@/pages/edit/educationplan";
+import Edithealthplan from "@/pages/edit/healthplan";
+import Editprotectionplan from "@/pages/edit/protectionplan";
+import Editretirementplan from "@/pages/edit/retirementplan";
+//view
+import Vieweducationplan from "@/pages/viewdata/educationplan";
+import Viewhealthplan from "@/pages/viewdata/healthplan";
+import Viewprotectionplan from "@/pages/viewdata/protectionplan";
+import Viewretirementplan from "@/pages/viewdata/retirementplan";
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -20,11 +29,7 @@ export const router = createBrowserRouter([
         element: <HomePage />,
         children: [],
       },
-      {
-        path: "/Financial-Health-Check",
-        element: <HomePage />,
-        children: [],
-      },
+     
       {
         path: "/education-plan",
         element: <EducationPlan />,
@@ -57,6 +62,42 @@ export const router = createBrowserRouter([
       }, {
         path: "/showdata",
         element: <Showdata />,
+        children: [],
+      }, {
+        path: "/edit/educationplan",
+        element: <Editeducationplan />,
+        children: [],
+      }, {
+        path: "/edit/healthplan",
+        element: <Edithealthplan />,
+        children: [],
+      }, {
+        path: "/edit/protectionplan",
+        element: <Editprotectionplan />,
+        children: [],
+      }, {
+        path: "/edit/retirementplan",
+        element: <Editretirementplan />,
+        children: [],
+      },
+      {
+        path: "/view/retirementplan",
+        element: <Viewretirementplan />,
+        children: [],
+      },
+      {
+        path: "/view/educationplan/:id",
+        element: <Vieweducationplan />,
+        children: [],
+      },
+      {
+        path: "/view/healthplan",
+        element: <Viewhealthplan />,
+        children: [],
+      },
+      {
+        path: "/view/protectionplan",
+        element: <Viewprotectionplan />,
         children: [],
       },
     ],

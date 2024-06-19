@@ -73,7 +73,7 @@ export const NavBar = () => {
     };
 
     return (
-        <div className='flex flex-row justify-between items-center py-2 w-[400px] px-2 bg-white mb-2'>
+        <div className='flex flex-row justify-between items-center py-4 w-[400px] px-2 bg-white mb-2'>
             <div className='flex flex-row items-center gap-2'>
                 <img src={logo} alt="logo" />
                 <div className='flex flex-col'>
@@ -83,7 +83,7 @@ export const NavBar = () => {
             </div>
             <button
                 onClick={handleSaveData}
-                className='border flex flex-row justify-center items-center rounded-full w-[200px] h-8 gap-1'
+                className='border flex flex-row border-[#0E2B81] justify-center items-center rounded-full w-[200px] h-8 gap-1'
             >
                 <img src={iconhome} alt="iconhome" />
                 <p className='text-[0.8rem]'>กลับสู่เว็บเไซต์ Agency Journey</p>

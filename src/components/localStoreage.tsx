@@ -70,6 +70,11 @@ export const useLocalStorage = () => {
 
   const loadData = () => {
     const storedData = localStorage.getItem(name.user_params);
+    const saveQuestionsState = localStorage.getItem("saveQuestionsState")
+    const savehealthPlan = localStorage.getItem("savehealthPlan")
+    const saveRetirementPlan = localStorage.getItem("saveRetirementPlan")
+    const saveProtectionPlan = localStorage.getItem("saveProtectionPlan")
+    const saveEducationplan = localStorage.getItem("saveEducationplan")
     if (storedData) {
       const parsedData: {
         nickname: string;
@@ -114,11 +119,43 @@ export const useLocalStorage = () => {
         }
       } else {
         localStorage.removeItem(name.user_params);
+        localStorage.removeItem("saveQuestionsState");
+        localStorage.removeItem("savehealthPlan");
+        localStorage.removeItem("saveRetirementPlan");
+        localStorage.removeItem("saveProtectionPlan");
+        localStorage.removeItem("saveEducationplan");
+      }
+    } else {
+      const storageKeys = [
+        saveQuestionsState,
+        savehealthPlan,
+        saveRetirementPlan,
+        saveProtectionPlan,
+        saveEducationplan,
+      ];
+      const localStorageKeys = [
+        "saveQuestionsState",
+        "savehealthPlan",
+        "saveRetirementPlan",
+        "saveProtectionPlan",
+        "saveEducationplan",
+      ];
+  
+      for (let i = 0; i < storageKeys.length; i++) {
+        const key = storageKeys[i];
+        if (key) {
+          const parsedData: {
+            id: string;
+            nickname: string;
+            age: string;
+          } = JSON.parse(key);
+  
+          if (parsedData.nickname !== name.nickname && parsedData.age !== name.age) {
+            localStorage.removeItem(localStorageKeys[i]);
+          }
+        }
       }
     }
-    const PlanStore = localStorage.getItem('saveEducationplan')
-    console.log(PlanStore);
-
   };
 
   const saveData = (dataToSave: {
