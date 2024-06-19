@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
-  console.log(sortedSelected);
+
 
 
   const toGoNext = () => {

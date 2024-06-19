@@ -56,9 +56,9 @@ const Vieweducationplan: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   let TotalPreparationAssets = convertMoney(calculateTotalPreparationAssets(educationPlan))
   let RequiredScholarships = convertMoney(calculateRequiredScholarships(educationPlan))
@@ -68,6 +68,7 @@ const Vieweducationplan: React.FC = () => {
     return floatValue
   }
 
+console.log(educationPlan);
 
   return (
     <div>
