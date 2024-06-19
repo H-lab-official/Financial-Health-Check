@@ -1,18 +1,12 @@
 import { questionsState } from "@/recoil/questionsState";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
-  Button,
-
-  Radio,
-  RadioChangeEvent,
-  Row,
-
-} from "antd";
+  Button,  Radio,  RadioChangeEvent,  Row,} from "antd";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
 import { NavBar } from "@/components/navbar";
-
+import PlanFetcher from "@/components/api/getDataById";
 import protection from "@/assets/images/protection.png"
 import health from "@/assets/images/health.png"
 import retirement from "@/assets/images/retirement.png"
@@ -30,7 +24,7 @@ const Summary: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const sortedSelected = useRecoilValue(sortedSelectedState);
-
+  
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const dataname = useRecoilValue<nameData>(nameState)
   const handleRadioChange =
@@ -184,17 +178,17 @@ const Summary: React.FC = () => {
   const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     const sequence = ['1', '2', '3', '4'];
 
-console.log(currentIndex); //5
+    console.log(currentIndex); //5
 
     if (currentIndex > 0) {
       console.log(currentIndex);
       const previousValue = sequence[currentIndex - 2];
-    console.log(previousValue); //undefined
-    
-      
+      console.log(previousValue); //undefined
+
+
       navigateBackToValue(urlMap, previousValue);
     } else {
-      
+
 
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
       setCurrentIndex(0);
@@ -218,26 +212,142 @@ console.log(currentIndex); //5
     newPercent += 1;
     setProgress({ percent: newPercent, steps: progress.steps })
     await handleSave()
-    toGoNext()
+navigator('/showdata')
   }
+  // const toShow = async () => {
+  //   const ProtectionPlan = localStorage.getItem('saveProtectionPlan');
+  //   const healthPlan = localStorage.getItem('savehealthPlan');
+  //   const RetirementPlan = localStorage.getItem('saveRetirementPlan');
+  //   const Educationplan = localStorage.getItem('saveEducationplan');
+  //   const QuestionsState = localStorage.getItem('saveQuestionsState');
+  
+  //   const ids: { [key: string]: string } = {};
+  
+  //   if (ProtectionPlan) {
+  //     const dataProtection = JSON.parse(ProtectionPlan);
+  //     ids['1'] = dataProtection.id;
+  //   }
+  
+  //   if (healthPlan) {
+  //     const dataHealth = JSON.parse(healthPlan);
+  //     ids['2'] = dataHealth.id;
+  //   }
+  
+  //   if (RetirementPlan) {
+  //     const dataRetirement = JSON.parse(RetirementPlan);
+  //     ids['3'] = dataRetirement.id;
+  //   }
+  
+  //   if (Educationplan) {
+  //     const dataEducation = JSON.parse(Educationplan);
+  //     ids['4'] = dataEducation.id;
+  //   }
+  
+  //   if (QuestionsState) {
+  //     const dataQuestions = JSON.parse(QuestionsState);
+  //     ids['5'] = dataQuestions.id;
+  //   }
+  
+  //   return ids;
+  // };
+  // const toShow = async () => {
+  //   const planTypes = ['1', '2', '3', '4', '5'];
+  //   const ids: { [key: string]: string } = {};
+  
+  //   for (const type of planTypes) {
+  //     const planData = localStorage.getItem(`save${type}`);
+  //     if (planData) {
+  //       const data = JSON.parse(planData);
+  //       ids[type] = data.id;
+  //     }
+  //   }
+  
+  //   return ids;
+  // };
+  
+  
+  // // Usage
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const ids = await toShow();
+  //     const types = Object.keys(ids);
+  //     setPlanTypes(types);
+  //     setId(ids[types[0]]); 
+  //   };
+
+  //   fetchData();
+  // }, []);
+  
   const handleSave = async () => {
     await saveQuestionsState({ data: formData, nameData: dataname, })
 
   };
   const handleDisabled = () => {
     if (current === 0) {
-      // ตรวจสอบเงื่อนไข sortedSelected.length === 1
+      // If only one plan is selected
       if (sortedSelected.length === 1) {
         const value = sortedSelected[0];
-        if (value === '1') {
-          return !formData.protectionPlanOrder;
-        } else if (value === '2') {
-          return !formData.healthPlanOrder;
-        } else if (value === '3') {
-          return !formData.retirementPlanOrder;
-        } else if (value === '4') {
-          return !formData.educationPlanOrder;
-        } else if (value === '5') {
+        switch (value) {
+          case '1':
+            return !formData.protectionPlanOrder;
+          case '2':
+            return !formData.healthPlanOrder;
+          case '3':
+            return !formData.retirementPlanOrder;
+          case '4':
+            return !formData.educationPlanOrder;
+          case '5':
+            return (
+              !formData.protectionPlanOrder ||
+              !formData.healthPlanOrder ||
+              !formData.retirementPlanOrder ||
+              !formData.educationPlanOrder
+            );
+          default:
+            return true;
+        }
+      }
+
+      // If two plans are selected and first < second
+      if (sortedSelected.length === 2) {
+        const [first, second] = sortedSelected;
+        if (first < second) {
+          if (first === '1' && second === '2') {
+            return !formData.protectionPlanOrder || !formData.healthPlanOrder;
+          } else if (first === '1' && second === '3') {
+            return !formData.protectionPlanOrder || !formData.retirementPlanOrder;
+          } else if (first === '1' && second === '4') {
+            return !formData.protectionPlanOrder || !formData.educationPlanOrder;
+          } else if (first === '2' && second === '3') {
+            return !formData.healthPlanOrder || !formData.retirementPlanOrder;
+          } else if (first === '2' && second === '4') {
+            return !formData.healthPlanOrder || !formData.educationPlanOrder;
+          } else if (first === '3' && second === '4') {
+            return !formData.retirementPlanOrder || !formData.educationPlanOrder;
+          }
+        }
+      }
+
+      // If three plans are selected and first < second < third
+      if (sortedSelected.length === 3) {
+        const [first, second, third] = sortedSelected;
+        if (first < second && second < third) {
+          if (first === '1' && second === '2' && third === '3') {
+            return !formData.protectionPlanOrder || !formData.healthPlanOrder || !formData.retirementPlanOrder;
+          } else if (first === '1' && second === '2' && third === '4') {
+            return !formData.protectionPlanOrder || !formData.healthPlanOrder || !formData.educationPlanOrder;
+          } else if (first === '1' && second === '3' && third === '4') {
+            return !formData.protectionPlanOrder || !formData.retirementPlanOrder || !formData.educationPlanOrder;
+          } else if (first === '2' && second === '3' && third === '4') {
+            return !formData.healthPlanOrder || !formData.retirementPlanOrder || !formData.educationPlanOrder;
+          }
+        }
+      }
+
+      // If all four plans are selected
+      if (sortedSelected.length === 4) {
+        const [first, second, third, fourth] = sortedSelected;
+        if (first < second && second < third && third < fourth) {
           return (
             !formData.protectionPlanOrder ||
             !formData.healthPlanOrder ||
@@ -245,21 +355,11 @@ console.log(currentIndex); //5
             !formData.educationPlanOrder
           );
         }
-      } 
-  
-      // ตรวจสอบเงื่อนไข sortedSelected.length >= 1
-      if (sortedSelected.length >= 1) {
-        return (
-          !formData.protectionPlanOrder ||
-          !formData.healthPlanOrder ||
-          !formData.retirementPlanOrder ||
-          !formData.educationPlanOrder
-        );
       }
     }
     return false;
   };
-  
+
 
   const divs: { [key: string]: JSX.Element } = {
     '1': <div className="protectionPlanOrder flex justify-between items-start">
@@ -268,13 +368,8 @@ console.log(currentIndex); //5
         <p className=" text-[12px]">แผนคุ้มครองรายได้ <br />ให้กับครอบครัว<br /> ในกรณีที่ต้องจากไป</p>
       </div>
       <div>
-        <div className="flex flex-row gap-16 justify-center items-center">
-          <p>น้อย</p>
-          <div className="long-arrow-right"></div>
-          {/* <img src={arrow} alt="" className=" h-5"/> */}
-          <p>มาก</p>
-        </div>
-        <div className="mt-3 w-[222px]">
+        
+        <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("protectionPlanOrder")}
             value={formData.protectionPlanOrder}
@@ -308,7 +403,7 @@ console.log(currentIndex); //5
       </div>
       <div>
 
-        <div className="mt-5 w-[222px]">
+        <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("healthPlanOrder")}
             value={formData.healthPlanOrder}
@@ -342,7 +437,7 @@ console.log(currentIndex); //5
       </div>
       <div>
 
-        <div className="mt-5 w-[222px]">
+        <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("retirementPlanOrder")}
             value={formData.retirementPlanOrder}
@@ -377,7 +472,7 @@ console.log(currentIndex); //5
       </div>
       <div>
 
-        <div className="mt-5 w-[222px]">
+        <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("educationPlanOrder")}
             value={formData.educationPlanOrder}
@@ -429,22 +524,20 @@ console.log(currentIndex); //5
       <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
 
 
-        <Row className="flex justify-center items-center mb-3 gap-5">
-
+        <Row className="flex justify-center items-center mb-3 gap-5 relative">
+        {/* <PlanFetcher planType={planTypes} id={id} /> */}
           <h1 className="text-[24px] text-center text-[#0E2B81]">การจัดลำดับความสำคัญ</h1>
 
           <ProgressBar percent={progress.percent} current={current} />
-          {/* <h1 className="text-[24px] text-center text-[#0E2B81]">น้อย--------------------มาก</h1> */}
+          <div className="flex flex-row gap-16 justify-center items-center absolute top-16 right-6">
+          <p>น้อย</p>
+          <div className="long-arrow-right"></div>
+          {/* <img src={arrow} alt="" className=" h-5"/> */}
+          <p>มาก</p>
+        </div>
+         
         </Row>
-
-
-
-
         {renderDivs()}
-
-
-
-
         <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
           <Button
             onClick={backlast}

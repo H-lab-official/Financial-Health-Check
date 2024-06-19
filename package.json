@@ -27,6 +27,7 @@
     "react-dom": "^18.2.0",
     "react-router": "^6.23.0",
     "react-router-dom": "^6.23.0",
+    "react-share-on-social": "^1.0.12",
     "react-to-print": "^2.15.1",
     "recoil": "^0.7.7"
   },

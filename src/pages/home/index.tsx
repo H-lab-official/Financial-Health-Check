@@ -215,7 +215,7 @@ const HomePage: React.FC = () => {
   }, {
     title: "กรุณากรอกชื่อของคุณ",
     content: (
-      <div className="flex flex-col ">
+      <div className="flex flex-col tracking-normal leading-tight">
         <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
         <input
           value={formData.nickname || ""}

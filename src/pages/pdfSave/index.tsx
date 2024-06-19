@@ -189,14 +189,8 @@ const PDFSave: React.FC = () => {
   const steps = [{
     title: "เย้ ยินดีด้วย",
     content: (
-      <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">
-        {/* <p className="animate__animated animate__backInUp animate__delay-1s animate__duration-2s">Protection plan</p>
-        <p className="animate__animated animate__backInUp animate__delay-2s animate__duration-2s">Health plan</p>
-        <p className="animate__animated animate__backInUp animate__delay-3s animate__duration-2s">Retirement plan</p>
-        <p className="animate__animated animate__backInUp animate__delay-4s animate__duration-2s">Education plan</p> */}
+      <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">    
         {renderTexts()}
-
-
       </div>
     )
   }, {

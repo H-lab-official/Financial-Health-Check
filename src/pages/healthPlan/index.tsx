@@ -93,14 +93,14 @@ const HealthPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/export-pdf');
+      navigator('/showdata');
     } else {
 
       if (value === '5') {
         navigateThroughSequence(urlMap);
       } else {      
 
-        navigateToValue(urlMap, value, '/export-pdf');
+        navigateToValue(urlMap, value, '/showdata');
       }
     }
   };
