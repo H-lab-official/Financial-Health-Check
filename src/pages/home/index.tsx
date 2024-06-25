@@ -1,10 +1,11 @@
-import { Row, Button } from "antd";
+import { Row, Button, Flex, Spin } from "antd";
+
 import React, { useState, useEffect } from "react";
 import LabelImages from '@/components/LabelImages'
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
 import namePic from '@/assets/images/Frame.svg'
-
+import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { nameState } from "@/recoil/nameState";
 import { selectedState, sortedSelectedState, currentIndexState } from '@/recoil/progressState';
@@ -25,6 +26,8 @@ import ProtectionPlanNormal from '@/assets/images/imagesButton/ProtectionPlanNor
 import RetirementPlanActive from '@/assets/images/imagesButton/RetirementPlanActive.svg'
 import RetirementPlanHover from '@/assets/images/imagesButton/RetirementPlanHover.svg'
 import RetirementPlanNormal from '@/assets/images/imagesButton/RetirementPlanNormal.svg'
+import LoadingPage from '@/components/loadingPage'
+import '@/components/css/loading.css'
 const HomePage: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -36,6 +39,9 @@ const HomePage: React.FC = () => {
   const [selectedValue, setSelectedValue] = useRecoilState(selectedState);
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
+  const [isLoading, setIsLoading] = useState(true)
+  console.log(isLoading);
+
   const handleInputChange =
     (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
@@ -124,19 +130,59 @@ const HomePage: React.FC = () => {
     toGoNext();
   };
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const userParams = searchParams.get('user_params');
+  const checkUsers = async () => {
+    try {
+      const searchParams = new URLSearchParams(location.search);
+      const userParams = searchParams.get('user_params');
 
-    if (userParams) {
+      if (!userParams) {
+        navigator('/error');
+        return;
+      }
+
+      const userFromServer = await axios.get(`https://azayagencyjourney.com/api/verify_account/${userParams}`);
+      const data = userFromServer.data;
+
+      if (data.message !== "User found.") {
+        navigator('/error');
+        return;
+      }
+
       setName((prevName) => ({
         ...prevName,
         user_params: userParams,
       }));
-      // setCurrent(0)
-    } else {
+    } catch (error) {
       navigator('/error');
     }
+  };
+
+  // const checkParams = async () => {
+  //   const searchParams = new URLSearchParams(location.search);
+  //   const userParams = searchParams.get('user_params');
+
+  //   if (userParams) {
+  //     setName((prevName) => ({
+  //       ...prevName,
+  //       user_params: userParams,
+  //     }));
+  //     // setCurrent(0)
+  //   } else {
+  //     navigator('/error');
+  //   }
+  // }
+
+  useEffect(() => {
+    setTimeout(() => {
+      checkUsers()
+
+      setIsLoading(false)
+
+    }, 2000)
+
+
+
+
   }, []);
 
   const handleOptionChange = (value: string) => {
@@ -181,7 +227,7 @@ const HomePage: React.FC = () => {
   //     document.removeEventListener('visibilitychange', handleVisibilityChange);
   //   };
   // }, []);
-
+  console.log(isLoading);
   const steps = [{
     title: "การตรวจสอบสุขภาพทางการเงิน",
     content: (
@@ -211,6 +257,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
+
     )
   }, {
     title: "กรุณากรอกชื่อของคุณ",
@@ -235,7 +282,7 @@ const HomePage: React.FC = () => {
           .no-spinner::-webkit-outer-spin-button,
           .no-spinner::-webkit-inner-spin-button {
             -webkit-appearance: none;
-            margin: 0;
+            margin: 10;
           }
           .no-spinner {
             -moz-appearance: textfield; /* Firefox */
@@ -323,53 +370,56 @@ const HomePage: React.FC = () => {
       </div>
     )
   }]
+{/* <div className="loader"></div> */}
+
   return (
-    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
-      <div className=" fixed top-0 z-40"><NavBar /></div>
+    isLoading ? <><LoadingPage /></> :
+      <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+        <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
-      <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-12 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+        <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-12 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
 
-        <Row align={"middle"} justify={"center"}>
-          <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current === 1 ? "h-[300px]" : current === 2 ? "hidden" : ""} `} height={150} />
-        </Row>
-        <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
-          <p className={`text-2xl my-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
-          {steps[current].content}
+          <Row align={"middle"} justify={"center"}>
+            <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current === 1 ? "h-[300px]" : current === 2 ? "hidden" : ""} `} height={150} />
+          </Row>
+          <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
+            <p className={`text-2xl my-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
+            {steps[current].content}
 
-          <div className="steps-action h-20 flex flex-row justify-center items-center">
-            {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] font-sans rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
-                ถัดไป
-              </Button>
-            )}
-            {current == 0 && (<Button
-              onClick={() => next()}
-              // onClick={() => navigator("/protection-plan")}
-              className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white w-full font-sans"
-            >
-              เริ่มทำแบบทดสอบกัน
-            </Button>)
-            }
-            {/* {current > 1 && (
+            <div className="steps-action h-20 flex flex-row justify-center items-center">
+              {current < steps.length - 1 && (
+                <Button type="primary" onClick={() => beforeNext()} disabled={!formData.nickname || !formData.age} className={`bg-[#003781] font-sans rounded-full ${!formData.nickname || !formData.age ? "bg-[#E6E6E6] w-full h-10" : "w-full h-10"} ${current === 0 ? "hidden" : "w-[120px]"}`}>
+                  ถัดไป
+                </Button>
+              )}
+              {current == 0 && (<Button
+                onClick={() => next()}
+                // onClick={() => navigator("/protection-plan")}
+                className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white w-full font-sans"
+              >
+                เริ่มทำแบบทดสอบกัน
+              </Button>)
+              }
+              {/* {current > 1 && (
               <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ
               </Button>
             )} */}
-            {current == 2 && (
-              <Button
-                onClick={toGoFirst}
-                className={`bg-[#003781] font-sans rounded-full text-white mt-10 ${(selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
-                disabled={selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)}
-              >
-                ถัดไป
-              </Button>
-            )}
+              {current == 2 && (
+                <Button
+                  onClick={toGoFirst}
+                  className={`bg-[#003781] font-sans rounded-full text-white mt-10 ${(selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)) ? 'bg-[#E6E6E6]' : ''} w-full h-10`}
+                  disabled={selectedValue.length === 0 || (selectedValue.includes('5') && selectedValue.length > 1)}
+                >
+                  ถัดไป
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
 
+        </div>
       </div>
-    </div>
   );
 };
 
