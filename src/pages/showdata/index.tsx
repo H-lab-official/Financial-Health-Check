@@ -98,7 +98,7 @@ const Showdata: React.FC = () => {
 
   const handleNext = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
-    console.log('Plans from localStorage:', plansFromLocalStorage); // Debugging log
+ 
     await handleSavePlans(plansFromLocalStorage);
     toone();
   };
@@ -176,7 +176,7 @@ const Showdata: React.FC = () => {
     questionsData.retirementPlanOrder
   ];
 
-  const nonZeroOrders = orders.map((order, index) => ({ order, index: index + 1 })).filter(({ order }) => order !== 0).sort((a, b) => a.order - b.order);
+  const nonZeroOrders = orders.map((order, index) => ({ order, index: index + 1 })).filter(({ order }) => order !== 0).sort((a, b) => b.order - a.order);
   
   const texts: { [key: string]: string } = {
     '1': 'Protection plan',
@@ -200,7 +200,7 @@ const Showdata: React.FC = () => {
         <p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>
       ));
     }
-    return null; // ไม่มีข้อความที่จะแสดง
+    return null; 
   };
 
   const steps = [{
@@ -276,7 +276,7 @@ const Showdata: React.FC = () => {
             )}
             {current === steps.length - 1 && (
               <Button onClick={handleNext} className={`bg-[#003781] rounded-full w-[180px] text-white`}>
-               ไปหน้าสรุปผล
+               สรุปฉบับเต็ม
               </Button>
             )}
           </div>
