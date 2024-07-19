@@ -12,11 +12,11 @@ const usePlanNavigation = () => {
 
   const savePlansToBackend = async (plans) => {
     try {
-      console.log('Sending plans to backend:', plans); // Debugging log
+      console.log('Sending plans to backend:', plans); 
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/addressplan`, { plans });
       const responseData = response?.data;
       if (responseData?.id) {
-        setPlanId(responseData.id); // Store the ID of the created plan
+        setPlanId(responseData.id); 
         return responseData.id;
       } else {
         throw new Error('Invalid response from backend');
@@ -44,9 +44,13 @@ const usePlanNavigation = () => {
   };
 
   const handleFetchPlans = useCallback(async () => {
+    setPlans([]); 
+    setHistory([]); 
+    localStorage.removeItem('addressPlans');
+    localStorage.removeItem('historyAddress'); 
     if (planId) {
       const fetchedPlans = await fetchPlansFromBackend(planId);
-      setPlans(fetchedPlans); // Assuming the fetched data is in the format you need
+      setPlans(fetchedPlans); 
     }
   }, [planId, setPlans]);
 
@@ -64,7 +68,7 @@ const usePlanNavigation = () => {
       window.location.href = nextPlan;
 
       const updatedPlans = plans.slice(1);
-      setHistory([...history, nextPlan]); // Add current plan to history
+      setHistory([...history, nextPlan]); 
       setPlans(updatedPlans);
     } else {
       console.log('No more plans to navigate to.');
@@ -76,9 +80,9 @@ const usePlanNavigation = () => {
       const previousPlan = history[history.length - 1];
       window.location.href = previousPlan;
 
-      const updatedHistory = history.slice(0, -1); // Remove the last item from history
+      const updatedHistory = history.slice(0, -1); 
       setHistory(updatedHistory);
-      setPlans([previousPlan, ...plans]); // Add the previous plan back to plans
+      setPlans([previousPlan, ...plans]); 
     } else {
       console.log('No previous plans to navigate to.');
     }
