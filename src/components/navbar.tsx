@@ -8,7 +8,7 @@ import { healthPlanState } from '@/recoil/healthPlanState';
 import { protectionPlanState } from '@/recoil/protectionPlanState';
 import { questionsState } from '@/recoil/questionsState';
 import { retirementPlanState } from '@/recoil/retirementPlanState';
-
+import { useNavigate, useLocation } from "react-router";
 export const NavBar = () => {
     const { saveData } = useLocalStorage();
     const name = useRecoilValue(nameState);
@@ -17,6 +17,7 @@ export const NavBar = () => {
     const protection = useRecoilValue(protectionPlanState);
     const questions = useRecoilValue(questionsState);
     const retirement = useRecoilValue(retirementPlanState);
+    const navigator = useNavigate();
     const handleSaveData = () => {
         saveData({
             nickname: name.nickname,
@@ -71,7 +72,7 @@ export const NavBar = () => {
                 otherAssets: retirement.otherAssets
             },
         });
-       
+        window.location.href = 'https://azayagencyjourney.com/tools';
     };
 
     return (
