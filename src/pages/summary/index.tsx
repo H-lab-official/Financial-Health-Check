@@ -1,8 +1,9 @@
 import { questionsState } from "@/recoil/questionsState";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Button,  Radio,  RadioChangeEvent,  Row,} from "antd";
+  Button, Radio, RadioChangeEvent, Row,
+} from "antd";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
 import { NavBar } from "@/components/navbar";
@@ -24,7 +25,7 @@ const Summary: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const sortedSelected = useRecoilValue(sortedSelectedState);
-  
+
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const dataname = useRecoilValue<nameData>(nameState)
   const handleRadioChange =
@@ -212,7 +213,7 @@ const Summary: React.FC = () => {
     newPercent += 1;
     setProgress({ percent: newPercent, steps: progress.steps })
     await handleSave()
-navigator('/showdata')
+    navigator('/showdata')
   }
   // const toShow = async () => {
   //   const ProtectionPlan = localStorage.getItem('saveProtectionPlan');
@@ -220,40 +221,40 @@ navigator('/showdata')
   //   const RetirementPlan = localStorage.getItem('saveRetirementPlan');
   //   const Educationplan = localStorage.getItem('saveEducationplan');
   //   const QuestionsState = localStorage.getItem('saveQuestionsState');
-  
+
   //   const ids: { [key: string]: string } = {};
-  
+
   //   if (ProtectionPlan) {
   //     const dataProtection = JSON.parse(ProtectionPlan);
   //     ids['1'] = dataProtection.id;
   //   }
-  
+
   //   if (healthPlan) {
   //     const dataHealth = JSON.parse(healthPlan);
   //     ids['2'] = dataHealth.id;
   //   }
-  
+
   //   if (RetirementPlan) {
   //     const dataRetirement = JSON.parse(RetirementPlan);
   //     ids['3'] = dataRetirement.id;
   //   }
-  
+
   //   if (Educationplan) {
   //     const dataEducation = JSON.parse(Educationplan);
   //     ids['4'] = dataEducation.id;
   //   }
-  
+
   //   if (QuestionsState) {
   //     const dataQuestions = JSON.parse(QuestionsState);
   //     ids['5'] = dataQuestions.id;
   //   }
-  
+
   //   return ids;
   // };
   // const toShow = async () => {
   //   const planTypes = ['1', '2', '3', '4', '5'];
   //   const ids: { [key: string]: string } = {};
-  
+
   //   for (const type of planTypes) {
   //     const planData = localStorage.getItem(`save${type}`);
   //     if (planData) {
@@ -261,11 +262,11 @@ navigator('/showdata')
   //       ids[type] = data.id;
   //     }
   //   }
-  
+
   //   return ids;
   // };
-  
-  
+
+
   // // Usage
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -277,7 +278,7 @@ navigator('/showdata')
 
   //   fetchData();
   // }, []);
-  
+
   const handleSave = async () => {
     await saveQuestionsState({ data: formData, nameData: dataname, })
 
@@ -360,7 +361,25 @@ navigator('/showdata')
     return false;
   };
 
-
+  const renderRadio = (): JSX.Element[] | null => {
+    if (sortedSelected.length === 1) {
+      if (sortedSelected[0] === '5') {
+        return [1, 2, 3, 4].map(value => (
+          <Radio value={value} className="custom-radio" key={value}>
+            {/* Add any additional content here if needed */}
+          </Radio>
+        ));
+      }
+      return null;
+    } else if (sortedSelected.length > 1 && sortedSelected.length <= 4) {
+      return sortedSelected.map((value, index) => (
+        <Radio value={index + 1} className="custom-radio" key={index}>
+          {/* Add any additional content here if needed */}
+        </Radio>
+      ));
+    }
+    return null; // ไม่มี Radio ที่จะแสดง
+  };
   const divs: { [key: string]: JSX.Element } = {
     '1': <div className="protectionPlanOrder flex justify-between items-start">
       <div className="">
@@ -368,7 +387,6 @@ navigator('/showdata')
         <p className=" text-[12px]">แผนคุ้มครองรายได้ <br />ให้กับครอบครัว<br /> ในกรณีที่ต้องจากไป</p>
       </div>
       <div>
-        
         <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("protectionPlanOrder")}
@@ -380,18 +398,7 @@ navigator('/showdata')
               justifyContent: "space-between",
             }}
           >
-            <Radio value={1} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-            </Radio>
-            <Radio value={2} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={3} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={4} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-            </Radio>
+            {renderRadio()}
           </Radio.Group>
         </div>
       </div>
@@ -402,7 +409,6 @@ navigator('/showdata')
         <p className=" text-[12px]">การวางแผนเตรียมเงิน <br /> เรื่องสุขภาพ</p>
       </div>
       <div>
-
         <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("healthPlanOrder")}
@@ -414,18 +420,7 @@ navigator('/showdata')
               justifyContent: "space-between",
             }}
           >
-            <Radio value={1} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-            </Radio>
-            <Radio value={2} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={3} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={4} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-            </Radio>
+            {renderRadio()}
           </Radio.Group>
         </div>
       </div>
@@ -436,7 +431,6 @@ navigator('/showdata')
         <p className=" text-[12px]">การวางแผนเตรียมเงิน<br />ไว้ยามเกษียณ </p>
       </div>
       <div>
-
         <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("retirementPlanOrder")}
@@ -448,30 +442,17 @@ navigator('/showdata')
               justifyContent: "space-between",
             }}
           >
-            <Radio value={1} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-            </Radio>
-            <Radio value={2} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={3} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={4} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-            </Radio>
+            {renderRadio()}
           </Radio.Group>
         </div>
       </div>
-    </div>
-    ,
+    </div>,
     '4': <div className="educationPlanOrder flex justify-between items-start">
       <div className="">
         <img src={Education} width={70} height={70} />
         <p className=" text-[12px]">การเก็บออม<br />เพื่อค่าเล่าเรียนบุตร </p>
       </div>
       <div>
-
         <div className="mt-12 w-[222px]">
           <Radio.Group
             onChange={handleRadioChange("educationPlanOrder")}
@@ -483,23 +464,13 @@ navigator('/showdata')
               justifyContent: "space-between",
             }}
           >
-            <Radio value={1} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">น้อย</span> */}
-            </Radio>
-            <Radio value={2} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={3} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">&gt;</span> */}
-            </Radio>
-            <Radio value={4} className="custom-radio">
-              {/* <span className="radio-label text-[#0E2B81]">มาก</span> */}
-            </Radio>
+            {renderRadio()}
           </Radio.Group>
         </div>
       </div>
     </div>,
   };
+  
   const renderDivs = (): JSX.Element[] | null => {
     if (sortedSelected.length === 1) {
       const value = sortedSelected[0];
@@ -516,6 +487,9 @@ navigator('/showdata')
     }
     return null; // ไม่มี div ที่จะแสดง
   };
+  
+
+  
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className=" fixed top-0 z-40"><NavBar /></div>
@@ -525,17 +499,17 @@ navigator('/showdata')
 
 
         <Row className="flex justify-center items-center mb-3 gap-5 relative">
-        {/* <PlanFetcher planType={planTypes} id={id} /> */}
+          {/* <PlanFetcher planType={planTypes} id={id} /> */}
           <h1 className="text-[24px] text-center text-[#0E2B81]">การจัดลำดับความสำคัญ</h1>
 
           <ProgressBar percent={progress.percent} current={current} />
           <div className="flex flex-row gap-16 justify-center items-center absolute top-16 right-6">
-          <p>น้อย</p>
-          <div className="long-arrow-right"></div>
-          {/* <img src={arrow} alt="" className=" h-5"/> */}
-          <p>มาก</p>
-        </div>
-         
+            <p>น้อย</p>
+            <div className="long-arrow-right"></div>
+            {/* <img src={arrow} alt="" className=" h-5"/> */}
+            <p>มาก</p>
+          </div>
+
         </Row>
         {renderDivs()}
         <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">

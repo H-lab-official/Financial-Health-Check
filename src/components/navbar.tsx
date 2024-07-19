@@ -8,6 +8,7 @@ import { healthPlanState } from '@/recoil/healthPlanState';
 import { protectionPlanState } from '@/recoil/protectionPlanState';
 import { questionsState } from '@/recoil/questionsState';
 import { retirementPlanState } from '@/recoil/retirementPlanState';
+
 export const NavBar = () => {
     const { saveData } = useLocalStorage();
     const name = useRecoilValue(nameState);
@@ -70,6 +71,7 @@ export const NavBar = () => {
                 otherAssets: retirement.otherAssets
             },
         });
+       
     };
 
     return (

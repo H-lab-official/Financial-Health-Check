@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
         children: [],
       },
       {
-        path: "/view/retirementplan",
+        path: "/view/retirementplan/:id",
         element: <Viewretirementplan />,
         children: [],
       },
@@ -91,12 +91,12 @@ export const router = createBrowserRouter([
         children: [],
       },
       {
-        path: "/view/healthplan",
+        path: "/view/healthplan/:id",
         element: <Viewhealthplan />,
         children: [],
       },
       {
-        path: "/view/protectionplan",
+        path: "/view/protectionplan/:id",
         element: <Viewprotectionplan />,
         children: [],
       },
