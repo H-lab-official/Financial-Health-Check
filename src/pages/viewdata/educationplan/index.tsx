@@ -12,9 +12,11 @@ import {
   educationPlanState,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
+import { addressPlans, historyAddress } from '@/recoil/address'
 import axios from 'axios';
 import { NavBar } from "@/components/navbar";
 import Education2 from "@/assets/images/Education2.png"
+import usePlanNavigation from "@/components/usePlanNavigation"
 const Vieweducationplan: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,6 +29,12 @@ const Vieweducationplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [educationPlanData] = useRecoilState(educationPlanState);
   const educationMissing = useRecoilValue(totalMissingSelector);
+  const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+
+
+
+
+
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,
@@ -68,16 +76,16 @@ const Vieweducationplan: React.FC = () => {
     return floatValue
   }
 
-console.log(educationPlan);
+
 
   return (
     <div>
 
+      <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
+        <div className=" fixed top-0 z-40"><NavBar /></div>
+        {educationPlan ?
+          (
 
-      {educationPlan ?
-        (
-          <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
-            <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
             <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
@@ -167,14 +175,29 @@ console.log(educationPlan);
                 <ShareOnSocial linkFavicon={logo} linkTitle={"Education Plan"}>
                   <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-full h-10 text-white"><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
                 </ShareOnSocial>
-                
+
+              </div>
+              <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
+
+
+                <>
+                  <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
+                    ย้อนกลับ
+                  </Button>
+                  <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                    ถัดไป
+                  </Button>
+                </>
+
+
+
               </div>
             </div>
-          </div>
-        ) : (
-          <div>No education plan found.</div>
-        )}
+          ) : (
+            <div>No education plan found.</div>
+          )}
 
+      </div>
 
 
 
