@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useLocation } from "react-router";
 import { Button } from "antd";
@@ -8,7 +8,7 @@ import { protectionPlanState, calculateCoverage } from "@/recoil/protectionPlanS
 import { healthPlanState, calculateAnnualTreatments } from "@/recoil/healthPlanState";
 import { retirementPlanState, totalRetirementMissingSelector, mustBeSavedSelector } from "@/recoil/retirementPlanState";
 import { educationPlanState, totalMissingSelector } from "@/recoil/educationPlanState";
-import { addressPlans,historyAddress } from '@/recoil/address'
+import { addressPlans, historyAddress } from '@/recoil/address'
 import { NavBar } from "@/components/navbar";
 import sumpic from "@/assets/images/sumpic.png";
 import homeTop from "@/assets/images/homeTop.png";
@@ -16,24 +16,8 @@ import protection from "@/assets/images/protection.png";
 import health from "@/assets/images/health.png";
 import retirement from "@/assets/images/retirement.png";
 import Education2 from "@/assets/images/Education2.png";
-import usePlanNavigation from "@/components/usePlanNavigation"
+import usePlanNavigation from "@/components/usePlanNavigation";
 
-const Showdata: React.FC = () => {
-  const location = useLocation();
-  const currentStep = location.state?.current || 0;
-  const [current, setCurrent] = useState(currentStep);
-  const sortedSelected = useRecoilValue(sortedSelectedState);
-  const [questionsData] = useRecoilState(questionsState);
-  const [protectionPlanData] = useRecoilState(protectionPlanState);
-  const [healthPlanData] = useRecoilState(healthPlanState);
-  const [retirementPlanData] = useRecoilState(retirementPlanState);
-  const [educationPlanData] = useRecoilState(educationPlanState);
-  const totalMissing = useRecoilValue(totalRetirementMissingSelector);
-  const mustBeSaved = useRecoilValue(mustBeSavedSelector);
-  const educationMissing = useRecoilValue(totalMissingSelector);
-  const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
-  const [, setPlans] = useState(plans);
-  
 const getPlansFromLocalStorage = () => {
   const plans = [];
 
@@ -96,21 +80,63 @@ const getPlansFromLocalStorage = () => {
 
   return plans;
 };
-  useEffect(()=>{
-    localStorage.setItem('addressPlans',JSON.stringify([]))
-    localStorage.setItem('historyAddress',JSON.stringify([]))
+
+const Showdata: React.FC = () => {
+  const location = useLocation();
+  const currentStep = location.state?.current || 0;
+  const [current, setCurrent] = useState(currentStep);
+  const sortedSelected = useRecoilValue(sortedSelectedState);
+  const [questionsData] = useRecoilState(questionsState);
+  const [protectionPlanData] = useRecoilState(protectionPlanState);
+  const [healthPlanData] = useRecoilState(healthPlanState);
+  const [retirementPlanData] = useRecoilState(retirementPlanState);
+  const [educationPlanData] = useRecoilState(educationPlanState);
+  const totalMissing = useRecoilValue(totalRetirementMissingSelector);
+  const mustBeSaved = useRecoilValue(mustBeSavedSelector);
+  const educationMissing = useRecoilValue(totalMissingSelector);
+  const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  const [, setPlans] = useState(plans);
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    if (current === 0) {
+      const animationDuration = 6000; // Duration of the animation in milliseconds
+      const timeoutId = setTimeout(() => {
+        setShowButton(true);
+      }, animationDuration);
+
+      return () => clearTimeout(timeoutId);
+    } else {
+      setShowButton(false);
+    }
+  }, [current]);
+
+  const fullDetails = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
-    // localStorage.setItem('addressPlans', JSON.stringify(plansFromLocalStorage));     
+    console.log(plansFromLocalStorage);
+
     setPlans(plansFromLocalStorage);
-  },[])
-  
+  };
+  const toone = () => {
+    return new Promise<void>((resolve) => {
+      const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+      if (storedPlans.length > 0) {
+        const nextPlan = storedPlans[0];
+        window.open(nextPlan, '_self');
+        resolve();  
+      } else {
+        console.log('No more plans to navigate to.');
+        resolve(); 
+      }
+    });
+  };
   const convertMoney = (value: string) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
   };
-  
+
   let allImages;
   let allTitle;
   switch (current) {
@@ -145,14 +171,13 @@ const getPlansFromLocalStorage = () => {
   }
 
   const next = () => {
+    fullDetails();
     setCurrent((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const prev = () => {
     setCurrent((prev) => Math.max(prev - 1, 0));
   };
-
-
 
   const getPlanText = (order: number) => {
     switch (order) {
@@ -177,7 +202,7 @@ const getPlansFromLocalStorage = () => {
   ];
 
   const nonZeroOrders = orders.map((order, index) => ({ order, index: index + 1 })).filter(({ order }) => order !== 0).sort((a, b) => b.order - a.order);
-  
+
   const texts: { [key: string]: string } = {
     '1': 'Protection plan',
     '2': 'Health plan',
@@ -200,7 +225,7 @@ const getPlansFromLocalStorage = () => {
         <p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>
       ));
     }
-    return null; 
+    return null;
   };
 
   const steps = [{
@@ -208,6 +233,14 @@ const getPlansFromLocalStorage = () => {
     content: (
       <div className="flex flex-col text-[2rem] font-medium justify-center items-center mb-10">
         {renderTexts()}
+        {showButton && (
+          <Button
+            onClick={next}
+            className={`bg-[#003781] font-sans rounded-full text-white h-10 ${current === 0 ? "w-full" : "w-[180px]"}`}
+          >
+            ไปหน้าสรุปผล
+          </Button>
+        )}
       </div>
     )
   }, {
@@ -256,15 +289,12 @@ const getPlansFromLocalStorage = () => {
         <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 mt-10 w-[375px]">
           {steps[current].content}
           <div className={`steps-action h-20 flex flex-row font-sans`}>
-            {current === 0 && (
-              <Button
-                onClick={next}
-                className={`bg-[#003781] font-sans rounded-full text-white h-10 ${current === 0 ? "w-full" : "w-[180px]"}`}
-              >
-                ไปหน้าสรุปผล
+            {current == 1 && (
+              <Button style={{ margin: "0 8px" }} onClick={prev} className={`bg-white rounded-full w-[180px]`}>
+                ย้อนกลับ
               </Button>
             )}
-            {current > 0 && (
+            {current > 1 && (
               <Button style={{ margin: "0 8px" }} onClick={goBack} className={`bg-white rounded-full w-[180px]`}>
                 ย้อนกลับ
               </Button>
@@ -276,7 +306,7 @@ const getPlansFromLocalStorage = () => {
             )}
             {current === steps.length - 1 && (
               <Button onClick={toone} className={`bg-[#003781] rounded-full w-[180px] text-white`}>
-               สรุปฉบับเต็ม
+                สรุปฉบับเต็ม
               </Button>
             )}
           </div>

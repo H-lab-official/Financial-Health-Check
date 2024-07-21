@@ -31,28 +31,31 @@ const usePlanNavigation = () => {
   }, [setPlans]);
 
   const toone = () => {
-    if (plans.length > 0) {
-      const nextPlan = plans[0];
-      let updatedPlans = plans.slice(1);
-      let updatedHistory = [...history];
+    return new Promise<void>((resolve) => {
+      if (plans.length > 0) {
+        const nextPlan = plans[0];
+        let updatedPlans = plans.slice(1);
+        let updatedHistory = [...history];
 
-      if (location.pathname === nextPlan && updatedPlans.length > 0) {
-        updatedHistory.push(nextPlan);
-        const nextPlanAfterCurrent = updatedPlans[0];
-        updatedPlans = updatedPlans.slice(1);
+        if (location.pathname === nextPlan && updatedPlans.length > 0) {
+          updatedHistory.push(nextPlan);
+          const nextPlanAfterCurrent = updatedPlans[0];
+          updatedPlans = updatedPlans.slice(1);
 
-        window.open(nextPlanAfterCurrent, '_self');
-        updatedHistory.push(nextPlanAfterCurrent);
+          window.open(nextPlanAfterCurrent, '_self');
+          updatedHistory.push(nextPlanAfterCurrent);
+        } else {
+          window.open(nextPlan, '_self');
+          updatedHistory.push(nextPlan);
+        }
+
+        setPlans(updatedPlans);
+        setHistory(updatedHistory);
       } else {
-        window.open(nextPlan, '_self');
-        updatedHistory.push(nextPlan);
+        console.log('No more plans to navigate to.');
       }
-
-      setPlans(updatedPlans);
-      setHistory(updatedHistory);
-    } else {
-      console.log('No more plans to navigate to.');
-    }
+      resolve();  // Ensure the promise is resolved
+    });
   };
 
   const goBack = () => {
