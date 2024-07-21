@@ -101,7 +101,7 @@ const getPlansFromLocalStorage = () => {
     localStorage.setItem('historyAddress',JSON.stringify([]))
     const plansFromLocalStorage = getPlansFromLocalStorage();     
     setPlans(plansFromLocalStorage);
-  },[plans])
+  },[])
   
   const convertMoney = (value: string) => {
     return parseFloat(value).toLocaleString("en-US", {
