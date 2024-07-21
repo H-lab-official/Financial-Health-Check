@@ -100,7 +100,7 @@ const getPlansFromLocalStorage = () => {
     localStorage.setItem('addressPlans',JSON.stringify([]))
     localStorage.setItem('historyAddress',JSON.stringify([]))
     const plansFromLocalStorage = getPlansFromLocalStorage();
-    localStorage.setItem('addressPlans', JSON.stringify(plansFromLocalStorage));     
+    // localStorage.setItem('addressPlans', JSON.stringify(plansFromLocalStorage));     
     setPlans(plansFromLocalStorage);
   },[])
   
