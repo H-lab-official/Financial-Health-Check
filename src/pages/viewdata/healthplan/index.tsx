@@ -170,25 +170,23 @@ const Viewehealthplan: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <ShareOnSocial linkFavicon={logo} linkTitle={"Health Plan Data"}>
-                  <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-full h-10 text-white"><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
-                </ShareOnSocial>
+                
 
               </div>
-              <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
-
-
+              <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
-                  <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
-                    ย้อนกลับ
-                  </Button>
-                  <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
-                    ถัดไป
-                  </Button>
+                  <ShareOnSocial linkFavicon={logo} linkTitle={"Health Plan Data"}>
+                    <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
+                  </ShareOnSocial>
+                  <div className='flex flex-row justify-center items-center gap-5'>
+                    <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
+                      ย้อนกลับ
+                    </Button>
+                    <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                      ถัดไป
+                    </Button>
+                  </div>
                 </>
-
-
-
               </div>
             </div>
 
