@@ -1,11 +1,12 @@
 import { useRecoilState } from 'recoil';
 import { addressPlans, historyAddress } from '@/recoil/address';
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const usePlanNavigation = () => {
   const [plans, setPlans] = useRecoilState(addressPlans);
   const [history, setHistory] = useRecoilState(historyAddress);
-  const [planId, setPlanId] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
@@ -14,14 +15,6 @@ const usePlanNavigation = () => {
     const storedHistory = JSON.parse(localStorage.getItem('historyAddress') || '[]');
     setHistory(storedHistory);
   }, [setPlans, setHistory]);
-
-  useEffect(() => {
-    localStorage.setItem('addressPlans', JSON.stringify(plans));
-  }, [plans]);
-
-  useEffect(() => {
-    localStorage.setItem('historyAddress', JSON.stringify(history));
-  }, [history]);
 
   const handleFetchPlans = useCallback(() => {
     const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
@@ -34,50 +27,52 @@ const usePlanNavigation = () => {
   const handleSavePlans = useCallback((localPlans) => {
     if (localPlans && localPlans.length > 0) {
       setPlans(localPlans);
-      localStorage.setItem('addressPlans', JSON.stringify(localPlans));
     }
   }, [setPlans]);
 
   const toone = () => {
-    if (history.length == 0 && plans.length > 0) {
-      const nextPlan = plans[1]
-      const currentPage = plans[0]
-     window.open(nextPlan, '_self')
-      const updatedPlans = plans.slice(0, -2)
-      setHistory([nextPlan, currentPage])
-      setPlans(updatedPlans)
-
-    }
-    else if (plans.length > 0) {
+    if (plans.length > 0) {
       const nextPlan = plans[0];
-     window.open(nextPlan, '_self');
+      let updatedPlans = plans.slice(1);
+      let updatedHistory = [...history];
 
-      const updatedPlans = plans.slice(1);
-      setHistory([...history, nextPlan]);
+      if (location.pathname === nextPlan && updatedPlans.length > 0) {
+        updatedHistory.push(nextPlan);
+        const nextPlanAfterCurrent = updatedPlans[0];
+        updatedPlans = updatedPlans.slice(1);
+
+        window.open(nextPlanAfterCurrent, '_self');
+        updatedHistory.push(nextPlanAfterCurrent);
+      } else {
+        window.open(nextPlan, '_self');
+        updatedHistory.push(nextPlan);
+      }
+
       setPlans(updatedPlans);
-
-    }
-    else {
+      setHistory(updatedHistory);
+    } else {
       console.log('No more plans to navigate to.');
     }
   };
 
   const goBack = () => {
-    if (plans.length == 0 && history.length > 0) {
-      const lastPlans = history[history.length - 1]
-      const previousPlan = history[history.length - 2];
-        window.open(previousPlan, '_self')
-      const updatedHistory = history.slice(0, -2)
-      setHistory(updatedHistory)
-      setPlans([lastPlans, previousPlan, ...plans])
-    }
-    else if (history.length > 0 && plans.length > 0) {
+    if (history.length > 0) {
       const previousPlan = history[history.length - 1];
-        window.open(previousPlan, '_self')
+      let updatedHistory = history.slice(0, -1);
+      let updatedPlans = [previousPlan, ...plans];
 
-      const updatedHistory = history.slice(0, -1);
+      if (location.pathname === previousPlan && updatedHistory.length > 0) {
+        const previousPlanBeforeCurrent = updatedHistory[updatedHistory.length - 1];
+        updatedHistory = updatedHistory.slice(0, -1);
+
+        window.open(previousPlanBeforeCurrent, '_self');
+        updatedPlans = [previousPlanBeforeCurrent, ...updatedPlans];
+      } else {
+        window.open(previousPlan, '_self');
+      }
+
       setHistory(updatedHistory);
-      setPlans([previousPlan, ...plans]);
+      setPlans(updatedPlans);
     } else {
       console.log('No previous plans to navigate to.');
     }
