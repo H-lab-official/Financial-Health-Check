@@ -42,7 +42,7 @@ const usePlanNavigation = () => {
     if (history.length == 0 && plans.length > 0) {
       const nextPlan = plans[1]
       const currentPage = plans[0]
-      window.location.href = nextPlan
+     window.open(nextPlan, '_self')
       const updatedPlans = plans.slice(0, -2)
       setHistory([nextPlan, currentPage])
       setPlans(updatedPlans)
@@ -50,7 +50,7 @@ const usePlanNavigation = () => {
     }
     else if (plans.length > 0) {
       const nextPlan = plans[0];
-      window.location.href = nextPlan;
+     window.open(nextPlan, '_self');
 
       const updatedPlans = plans.slice(1);
       setHistory([...history, nextPlan]);
@@ -66,14 +66,14 @@ const usePlanNavigation = () => {
     if (plans.length == 0 && history.length > 0) {
       const lastPlans = history[history.length - 1]
       const previousPlan = history[history.length - 2];
-      window.location.href = previousPlan;
+        window.open(previousPlan, '_self')
       const updatedHistory = history.slice(0, -2)
       setHistory(updatedHistory)
       setPlans([lastPlans, previousPlan, ...plans])
     }
     else if (history.length > 0 && plans.length > 0) {
       const previousPlan = history[history.length - 1];
-      window.location.href = previousPlan;
+        window.open(previousPlan, '_self')
 
       const updatedHistory = history.slice(0, -1);
       setHistory(updatedHistory);
