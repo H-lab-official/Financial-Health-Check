@@ -178,7 +178,7 @@ const HomePage: React.FC = () => {
 
       setIsLoading(false)
 
-    }, 2000)
+    }, 1500)
 
 
 

@@ -75,6 +75,8 @@ export const useLocalStorage = () => {
     const saveRetirementPlan = localStorage.getItem("saveRetirementPlan")
     const saveProtectionPlan = localStorage.getItem("saveProtectionPlan")
     const saveEducationplan = localStorage.getItem("saveEducationplan")
+    const addressPlans = localStorage.getItem("addressPlans")
+    const historyAddress = localStorage.getItem('historyAddress')
     if (storedData) {
       const parsedData: {
         nickname: string;
@@ -124,6 +126,8 @@ export const useLocalStorage = () => {
         localStorage.removeItem("saveRetirementPlan");
         localStorage.removeItem("saveProtectionPlan");
         localStorage.removeItem("saveEducationplan");
+        localStorage.removeItem("addressPlans");
+        localStorage.removeItem("historyAddress");
       }
     } else {
       const storageKeys = [
@@ -132,15 +136,17 @@ export const useLocalStorage = () => {
         saveRetirementPlan,
         saveProtectionPlan,
         saveEducationplan,
+        addressPlans,
+        historyAddress
       ];
       const localStorageKeys = [
         "saveQuestionsState",
         "savehealthPlan",
         "saveRetirementPlan",
         "saveProtectionPlan",
-        "saveEducationplan",
+        "saveEducationplan", "addressPlans", "historyAddress"
       ];
-  
+
       for (let i = 0; i < storageKeys.length; i++) {
         const key = storageKeys[i];
         if (key) {
@@ -149,7 +155,7 @@ export const useLocalStorage = () => {
             nickname: string;
             age: string;
           } = JSON.parse(key);
-  
+
           if (parsedData.nickname !== name.nickname && parsedData.age !== name.age) {
             localStorage.removeItem(localStorageKeys[i]);
           }
