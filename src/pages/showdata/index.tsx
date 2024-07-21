@@ -99,7 +99,8 @@ const getPlansFromLocalStorage = () => {
   useEffect(()=>{
     localStorage.setItem('addressPlans',JSON.stringify([]))
     localStorage.setItem('historyAddress',JSON.stringify([]))
-    const plansFromLocalStorage = getPlansFromLocalStorage();     
+    const plansFromLocalStorage = getPlansFromLocalStorage();
+    localStorage.setItem('addressPlans', JSON.stringify(plansFromLocalStorage));     
     setPlans(plansFromLocalStorage);
   },[])
   
