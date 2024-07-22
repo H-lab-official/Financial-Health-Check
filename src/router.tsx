@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
         children: [],
       },
       {
-        path: "/export-pdf",
+        path: "/report",
         element: <PDFSave />,
         children: [],
       }, {

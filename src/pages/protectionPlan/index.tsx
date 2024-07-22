@@ -87,7 +87,7 @@ const ProtectionPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
      const value = sortedSelected[0];
     if (sortedSelected.length === 1&&value!=='5') {
-      navigator('/export-pdf');
+      navigator('/report');
     } else {   
 
       if (value === '5') {
@@ -95,7 +95,7 @@ const ProtectionPlan: React.FC = () => {
       } else {
         console.log(value);
 
-        navigateToValue(urlMap, value, '/export-pdf');
+        navigateToValue(urlMap, value, '/report');
       }
     }
   };
@@ -393,7 +393,7 @@ const ProtectionPlan: React.FC = () => {
             )}
             {current == 0 && (
               <Button onClick={() => {
-                navigator(`/Financial-Health-Check?user_params=${dataname.user_params}`, { state: { current: 2 } })
+                navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
                 setCurrentIndex((prevIndex) => prevIndex - 1);
               }} className={` bg-white rounded-full w-[120px]`}>
                 ย้อนกลับ

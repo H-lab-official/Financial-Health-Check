@@ -28,6 +28,7 @@ const Viewehealthplan: React.FC = () => {
   const [healthPlanData, setHealthPlanData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [linkButton, setLinkButton] = useState(false)
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
@@ -35,6 +36,18 @@ const Viewehealthplan: React.FC = () => {
       maximumFractionDigits: 2,
     });
   };
+  const checkLocalStorageLengths = () => {
+    const addressPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+    const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
+    const addressPlansLength = addressPlans.length;
+    const historyAddressLength = historyAddress.length;
+    if ((addressPlansLength + historyAddressLength) == 1) {
+      setLinkButton(true)
+    } else {
+      setLinkButton(false)
+    }
+
+  }
   useEffect(() => {
     const fetchEducationPlan = async () => {
       try {
@@ -52,6 +65,7 @@ const Viewehealthplan: React.FC = () => {
     };
 
     fetchEducationPlan();
+    checkLocalStorageLengths()
   }, [id]);
 
   if (loading) {
@@ -170,7 +184,7 @@ const Viewehealthplan: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
 
               </div>
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
@@ -178,14 +192,14 @@ const Viewehealthplan: React.FC = () => {
                   <ShareOnSocial linkFavicon={logo} linkTitle={"Health Plan Data"}>
                     <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
                   </ShareOnSocial>
-                  <div className='flex flex-row justify-center items-center gap-5'>
+                  {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
                       ย้อนกลับ
                     </Button>
                     <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
                       ถัดไป
                     </Button>
-                  </div>
+                  </div>}
                 </>
               </div>
             </div>

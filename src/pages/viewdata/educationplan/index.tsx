@@ -29,10 +29,22 @@ const Vieweducationplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [educationPlanData] = useRecoilState(educationPlanState);
   const educationMissing = useRecoilValue(totalMissingSelector);
+  const [linkButton, setLinkButton] = useState(false)
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
 
 
-
+  const checkLocalStorageLengths = () => {
+    const addressPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+    const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
+    const addressPlansLength = addressPlans.length;
+    const historyAddressLength = historyAddress.length;
+    if ((addressPlansLength + historyAddressLength) == 1) {
+      setLinkButton(true)
+    } else {
+      setLinkButton(false)
+    }
+   
+  }
 
 
   const convertMoney = (value: any) => {
@@ -58,6 +70,7 @@ const Vieweducationplan: React.FC = () => {
     };
 
     fetchEducationPlan();
+    checkLocalStorageLengths()
   }, [id]);
 
   if (loading) {
@@ -77,123 +90,126 @@ const Vieweducationplan: React.FC = () => {
   }
 
 
+  console.log(linkButton);
+
 
   return (
     <div>
 
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className=" fixed top-0 z-40"><NavBar /></div>
-        {educationPlan ?
-          (
+        {educationPlan ? (
 
 
 
-            <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-              <div className="flex flex-col justify-center items-center mb-5">
-                <h1 className=" text-[1.9rem] font-bold text-center">Education Plan</h1>
-                <h1 className={` text-[1.8rem]`}>คุณ {educationPlan.nickname}</h1>
-                <img src={Education2} alt="Education2" width={200} />
-              </div>
-              <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
-                <div className="  rounded-lg p-5 shadow-lg mb-5">
-                  <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อการศึกษาบุตร</p></div>
-                  <div className=" text-black text-[0.8rem]">
-                    <div className="flex flex-row justify-between">
-                      <p>1.ระดับการศึกษาที่คาดหวัง</p>
-                      <p>{educationPlan.levelOfeducation}</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>2.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
-                      <p>{[
-                        { value: "107000.00", label: "รัฐบาล" },
-                        { value: "214900.00", label: "เอกชน" },
-                        { value: "500000.00", label: "อินเตอร์" },
-                      ]
-                        .filter(
-                          (obj) => obj.value === educationPlan.typeOfeducation
-                        )
-                        .map((obj) => obj.label)
-                        .join(",")}</p></div>
-                    <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
-                      <p>ทุนการศึกษาที่จำเป็น</p>
+          <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+            <div className="flex flex-col justify-center items-center mb-5">
+              <h1 className=" text-[1.9rem] font-bold text-center">Education Plan</h1>
+              <h1 className={` text-[1.8rem]`}>คุณ {educationPlan.nickname}</h1>
+              <img src={Education2} alt="Education2" width={200} />
+            </div>
+            <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
+              <div className="  rounded-lg p-5 shadow-lg mb-5">
+                <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อการศึกษาบุตร</p></div>
+                <div className=" text-black text-[0.8rem]">
+                  <div className="flex flex-row justify-between">
+                    <p>1.ระดับการศึกษาที่คาดหวัง</p>
+                    <p>{educationPlan.levelOfeducation}</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>2.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+                    <p>{[
+                      { value: "107000.00", label: "รัฐบาล" },
+                      { value: "214900.00", label: "เอกชน" },
+                      { value: "500000.00", label: "อินเตอร์" },
+                    ]
+                      .filter(
+                        (obj) => obj.value === educationPlan.typeOfeducation
+                      )
+                      .map((obj) => obj.label)
+                      .join(",")}</p></div>
+                  <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
+                    <p>ทุนการศึกษาที่จำเป็น</p>
 
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>3.ค่าเล่าเรียน</p>
-                      <p>{convertMoney(educationPlan.typeOfeducation)} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>4.ค่าใช้จ่ายระหว่างศึกษา</p>
-                      <p>{convertMoney(
-                        (
-                          parseFloat(educationPlan.typeOfeducation) * 0.15
-                        ).toFixed(2)
-                      )} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>5.จำนวนปีการศึกษาของลูกที่จะต้องส่ง</p>
-                      <p>{educationPlan.yearsOfeducation} ปี</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>6.อัตราการเฟ้อของค่าเทอมต่อปี</p>
-                      <p>{parseFloat(educationPlan.inflationRate) * 100} %</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>7.รวมทุนการศึกษาที่จำเป็น</p>
-                      <p>{RequiredScholarships} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
-                      <p>สิ่งที่เตรียมไว้แล้ว</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>3.ค่าเล่าเรียน</p>
+                    <p>{convertMoney(educationPlan.typeOfeducation)} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>4.ค่าใช้จ่ายระหว่างศึกษา</p>
+                    <p>{convertMoney(
+                      (
+                        parseFloat(educationPlan.typeOfeducation) * 0.15
+                      ).toFixed(2)
+                    )} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>5.จำนวนปีการศึกษาของลูกที่จะต้องส่ง</p>
+                    <p>{educationPlan.yearsOfeducation} ปี</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>6.อัตราการเฟ้อของค่าเทอมต่อปี</p>
+                    <p>{parseFloat(educationPlan.inflationRate) * 100} %</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>7.รวมทุนการศึกษาที่จำเป็น</p>
+                    <p>{RequiredScholarships} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
+                    <p>สิ่งที่เตรียมไว้แล้ว</p>
 
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>8.เงินฝาก</p>
-                      <p>{convertMoney(educationPlan.deposit)} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>9.กรมธรรม์ที่ครบกำหนด</p>
-                      <p>{convertMoney(educationPlan.insuranceFund)} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>10.อื่นๆ</p>
-                      <p>{convertMoney(educationPlan.otherAssets)} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>11.รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
-                      <p>{TotalPreparationAssets} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <p>12.รวมที่ขาดอยู่</p>
-                      <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
-                    </div>
-                    <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
-                      <p>ผลลัพธ์</p>
-                      <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
-                    </div>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>8.เงินฝาก</p>
+                    <p>{convertMoney(educationPlan.deposit)} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>9.กรมธรรม์ที่ครบกำหนด</p>
+                    <p>{convertMoney(educationPlan.insuranceFund)} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>10.อื่นๆ</p>
+                    <p>{convertMoney(educationPlan.otherAssets)} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>11.รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
+                    <p>{TotalPreparationAssets} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>12.รวมที่ขาดอยู่</p>
+                    <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
+                  </div>
+                  <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+                    <p>ผลลัพธ์</p>
+                    <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
                   </div>
                 </div>
+              </div>
 
 
-              </div>
-              <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
-                <>
-                  <ShareOnSocial linkFavicon={logo} linkTitle={"Education Plan Data"}>
-                    <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
-                  </ShareOnSocial>
-                  <div className='flex flex-row justify-center items-center gap-5'>
-                    <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
-                      ย้อนกลับ
-                    </Button>
-                    <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
-                      ถัดไป
-                    </Button>
-                  </div>
-                </>
-              </div>
             </div>
-          ) : (
-            <div>No education plan found.</div>
-          )}
+            <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
+              <>
+                <ShareOnSocial linkFavicon={logo} linkTitle={"Education Plan Data"}>
+                  <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
+                </ShareOnSocial>
+                {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
+                  <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
+                    ย้อนกลับ
+                  </Button>
+                  <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                    ถัดไป
+                  </Button>
+                </div>}
+
+
+              </>
+            </div>
+          </div>
+        ) : (
+          <div>No education plan found.</div>
+        )}
 
       </div>
 

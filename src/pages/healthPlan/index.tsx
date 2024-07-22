@@ -93,14 +93,15 @@ const HealthPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/showdata');
+      navigator('/report');
     } else {
 
       if (value === '5') {
         navigateThroughSequence(urlMap);
-      } else {      
+      } else {
+        console.log(value);
 
-        navigateToValue(urlMap, value, '/showdata');
+        navigateToValue(urlMap, value, '/report');
       }
     }
   };
@@ -206,23 +207,23 @@ const HealthPlan: React.FC = () => {
   };
 
   const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
-     
+
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
-       
+
       navigateBackToValue(urlMap, value);
     } else if (currentIndex === 1) {
       const firstValue = sortedSelected[0];
-  
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
       // navigateBackToValue(urlMap, firstValue);
     } else if (currentIndex === 0) {
-      
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     } else {
-      console.log("Unexpected index value");     
+      console.log("Unexpected index value");
     }
   };
 
@@ -233,7 +234,7 @@ const HealthPlan: React.FC = () => {
       const previousValue = sequence[currentIndex - 1];
       navigateBackToValue(urlMap, previousValue);
     } else {
-      navigator('/'); 
+      navigator('/');
       setCurrentIndex(0);
     }
   };
@@ -477,7 +478,7 @@ const HealthPlan: React.FC = () => {
           <img src={allImages} alt="" className=" w-[265px] mt-5" />
           <DotsComponent steps={steps} current={current} />
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current==0?"":"shadow-xl"}`}>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
           <p className={`text-xl mb-3 ${current === 2 ? " text-base" : null}`}>{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
 
