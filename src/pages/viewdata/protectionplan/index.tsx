@@ -30,6 +30,20 @@ const Vieweprotectionplan: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  const [linkButton, setLinkButton] = useState(false)
+
+  const checkLocalStorageLengths = () => {
+    const addressPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+    const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
+    const addressPlansLength = addressPlans.length;
+    const historyAddressLength = historyAddress.length;
+    if ((addressPlansLength + historyAddressLength) == 1) {
+      setLinkButton(true)
+    } else {
+      setLinkButton(false)
+    }
+
+  }
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,
@@ -53,6 +67,7 @@ const Vieweprotectionplan: React.FC = () => {
     };
 
     fetchProtectionPlan();
+    checkLocalStorageLengths()
   }, [id]);
 
   if (loading) {
@@ -161,7 +176,7 @@ const Vieweprotectionplan: React.FC = () => {
                   </div>
 
                 </div>
-                
+
 
               </div>
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
@@ -169,14 +184,14 @@ const Vieweprotectionplan: React.FC = () => {
                   <ShareOnSocial linkFavicon={logo} linkTitle={"Protection Plan Data"}>
                     <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
                   </ShareOnSocial>
-                  <div className='flex flex-row justify-center items-center gap-5'>
+                  {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
                       ย้อนกลับ
                     </Button>
                     <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
                       ถัดไป
                     </Button>
-                  </div>
+                  </div>}
                 </>
               </div>
             </div>

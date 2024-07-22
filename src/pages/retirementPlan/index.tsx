@@ -88,7 +88,7 @@ const RetirementPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
    if (sortedSelected.length === 1&&value!=='5') {
-     navigator('/export-pdf');
+     navigator('/report');
    } else {   
 
      if (value === '5') {
@@ -96,7 +96,7 @@ const RetirementPlan: React.FC = () => {
      } else {
        console.log(value);
 
-       navigateToValue(urlMap, value, '/export-pdf');
+       navigateToValue(urlMap, value, '/report');
      }
    }
  };

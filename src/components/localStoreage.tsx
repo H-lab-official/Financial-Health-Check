@@ -156,7 +156,7 @@ export const useLocalStorage = () => {
             age: string;
           } = JSON.parse(key);
 
-          if (parsedData.nickname !== name.nickname && parsedData.age !== name.age) {
+          if (parsedData.nickname !== name.nickname) {
             localStorage.removeItem(localStorageKeys[i]);
           }
         }

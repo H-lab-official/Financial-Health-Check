@@ -74,30 +74,30 @@ const EducationPlan: React.FC = () => {
       '4': '/education-plan',
       '5': '/protection-plan',
     };
-  
+
     if (sortedSelected.length === 1) {
       handleSingleSelection(urlMap);
     } else {
       handleMultipleSelections(urlMap);
     }
   };
-  
+
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
-   if (sortedSelected.length === 1&&value!=='5') {
-     navigator('/export-pdf');
-   } else {   
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator('/report');
+    } else {
 
-     if (value === '5') {
-       navigateThroughSequence(urlMap);
-     } else {
-       console.log(value);
+      if (value === '5') {
+        navigateThroughSequence(urlMap);
+      } else {
+        console.log(value);
 
-       navigateToValue(urlMap, value, '/export-pdf');
-     }
-   }
- };
-  
+        navigateToValue(urlMap, value, '/report');
+      }
+    }
+  };
+
   const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
     if (currentIndex < sortedSelected.length - 1) {
       const value = sortedSelected[currentIndex];
@@ -110,10 +110,10 @@ const EducationPlan: React.FC = () => {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
-  
+
   const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
     const sequence = ['1', '2', '3', '4'];
-  
+
     if (currentIndex < sequence.length) {
       const currentValue = sequence[currentIndex];
       navigateToValue(urlMap, currentValue);
@@ -122,7 +122,7 @@ const EducationPlan: React.FC = () => {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
-  
+
   const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
     if (urlMap[value]) {
       navigator(urlMap[value]);
@@ -132,7 +132,7 @@ const EducationPlan: React.FC = () => {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
-  
+
   const toGoFirst = () => {
     setCurrentIndex(0);
     toGoNext();
@@ -182,14 +182,14 @@ const EducationPlan: React.FC = () => {
       '4': { path: '/education-plan', state: { current: 2 } },
       '5': { path: '/protection-plan', state: { current: 3 } },
     };
-  
+
     if (sortedSelected.length === 1) {
       handleSingleBack(urlMap);
     } else {
       handleMultipleBack(urlMap);
     }
   };
-  
+
   const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
@@ -203,30 +203,30 @@ const EducationPlan: React.FC = () => {
     }
 
   };
-  
+
   const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
-       
+
       navigateBackToValue(urlMap, value);
     } else if (currentIndex === 1) {
       const firstValue = sortedSelected[0];
-  
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
       // navigateBackToValue(urlMap, firstValue);
     } else if (currentIndex === 0) {
-      
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     } else {
-      console.log("Unexpected index value");     
+      console.log("Unexpected index value");
     }
   };
-  
+
   const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     const sequence = ['1', '2', '3', '4'];
-  
+
     if (currentIndex > 0) {
       const previousValue = sequence[currentIndex - 1];
       navigateBackToValue(urlMap, previousValue);
@@ -235,17 +235,17 @@ const EducationPlan: React.FC = () => {
       setCurrentIndex(0);
     }
   };
-  
+
   const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
     if (urlMap[value]) {
       navigator(urlMap[value].path, { state: urlMap[value].state });
       setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
-  
-  const handleSave = async () => {  
-      await saveEducationplan({ data: formData, nameData: dataname, })     
-   
+
+  const handleSave = async () => {
+    await saveEducationplan({ data: formData, nameData: dataname, })
+
   };
   const handleDisabled = () => {
     if (current === 1) {
@@ -438,7 +438,7 @@ const EducationPlan: React.FC = () => {
 
         <InputField
           label="13. รวมที่ขาดอยู่"
-          value={totalMissing}
+          value={requiredScholarships < totalPreparationAssets ? totalMissing : "0"}
           onChange={() => { }}
           readOnly
           placeholder=""
@@ -460,7 +460,7 @@ const EducationPlan: React.FC = () => {
           <img src={allImages} alt="" className="w-[265px] mt-5" />
           <DotsComponent steps={steps} current={current} />
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current==0?"":"shadow-xl"}`}>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
           {steps[current].content}
 

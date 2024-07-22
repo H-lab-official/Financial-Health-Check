@@ -86,7 +86,7 @@ const HomePage: React.FC = () => {
     if (value === '5') {
       navigateThroughSequence(urlMap);
     } else {
-      navigateToValue(urlMap, value, '/export-pdf');
+      navigateToValue(urlMap, value, '/report');
     }
   };
 
