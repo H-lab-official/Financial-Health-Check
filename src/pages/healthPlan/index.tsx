@@ -262,11 +262,8 @@ const HealthPlan: React.FC = () => {
     }
   };
   const handleSave = async () => {
-
-    await savehealthPlan({ data: formData, nameData: dataname, })
-
-
-    toGoNext()
+    await savehealthPlan({ data: formData, nameData: dataname });
+    toGoNext();
   };
   const handleDisabled = () => {
     if (current === 1) {
