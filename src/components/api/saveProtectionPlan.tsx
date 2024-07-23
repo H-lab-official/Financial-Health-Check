@@ -12,8 +12,8 @@ export const saveProtectionPlan = async (planData: SaveProtectionPlanData) => {
     const savedData = localStorage.getItem('saveProtectionPlan');
     let logStatus = 2; // เริ่มต้นด้วย 2 (ไม่สำเร็จ)
     if (savedData) {
-      const { nickname, age } = JSON.parse(savedData);
-      if ( nickname === planData.nameData.nickname && age === planData.nameData.age) {
+      const { nickname, age ,gender} = JSON.parse(savedData);
+      if ( nickname === planData.nameData.nickname && age === planData.nameData.age&& gender === planData.nameData.gender) {
         console.log('Data in localStorage is the same as the new data.');
         logStatus = 1; // สำเร็จ
       } else {
@@ -23,7 +23,7 @@ export const saveProtectionPlan = async (planData: SaveProtectionPlanData) => {
         const dataToStore = {
           id: response.data.id,
           nickname: response.data.nickname,
-          age: response.data.age
+          age: response.data.age,  gender :response.data.gender
         };
         localStorage.removeItem('saveProtectionPlan');
         localStorage.setItem('saveProtectionPlan', JSON.stringify(dataToStore));
@@ -36,7 +36,7 @@ export const saveProtectionPlan = async (planData: SaveProtectionPlanData) => {
       const dataToStore = {
         id: response.data.id,
         nickname: response.data.nickname,
-        age: response.data.age
+        age: response.data.age,  gender :response.data.gender
       };
       localStorage.setItem('saveProtectionPlan', JSON.stringify(dataToStore));
       logStatus = 1; // สำเร็จ
@@ -47,7 +47,7 @@ export const saveProtectionPlan = async (planData: SaveProtectionPlanData) => {
     await logPlanToDB(2, planData.nameData.user_params, 'ProtectionPlan'); 
   }
 };
-const logPlanToDB = async (status, userParams, planType) => {
+const logPlanToDB = async (status: any, userParams: any, planType: any) => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/planlogs`, {
       method: 'POST',

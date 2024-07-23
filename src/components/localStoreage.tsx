@@ -81,6 +81,7 @@ export const useLocalStorage = () => {
       const parsedData: {
         nickname: string;
         age: string;
+        gender?:string
         educationPlan?: EducationPlanStorageData;
         healthPlan?: HealthPlanStorageData;
         protection?: ProtectionPlanStorageData;
@@ -154,6 +155,7 @@ export const useLocalStorage = () => {
             id: string;
             nickname: string;
             age: string;
+            gender?:string
           } = JSON.parse(key);
 
           if (parsedData.nickname !== name.nickname) {
@@ -167,6 +169,7 @@ export const useLocalStorage = () => {
   const saveData = (dataToSave: {
     nickname?: string;
     age?: string;
+    gender?:string
     educationPlan?: EducationPlanStorageData;
     healthPlan?: HealthPlanStorageData;
     protection?: ProtectionPlanStorageData;
