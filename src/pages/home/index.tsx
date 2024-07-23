@@ -128,6 +128,7 @@ const HomePage: React.FC = () => {
   const toGoFirst = () => {
     setCurrentIndex(0);
     toGoNext();
+    logSelectionToDB(selectedValue, name.user_params);
   };
 
   const checkUsers = async () => {
@@ -184,28 +185,59 @@ const HomePage: React.FC = () => {
 
 
   }, []);
-
-  const handleOptionChange = (value: string) => {
+  const logSelectionToDB = async (selectedPlans, userParams) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_params: userParams,
+          selectedPlans: selectedPlans,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to log selection');
+      }
+  
+      const data = await response.json();
+      console.log('Log saved:', data);
+    } catch (error) {
+      console.error('Error logging selection:', error);
+    }
+  };
+  
+  const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
+      let updatedSelected;
+  
       if (value === '5') {
         if (prevSelected.includes('5')) {
-          return [];
+          updatedSelected = [];
         } else {
-          return ['5'];
+          updatedSelected = ['5'];
         }
       } else {
         if (prevSelected.includes('5')) {
-          return [value];
+          updatedSelected = [value];
         } else {
           if (prevSelected.includes(value)) {
-            return prevSelected.filter((item) => item !== value);
+            updatedSelected = prevSelected.filter((item) => item !== value);
           } else {
-            return [...prevSelected, value];
+            updatedSelected = [...prevSelected, value];
           }
         }
       }
+  
+      // บันทึกการเลือกลงฐานข้อมูล
+     
+  
+      return updatedSelected;
     });
   };
+  
   console.log(formData);
 
   // useEffect(() => {
