@@ -20,7 +20,7 @@ import Viewhealthplan from "@/pages/viewdata/healthplan";
 import Viewprotectionplan from "@/pages/viewdata/protectionplan";
 import Viewretirementplan from "@/pages/viewdata/retirementplan";
 //logs
-import Logs from '@/pages/logs'
+import Logs from '@/pages/savelogs'
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
