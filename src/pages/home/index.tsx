@@ -175,7 +175,7 @@ const HomePage: React.FC = () => {
     }, 1500)
   }, []);
 
-  const logSelectionToDB = async (selectedPlans, userParams) => {
+  const logSelectionToDB = async (selectedPlans:any, userParams:any) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
         method: 'POST',
@@ -201,7 +201,7 @@ const HomePage: React.FC = () => {
 
   const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
-      let updatedSelected;
+      let updatedSelected:any;
 
       if (value === '5') {
         if (prevSelected.includes('5')) {
@@ -312,7 +312,7 @@ const HomePage: React.FC = () => {
     title: "เลือกแผนที่คุณต้องการ",
     content: (
       <div className="flex flex-col">
-        <div className="w-full flex flex-col justify-center items-center gap-3">
+        <div className="w-full flex flex-col justify-center items-center gap-4">
 
           <LabelImages
             selectedValue={sortedSelected}

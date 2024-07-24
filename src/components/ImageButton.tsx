@@ -31,20 +31,30 @@ const ImageButton: React.FC<ImageButtonProps> = ({
 
   return (
     <div
-      className=" rounded-xl overflow-hidden"
+      className={`rounded-xl overflow-hidden ${selected ? 'border-[#050C9C] border-4' : ''}`}
       style={{
-        backgroundImage: `url(${image})`,
-        backgroundSize: 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        width: width,
-        height: height,
+        width: `calc(${width} + ${selected ? '8px' : '0'})`,
+        height: `calc(${height} + ${selected ? '8px' : '0'})`,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
-      onMouseEnter={() => !selected && setImage(hoverImage)}
-      onMouseLeave={() => !selected && setImage(normalImage)}
-      onMouseDown={() => !selected && setImage(activeImage)}
-      onMouseUp={() => !selected && setImage(hoverImage)}
     >
+      <div
+        style={{
+          backgroundImage: `url(${image})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          width: width,
+          height: height,
+        }}
+        onMouseEnter={() => !selected && setImage(hoverImage)}
+        onMouseLeave={() => !selected && setImage(normalImage)}
+        onMouseDown={() => !selected && setImage(activeImage)}
+        onMouseUp={() => !selected && setImage(hoverImage)}
+      >
+      </div>
     </div>
   );
 };
