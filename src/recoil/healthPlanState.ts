@@ -2,6 +2,7 @@ import { atom, selector } from "recoil";
 
 export interface HealthPlanData {
   hospitals: string;
+  hospitals2:string
   roomFee: string;
   roomFeeFromWelfare: string;
   dailyCompensationFromWelfare: string;
@@ -24,6 +25,7 @@ export const healthPlanState = atom<HealthPlanData>({
   key: "healthPlanState",
   default: {
     hospitals: "",
+    hospitals2:"",
     roomFee: "1500.00",
     roomFeeFromWelfare: "1500.00",
     dailyCompensationFromWelfare: "",
@@ -44,9 +46,9 @@ export const healthPlanState = atom<HealthPlanData>({
 });
 
 export const calculateAdditionalRoomFee = (state: HealthPlanData) => {
-  if (state.hospitals && state.roomFeeFromCompany) {
+  if (state.hospitals2 && state.roomFeeFromCompany) {
     const additionalRoomFee =
-      parseFloat(state.hospitals) - parseFloat(state.roomFeeFromCompany);
+      parseFloat(state.hospitals2) - parseFloat(state.roomFeeFromCompany);
     return additionalRoomFee.toFixed(2);
   } else {
     return "";
