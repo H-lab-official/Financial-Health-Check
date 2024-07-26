@@ -51,6 +51,7 @@ const RetirementPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
+console.log(formData);
 
   let allImages
 

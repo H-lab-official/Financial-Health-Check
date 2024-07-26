@@ -32,8 +32,8 @@ const Viewehealthplan: React.FC = () => {
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     });
   };
   const checkLocalStorageLengths = () => {

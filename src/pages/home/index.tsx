@@ -152,6 +152,7 @@ const HomePage: React.FC = () => {
 
       const userFromServer = await axios.get(`https://azayagencyjourney.com/api/verify_account/${userParams}`);
       const data = userFromServer.data;
+      console.log(data);
 
       if (data.message !== "User found.") {
         navigator('/error');
@@ -168,14 +169,14 @@ const HomePage: React.FC = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      checkUsers()
+      // checkUsers()
 
       setIsLoading(false)
 
     }, 1500)
   }, []);
 
-  const logSelectionToDB = async (selectedPlans:any, userParams:any) => {
+  const logSelectionToDB = async (selectedPlans: any, userParams: any) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
         method: 'POST',
@@ -201,7 +202,7 @@ const HomePage: React.FC = () => {
 
   const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
-      let updatedSelected:any;
+      let updatedSelected: any;
 
       if (value === '5') {
         if (prevSelected.includes('5')) {
