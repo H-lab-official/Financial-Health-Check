@@ -43,7 +43,7 @@ const EducationPlan: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
 
   const [levelOfeducation2, setLevelOfeducation2] = useState(formData.levelOfeducation);
-  const [selectedTypeOfEducation, setSelectedTypeOfEducation] = useState(formData.typeOfeducation);
+ 
   const [typeOfeducation2, setTypeOfeducation2] = useState(formData.typeOfeducation);
 
   const handleInputChange = (field: keyof typeof formData) => (value: string) => {

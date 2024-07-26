@@ -8,7 +8,7 @@ import { protectionPlanState, calculateCoverage } from "@/recoil/protectionPlanS
 import { healthPlanState, calculateAnnualTreatments } from "@/recoil/healthPlanState";
 import { retirementPlanState, totalRetirementMissingSelector, mustBeSavedSelector } from "@/recoil/retirementPlanState";
 import { educationPlanState, totalMissingSelector } from "@/recoil/educationPlanState";
-import { addressPlans, historyAddress } from '@/recoil/address'
+import { addressPlans, historyAddress } from '@/recoil/address';
 import { NavBar } from "@/components/navbar";
 import sumpic from "@/assets/images/sumpic.png";
 import homeTop from "@/assets/images/homeTop.png";
@@ -70,8 +70,6 @@ const getPlansFromLocalStorage = () => {
   }
 
   console.log("Constructed plans array:", plans);
-  // localStorage.removeItem('addressPlans')
-  // localStorage.removeItem('historyAddress')
   try {
     localStorage.setItem('addressPlans', JSON.stringify(plans));
   } catch (e) {
@@ -117,19 +115,21 @@ const Showdata: React.FC = () => {
 
     setPlans(plansFromLocalStorage);
   };
+
   const toone = () => {
     return new Promise<void>((resolve) => {
       const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
       if (storedPlans.length > 0) {
         const nextPlan = storedPlans[0];
         window.open(nextPlan, '_self');
-        resolve();  
+        resolve();
       } else {
         console.log('No more plans to navigate to.');
-        resolve(); 
+        resolve();
       }
     });
   };
+
   const convertMoney = (value: string) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,
@@ -250,19 +250,41 @@ const Showdata: React.FC = () => {
         <div className="rounded-lg p-5 shadow-lg mb-5">
           <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
           <div className="text-black">
-            <div className="flex flex-row justify-between">
-              <p>ค่าใช้จ่ายในครอบครัว</p>
-              <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>วางแผนเพื่อสุขภาพ</p>
-              <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p></div>
-            <div className="flex flex-row justify-between">
-              <p>ค่าใช้จ่ายหลังเกษียณ</p>
-              <p>{convertMoney(totalMissing)} บาท</p></div>
-            <div className="flex flex-row justify-between">
-              <p>วางแผนเพื่อการศึกษาบุตร</p>
-              <p>{convertMoney(educationMissing)} บาท</p></div>
+            {nonZeroOrders.map(({ order }) => {
+              if (order === questionsData.protectionPlanOrder) {
+                return (
+                  <div key={order} className="flex flex-row justify-between">
+                    <p>ค่าใช้จ่ายในครอบครัว</p>
+                    <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
+                  </div>
+                );
+              }
+              if (order === questionsData.healthPlanOrder) {
+                return (
+                  <div key={order} className="flex flex-row justify-between">
+                    <p>วางแผนเพื่อสุขภาพ</p>
+                    <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
+                  </div>
+                );
+              }
+              if (order === questionsData.retirementPlanOrder) {
+                return (
+                  <div key={order} className="flex flex-row justify-between">
+                    <p>ค่าใช้จ่ายหลังเกษียณ</p>
+                    <p>{convertMoney(totalMissing)} บาท</p>
+                  </div>
+                );
+              }
+              if (order === questionsData.educationPlanOrder) {
+                return (
+                  <div key={order} className="flex flex-row justify-between">
+                    <p>วางแผนเพื่อการศึกษาบุตร</p>
+                    <p>{convertMoney(educationMissing)} บาท</p>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </div>
         </div>
         <div className="rounded-lg p-5 shadow-lg mb-5">
