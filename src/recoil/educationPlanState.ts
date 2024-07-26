@@ -1,8 +1,10 @@
 import { atom, selector } from "recoil";
 
 export interface EducationPlanData {
-  levelOfeducation: string;
-  typeOfeducation: string;
+  levelOfeducation: string; //ค่าเริ่มต้นที่กำหนดไว้
+  levelOfeducation2: string; //ค่าที่มีการเปลี่ยน มาจากlevelOfeducation
+  typeOfeducation: string;//ค่าเริ่มต้นที่กำหนดไว้
+  typeOfeducation2:string//ค่าที่มีการเปลี่ยน มาจากtypeOfeducation
   yearsOfeducation: string;
   inflationRate: string;
   requiredScholarships: string;
@@ -11,29 +13,45 @@ export interface EducationPlanData {
   otherAssets: string;
   totalPreparationAssets: string;
   totalMissing: string;
+  child: string;
+  expensesDuringStudy: string;
+
 }
 
 export const educationPlanState = atom<EducationPlanData>({
   key: "educationPlanState",
   default: {
-    levelOfeducation: "ปริญญาตรี",
-    typeOfeducation: "107000.00",
+    levelOfeducation: "19",
+    levelOfeducation2: "19",
+    typeOfeducation: "30000.00",
+    typeOfeducation2:"30000.00",
     inflationRate: "0.03",
     yearsOfeducation: "",
     requiredScholarships: "",
-    deposit: "",
-    insuranceFund: "",
-    otherAssets: "",
+    deposit: "0",
+    insuranceFund: "0",
+    otherAssets: "0",
     totalPreparationAssets: "",
     totalMissing: "",
+    child: "",
+    expensesDuringStudy: (parseFloat("30000.00") * 0.15).toFixed(2),
   },
 });
+
+export const calculateYearsOfEducation = (levelOfeducation2: string, child: string) => {
+  const levelOfeducationNumber = parseInt(levelOfeducation2, 10);
+  const childNumber = parseInt(child, 10);
+
+  if (!isNaN(levelOfeducationNumber) && !isNaN(childNumber)) {
+    return (levelOfeducationNumber - (childNumber - 4)).toString();
+  }
+  return "";
+};
 
 export const calculateRequiredScholarships = (state: EducationPlanData) => {
   if (state.yearsOfeducation) {
     const requiredScholarships =
-      (parseFloat(state.typeOfeducation) +
-        parseFloat(state.typeOfeducation) * 0.15) *
+      (parseFloat(state.typeOfeducation2) + parseFloat(state.expensesDuringStudy)) *
       ((1 -
         Math.pow(
           1 + parseFloat(state.inflationRate),
@@ -46,8 +64,9 @@ export const calculateRequiredScholarships = (state: EducationPlanData) => {
   return "";
 };
 
+
 export const calculateTotalPreparationAssets = (state: EducationPlanData) => {
-  if (state.deposit && state.insuranceFund && state.otherAssets) {
+  if (state.deposit || state.insuranceFund || state.otherAssets) {
     const totalPreparationAssets =
       parseFloat(state.deposit) +
       parseFloat(state.insuranceFund) +
@@ -57,13 +76,20 @@ export const calculateTotalPreparationAssets = (state: EducationPlanData) => {
   }
   return "";
 };
+export const yearsOfeducationSelector = selector({
+  key: "yearsOfeducationSelector",
+  get: ({ get }) => {
+    const state = get(educationPlanState);
+    return calculateYearsOfEducation(state.levelOfeducation2, state.child);
+  },
+});
 
 export const requiredScholarshipsSelector = selector({
   key: "requiredScholarshipsSelector",
-
   get: ({ get }) => {
     const state = get(educationPlanState);
-    return calculateRequiredScholarships(state);
+    const yearsOfeducation = get(yearsOfeducationSelector);
+    return calculateRequiredScholarships({ ...state, yearsOfeducation });
   },
 });
 
@@ -93,3 +119,5 @@ export const totalMissingSelector = selector({
     return "";
   },
 });
+
+

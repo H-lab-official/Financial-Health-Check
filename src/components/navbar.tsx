@@ -89,7 +89,7 @@ export const NavBar = () => {
                 className='border flex flex-row border-[#0E2B81] justify-center items-center rounded-full w-[200px] h-8 gap-1'
             >
                 <img src={iconhome} alt="iconhome" />
-                <p className='text-[0.8rem]'>กลับสู่เว็บเไซต์ Agency Journey</p>
+                <p className='text-[0.8rem]'>กลับสู่เว็บไซต์ Agency Journey</p>
             </button>
         </div>
     );

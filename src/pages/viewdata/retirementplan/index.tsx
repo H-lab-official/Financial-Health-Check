@@ -31,8 +31,8 @@ const Vieweretirementplan: React.FC = () => {
   const [retirementPlanData, setRetirementPlanData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const totalMissing = useRecoilValue(totalRetirementMissingSelector);
-  const mustBeSaved = useRecoilValue(mustBeSavedSelector);
+  // const totalMissing = useRecoilValue(totalRetirementMissingSelector);
+  // const mustBeSaved = useRecoilValue(mustBeSavedSelector);
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
   const [linkButton, setLinkButton] = useState(false)
 
@@ -50,9 +50,14 @@ const Vieweretirementplan: React.FC = () => {
   }
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     });
+  };
+  const calculateTotalMissing = (data: any) => {
+    const totalPreparation = parseFloat(calculateTotalPreparation(data));
+    const totalPreparationAssets = parseFloat(calculateisTotalPreparationAssets(data));
+    return totalPreparation - totalPreparationAssets;
   };
   useEffect(() => {
     const fetchRetirementPlan = async () => {
@@ -89,6 +94,9 @@ const Vieweretirementplan: React.FC = () => {
     return floatValue
   }
 
+
+const totalMissing = retirementPlanData ? calculateTotalMissing(retirementPlanData) : 0;
+const mustBeSaved = retirementPlanData ? (totalMissing / parseFloat(calculateWorkingYears(retirementPlanData))) : 0;
 
 
   return (

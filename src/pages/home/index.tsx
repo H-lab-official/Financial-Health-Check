@@ -26,6 +26,8 @@ import ProtectionPlanNormal from '@/assets/images/imagesButton/ProtectionPlanNor
 import RetirementPlanActive from '@/assets/images/imagesButton/RetirementPlanActive.svg'
 import RetirementPlanHover from '@/assets/images/imagesButton/RetirementPlanHover.svg'
 import RetirementPlanNormal from '@/assets/images/imagesButton/RetirementPlanNormal.svg'
+import Man from '@/assets/images/Male.svg'
+import Women from '@/assets/images/Female.svg'
 import LoadingPage from '@/components/loadingPage'
 import '@/components/css/loading.css'
 const HomePage: React.FC = () => {
@@ -40,7 +42,7 @@ const HomePage: React.FC = () => {
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const [isLoading, setIsLoading] = useState(true)
-  console.log(isLoading);
+  const [selectedGender, setSelectedGender] = useState<string | null>(null);
 
   const handleInputChange =
     (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +52,14 @@ const HomePage: React.FC = () => {
         [field]: value,
       }));
     };
-
+  const handleClickChange =
+    (field: keyof typeof formData) => (value: string) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [field]: value,
+      }));
+      setSelectedGender(value);
+    };
   const next = () => {
     setCurrent(current + 1);
   };
@@ -143,6 +152,7 @@ const HomePage: React.FC = () => {
 
       const userFromServer = await axios.get(`https://azayagencyjourney.com/api/verify_account/${userParams}`);
       const data = userFromServer.data;
+      console.log(data);
 
       if (data.message !== "User found.") {
         navigator('/error');
@@ -157,35 +167,16 @@ const HomePage: React.FC = () => {
       navigator('/error');
     }
   };
-
-  // const checkParams = async () => {
-  //   const searchParams = new URLSearchParams(location.search);
-  //   const userParams = searchParams.get('user_params');
-
-  //   if (userParams) {
-  //     setName((prevName) => ({
-  //       ...prevName,
-  //       user_params: userParams,
-  //     }));
-  //     // setCurrent(0)
-  //   } else {
-  //     navigator('/error');
-  //   }
-  // }
-
   useEffect(() => {
     setTimeout(() => {
-      checkUsers()
+      // checkUsers()
 
       setIsLoading(false)
 
     }, 1500)
-
-
-
-
   }, []);
-  const logSelectionToDB = async (selectedPlans, userParams) => {
+
+  const logSelectionToDB = async (selectedPlans: any, userParams: any) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
         method: 'POST',
@@ -197,22 +188,22 @@ const HomePage: React.FC = () => {
           selectedPlans: selectedPlans,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to log selection');
       }
-  
+
       const data = await response.json();
       console.log('Log saved:', data);
     } catch (error) {
       console.error('Error logging selection:', error);
     }
   };
-  
+
   const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
-      let updatedSelected;
-  
+      let updatedSelected: any;
+
       if (value === '5') {
         if (prevSelected.includes('5')) {
           updatedSelected = [];
@@ -230,36 +221,11 @@ const HomePage: React.FC = () => {
           }
         }
       }
-  
-      // บันทึกการเลือกลงฐานข้อมูล
-     
-  
       return updatedSelected;
     });
   };
-  
-  console.log(formData);
 
-  // useEffect(() => {
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === 'hidden') {
-  //       alert('Warning: You might be trying to take a screenshot. This is prohibited due to security reasons.');
 
-  //       // Optionally, you could hide content here
-  //       document.body.style.visibility = 'hidden';
-  //     } else {
-  //       // Restore visibility when the document is visible again
-  //       document.body.style.visibility = 'visible';
-  //     }
-  //   };
-
-  //   document.addEventListener('visibilitychange', handleVisibilityChange);
-
-  //   return () => {
-  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
-  //   };
-  // }, []);
-  console.log(isLoading);
   const steps = [{
     title: "การตรวจสอบสุขภาพทางการเงิน",
     content: (
@@ -292,9 +258,17 @@ const HomePage: React.FC = () => {
 
     )
   }, {
-    title: "กรุณากรอกชื่อของคุณ",
+    title: "",
     content: (
       <div className="flex flex-col tracking-normal leading-tight">
+        <div>
+          <div className="flex flex-row gap-5">
+            <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} onClick={() => handleClickChange('gender')('Man')} />
+            <img src={Women} alt="manOrWomen" className={`cursor-pointer rounded-full ${selectedGender === 'Women' ? 'border-[#050C9C] border-4' : ''}`} onClick={() => handleClickChange('gender')('Women')} />
+          </div>
+
+          <p className="text-2xl my-2 text-center font-bold">กรุณากรอกชื่อของคุณ</p>
+        </div>
         <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
         <input
           value={formData.nickname || ""}
@@ -339,7 +313,7 @@ const HomePage: React.FC = () => {
     title: "เลือกแผนที่คุณต้องการ",
     content: (
       <div className="flex flex-col">
-        <div className="w-full flex flex-col justify-center items-center gap-3">
+        <div className="w-full flex flex-col justify-center items-center gap-4">
 
           <LabelImages
             selectedValue={sortedSelected}
@@ -402,7 +376,7 @@ const HomePage: React.FC = () => {
       </div>
     )
   }]
-{/* <div className="loader"></div> */}
+  {/* <div className="loader"></div> */ }
 
   return (
     isLoading ? <><LoadingPage /></> :
@@ -413,7 +387,7 @@ const HomePage: React.FC = () => {
         <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-12 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
 
           <Row align={"middle"} justify={"center"}>
-            <img src={current == 0 ? homeTop : namePic} alt="" className={`rounded-xl ${current === 1 ? "h-[300px]" : current === 2 ? "hidden" : ""} `} height={150} />
+            <img src={current == 0 ? homeTop : ""} alt="" className={`rounded-xl `} height={150} />
           </Row>
           <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
             <p className={`text-2xl my-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>

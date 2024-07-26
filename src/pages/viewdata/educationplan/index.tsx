@@ -2,21 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useRecoilState } from "recoil";
 import { sortedSelectedState } from '@/recoil/progressState';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import exportlink from '@/assets/images/exportlink.svg'
-import { Button, Typography } from "antd";
+import exportlink from '@/assets/images/exportlink.svg';
+import { Button } from "antd";
 import ShareOnSocial from "react-share-on-social";
-import logo from '@/assets/images/LOGO.png'
+import logo from '@/assets/images/LOGO.png';
 import {
-  calculateRequiredScholarships,
   calculateTotalPreparationAssets,
   educationPlanState,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
-import { addressPlans, historyAddress } from '@/recoil/address'
 import axios from 'axios';
 import { NavBar } from "@/components/navbar";
-import Education2 from "@/assets/images/Education2.png"
-import usePlanNavigation from "@/components/usePlanNavigation"
+import Education2 from "@/assets/images/Education2.png";
+import usePlanNavigation from "@/components/usePlanNavigation";
+
 const Vieweducationplan: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,30 +28,33 @@ const Vieweducationplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [educationPlanData] = useRecoilState(educationPlanState);
   const educationMissing = useRecoilValue(totalMissingSelector);
-  const [linkButton, setLinkButton] = useState(false)
+  const [linkButton, setLinkButton] = useState(false);
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
-
 
   const checkLocalStorageLengths = () => {
     const addressPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
     const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
     const addressPlansLength = addressPlans.length;
     const historyAddressLength = historyAddress.length;
-    if ((addressPlansLength + historyAddressLength) == 1) {
-      setLinkButton(true)
+    if ((addressPlansLength + historyAddressLength) === 1) {
+      setLinkButton(true);
     } else {
-      setLinkButton(false)
+      setLinkButton(false);
     }
-   
-  }
-
+  };
 
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     });
   };
+
+  const toFloat = (num: any) => {
+    const floatValue = parseFloat(num.toString().replace(/,/g, ''));
+    return floatValue;
+  };
+
   useEffect(() => {
     const fetchEducationPlan = async () => {
       try {
@@ -70,7 +72,7 @@ const Vieweducationplan: React.FC = () => {
     };
 
     fetchEducationPlan();
-    checkLocalStorageLengths()
+    checkLocalStorageLengths();
   }, [id]);
 
   if (loading) {
@@ -81,27 +83,26 @@ const Vieweducationplan: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  let TotalPreparationAssets = convertMoney(calculateTotalPreparationAssets(educationPlan))
-  let RequiredScholarships = convertMoney(calculateRequiredScholarships(educationPlan))
-
-  function toFloat(num: string) {
-    const floatValue = parseFloat(num.replace(/,/g, ''))
-    return floatValue
-  }
+  let TotalPreparationAssets = convertMoney(calculateTotalPreparationAssets(educationPlan));
+  let yearsOfeducationFrontCount = parseInt(educationPlan.levelOfeducation2) - (parseInt(educationPlan.child) - 4);
+  const expensesDuringStudy = parseFloat(educationPlan.expensesDuringStudy) || 0;
+  const typeOfEducation = parseFloat(educationPlan.typeOfeducation) || 0;
+  const inflationRate = parseFloat(educationPlan.inflationRate) || 0;
 
 
-  console.log(linkButton);
+
+  let RequiredScholarships = (typeOfEducation + expensesDuringStudy) *
+    ((1 - Math.pow(1 + inflationRate, yearsOfeducationFrontCount)) /
+      (1 - (1 + inflationRate)));
+
+
 
 
   return (
     <div>
-
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className=" fixed top-0 z-40"><NavBar /></div>
         {educationPlan ? (
-
-
-
           <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
             <div className="flex flex-col justify-center items-center mb-5">
               <h1 className=" text-[1.9rem] font-bold text-center">Education Plan</h1>
@@ -113,15 +114,37 @@ const Vieweducationplan: React.FC = () => {
                 <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อการศึกษาบุตร</p></div>
                 <div className=" text-black text-[0.8rem]">
                   <div className="flex flex-row justify-between">
-                    <p>1.ระดับการศึกษาที่คาดหวัง</p>
-                    <p>{educationPlan.levelOfeducation}</p>
+                    <p>1. อายุของบุตร</p>
+                    <p>{convertMoney(educationPlan.child)} ปี</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>2.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+                    <p>2. ระดับการศึกษาที่คาดหวัง</p>
                     <p>{[
-                      { value: "107000.00", label: "รัฐบาล" },
-                      { value: "214900.00", label: "เอกชน" },
-                      { value: "500000.00", label: "อินเตอร์" },
+                      { value: "19", label: "ปริญญาตรี" },
+                      { value: "21", label: "ปริญญาโท" },
+                      { value: "25", label: "ปริญญาเอก" },
+                    ]
+                      .filter(
+                        (obj) => obj.value === educationPlan.levelOfeducation
+                      )
+                      .map((obj) => obj.label)
+                      .join(",")}</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>3. จำนวนปีสำหรับการศึกษาลูกทั้งหมด</p>
+                    <p>{convertMoney(educationPlan.levelOfeducation2)} ปี</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>4. จำนวนปีการศึกษาที่เหลือที่ต้องส่ง</p>
+                    <p>{yearsOfeducationFrontCount} ปี</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <p>5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+                    <p>{[
+                      { value: "30000.00", label: "รัฐบาล" },
+                      { value: "90000.00", label: "เอกชน" },
+                      { value: "700000.00", label: "อินเตอร์" },
+                      { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
                     ]
                       .filter(
                         (obj) => obj.value === educationPlan.typeOfeducation
@@ -130,54 +153,44 @@ const Vieweducationplan: React.FC = () => {
                       .join(",")}</p></div>
                   <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
                     <p>ทุนการศึกษาที่จำเป็น</p>
-
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>3.ค่าเล่าเรียน</p>
+                    <p>6. ค่าเล่าเรียน</p>
                     <p>{convertMoney(educationPlan.typeOfeducation)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>4.ค่าใช้จ่ายระหว่างศึกษา</p>
-                    <p>{convertMoney(
-                      (
-                        parseFloat(educationPlan.typeOfeducation) * 0.15
-                      ).toFixed(2)
-                    )} บาท</p>
+                    <p>7. ค่าใช้จ่ายระหว่างศึกษา</p>
+                    <p>{convertMoney(educationPlan.expensesDuringStudy)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>5.จำนวนปีการศึกษาของลูกที่จะต้องส่ง</p>
-                    <p>{educationPlan.yearsOfeducation} ปี</p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <p>6.อัตราการเฟ้อของค่าเทอมต่อปี</p>
+                    <p>8. อัตราการเฟ้อของค่าเทอมต่อปี</p>
                     <p>{parseFloat(educationPlan.inflationRate) * 100} %</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>7.รวมทุนการศึกษาที่จำเป็น</p>
-                    <p>{RequiredScholarships} บาท</p>
+                    <p>9. รวมทุนการศึกษาที่จำเป็น</p>
+                    <p>{convertMoney(RequiredScholarships)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
                     <p>สิ่งที่เตรียมไว้แล้ว</p>
-
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>8.เงินฝาก</p>
+                    <p>10. เงินฝาก</p>
                     <p>{convertMoney(educationPlan.deposit)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>9.กรมธรรม์ที่ครบกำหนด</p>
+                    <p>11.กรมธรรม์ที่ครบกำหนด</p>
                     <p>{convertMoney(educationPlan.insuranceFund)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>10.อื่นๆ</p>
+                    <p>12. อื่นๆ</p>
                     <p>{convertMoney(educationPlan.otherAssets)} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>11.รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
+                    <p>13. รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
                     <p>{TotalPreparationAssets} บาท</p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <p>12.รวมที่ขาดอยู่</p>
+                    <p>14. รวมที่ขาดอยู่</p>
                     <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
                   </div>
                   <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
@@ -186,35 +199,32 @@ const Vieweducationplan: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-
             </div>
             <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
               <>
                 <ShareOnSocial linkFavicon={logo} linkTitle={"Education Plan Data"}>
-                  <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
+                  <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white ">
+                    <img src={exportlink} alt="exportlink" />
+                    <p>แชร์ผลสรุป</p>
+                  </Button>
                 </ShareOnSocial>
-                {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
-                  <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
-                    ย้อนกลับ
-                  </Button>
-                  <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
-                    ถัดไป
-                  </Button>
-                </div>}
-
-
+                {!linkButton && (
+                  <div className='flex flex-row justify-center items-center gap-5'>
+                    <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
+                      ย้อนกลับ
+                    </Button>
+                    <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                      ถัดไป
+                    </Button>
+                  </div>
+                )}
               </>
             </div>
           </div>
         ) : (
           <div>No education plan found.</div>
         )}
-
       </div>
-
-
-
     </div>
   );
 };

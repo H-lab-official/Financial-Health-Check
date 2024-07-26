@@ -238,11 +238,11 @@ const ProtectionPlan: React.FC = () => {
             placeholder="กรุณากรอกจำนวนปี"
           />
           <InputField
-            label="4.เงินสำรองฉุกเฉิน (50% ของ รายได้ต่อปี)"
+            label="4.เงินสำรองฉุกเฉิน"
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
-            placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+            placeholder="กรุณากรอกข้อมูลเงินสำรองฉุกเฉิน"
           />
           <Form.Item>
             <Col>
