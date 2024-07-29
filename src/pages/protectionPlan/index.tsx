@@ -1,4 +1,4 @@
-import { Button, Col, Form, Select, Typography, Steps } from "antd";
+import { Button, Col, Form, Select, Typography, Steps, Modal } from "antd";
 import React, { useState } from "react";
 import InputField from "@/components/InputField";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -19,7 +19,7 @@ import {
   calculateTotalAssets,
   calculateTotalDebts,
 } from "@/recoil/protectionPlanState";
-
+import tooltip from '@/assets/images/icons/tooltip.svg'
 import ProtectionPlan11 from "@/assets/images/icons/ProtectionPlan/protection1-1.svg";
 import ProtectionPlan12 from "@/assets/images/icons/ProtectionPlan/protection1-2.svg";
 import ProtectionPlan13 from "@/assets/images/icons/ProtectionPlan/protection1-3.svg";
@@ -44,6 +44,7 @@ import { nameState, nameData } from "@/recoil/nameState";
 import protection1 from "@/assets/images/protection1.png"
 import protection2 from "@/assets/images/protection2.png"
 import protection3 from "@/assets/images/protection3.png"
+import '@/components/css/InputField.css'
 const { Text } = Typography;
 import ProgressBar from "@/components/progressBar";
 import { saveProtectionPlan } from "@/components/api/saveProtectionPlan";
@@ -65,6 +66,7 @@ const ProtectionPlan: React.FC = () => {
   const selectedValue = useRecoilValue(selectedState)
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -95,6 +97,18 @@ const ProtectionPlan: React.FC = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
   const toGoNext = () => {
     const urlMap: { [key: string]: string } = {
@@ -248,6 +262,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="ต่อเดือน"
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
             imgUrl={ProtectionPlan12}
+            ModalBody="เงินที่สมาชิกทุกคนในบ้านต้องใช้ร่วมกันเช่น ค่าอาหาร ค่าน้ำค่าไฟ ค่าเช่าบ้าน ค่าเดินทาง และอื่น ๆ ที่จำเป็นต่อการใช้ชีวิตประจำวัน"
+            ModalTitle="1. ค่าใช้จ่ายภายในครอบครัว"
           />
           <InputField
             label="2. ค่าใช้จ่ายภายในครอบครัวต่อปี"
@@ -257,6 +273,8 @@ const ProtectionPlan: React.FC = () => {
             placeholder=""
             addonAfter="ต่อปี"
             imgUrl={ProtectionPlan13}
+            ModalBody="เป็นตัวเลขที่สะท้อนให้เห็นถึงภาพรวมการ ใช้จ่ายของครอบครัวตลอดทั้งปีช่วยให้เรา สามารถวางแผนการเงินได้อย่างมีประสิทธิภาพมากขึ้น"
+            ModalTitle="2.ค่าใช้จ่ายภายในครอบครัวต่อปี"
 
           />
           <InputField
@@ -266,6 +284,15 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="ปี"
             placeholder="กรุณากรอกจำนวนปี"
             imgUrl={ProtectionPlan14}
+            ModalBody={`
+              <p>วางแผนเพื่ออนาคตที่มั่นคง สามารถแบ่งช่วงเวลาในการดูแลออกเป็นช่วงๆ ได้ดังนี้</p>
+              <ul>
+                <li>• ช่วงวัยเด็ก</li>
+                <li>• ช่วงวัยทำงาน</li>
+                <li>• ช่วงวัยเกษียณ</li>
+              </ul>
+            `}
+            ModalTitle="3.จำนวนปีที่ต้องดูแลครอบครัว"
           />
           <InputField
             label="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
@@ -274,13 +301,30 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             placeholder="กรุณากรอกข้อมูลเงินสำรองฉุกเฉิน"
             imgUrl={ProtectionPlan15}
+            ModalBody="การเก็บเงินสำรองไว้ใช้ในยามฉุกเฉิน โดยคิดเป็นครึ่งหนึ่งของเงินที่คุณได้รับทั้ง หมดในแต่ละเดือน"
+            ModalTitle="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
           />
           <div className="flex flex-row justify-start items-center gap-4 mb-5">
             <Col><img src={ProtectionPlan16} alt="icons" /></Col>
             <Col>
-              <Col>
-                <Text className="text-[#243286]">{"5. เงินเฟ้อ"}</Text>
+              <Col className="flex flex-row justify-between items-center">
+                <Text className="text-[#243286]">{"5. เงินเฟ้อ"}</Text> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
               </Col>
+              <Modal
+                title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                  <Button key="close" className="custom-close-button" onClick={handleCancel}>
+                    ปิด
+                  </Button>
+                ]}
+                closable={false}
+                className="custom-modal"
+              >
+                <div className="custom-modal-body">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
+                </div>
+              </Modal>
               <Col>
                 <div className="flex flex-row justify-start items-center gap-5 ">
                   <Select
@@ -309,6 +353,12 @@ const ProtectionPlan: React.FC = () => {
               readOnly
               addonAfter="บาท"
               imgUrl={ProtectionPlan17}
+              ModalBody={`เงินเก็บฉุกเฉินที่เราเตรียมไว้เผื่อเหตุการณ์ไม่คาดฝัน หรือใช้จ่ายในสิ่งที่จำเป็นอย่างเร่งด่วน เช่น
+<br>เหตุฉุกเฉินทางการแพทย์: เจ็บป่วยกะทันหัน ต้องเข้าโรงพยาบาล
+ค่าใช้จ่ายที่ไม่คาดคิด: รถเสีย ซ่อมบ้าน
+<br>เหตุสุดวิสัย: ภัยธรรมชาติ ตกงาน
+`}
+              ModalTitle="6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
             />
           </div>
         </>
@@ -324,6 +374,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             placeholder="3,000.00"
             imgUrl={ProtectionPlan22}
+            ModalBody={`เงินที่เราต้องจ่ายให้กับธนาคารเป็นงวดๆ เพื่อชำระคืนเงินที่เราได้กู้มาซื้อบ้านมา`}
+            ModalTitle="7.ค่าผ่อนบ้านคงค้างทั้งหมด"
           />
           <InputField
             label="8. ค่าผ่อนรถคงค้างทั้งหมด"
@@ -332,6 +384,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             placeholder="300,000.00"
             imgUrl={ProtectionPlan23}
+            ModalBody={`จำนวนเงินทั้งหมดที่เรายังค้างชำระอยู่สำหรับรถคันนั้น นับตั้งแต่วันที่กู้เงินมาซื้อรถจนถึงปัจจุบัน`}
+            ModalTitle="8.ค่าผ่อนรถคงค้างทั้งหมด"
           />
           <InputField
             label="9 .หนี้สินอื่นๆ"
@@ -340,6 +394,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             placeholder="50,000.00"
             imgUrl={ProtectionPlan24}
+            ModalBody={`หนี้สินที่เกิดขึ้นจากการใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้สินหลักๆ เช่น หนี้บ้าน หนี้รถ หรือหนี้บัตรเครดิต`}
+            ModalTitle="9.หนี้สินอื่นๆ"
           />
           <InputField
             label="10. รวมหนี้สิน"
@@ -348,6 +404,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan25}
+            ModalBody={`การนำหนี้สินทั้งหมด ที่มีอยู่ไม่ว่าจะเป็นหนี้บัตรเครดิตหนี้สินเชื่อส่วนบุคคลหรือหนี้สินอื่นๆ มารวมไว้เป็นหนี้ก้อนเดียวโดยการกู้เงินก้อนใหม่จากสถาบันการเงิน เพื่อนำไปชำระหนี้เดิมทั้งหมด`}
+            ModalTitle="10.รวมหนี้สิน"
           />
           <div className="">
             <InputField
@@ -356,7 +414,10 @@ const ProtectionPlan: React.FC = () => {
               onChange={() => { }}
               addonAfter="บาท"
               readOnly
+
               imgUrl={ProtectionPlan26}
+              ModalBody={`เงินที่เราต้องการจะมี หรือต้องการใช้ นั่นเองค่ะ เป็นตัวเลขที่บอกว่าเราต้องการเงินเท่าไหร่ เพื่อนำไปใช้ในสิ่งต่างๆ`}
+              ModalTitle="11.จำนวนเงินที่ต้องการ"
             />
           </div>
         </>
@@ -372,6 +433,8 @@ const ProtectionPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan32}
+          ModalBody={`การฝากเงินของเราไว้กับธนาคารนั่นเอง คิดง่ายๆ เหมือนกับการเก็บเงินใส่กระปุก แต่แทนที่จะเก็บที่บ้านเราก็เอาไปฝากไว้ที่ธนาคาร เพื่อความปลอดภัยและสะดวกในการใช้งาน`}
+          ModalTitle="12.เงินฝากธนาคาร"
         />
         <InputField
           label="13. ทุนประกันชีวิต"
@@ -380,6 +443,8 @@ const ProtectionPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan33}
+          ModalBody={`เหมือนกับเงินก้อนหนึ่งที่บริษัทประกันภัยจะจ่ายให้กับคนที่เราเลือกไว้ (ผู้รับผลประโยชน์) เมื่อเราเสียชีวิตไปนั่นเอง`}
+          ModalTitle="13.ทุนประกันชีวิต"
         />
         <InputField
           label="14. ทรัพย์สินอื่น ๆ"
@@ -388,6 +453,8 @@ const ProtectionPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan34}
+          ModalBody={`สิ่งของหรือทรัพย์สินที่มีค่าทางเศรษฐกิจ ทั้งที่มีตัวตนและไม่มีตัวตน ที่ไม่ได้ถูกจัดอยู่ในหมวดหมู่ของทรัพย์สินหลักๆ เช่น ที่ดิน อาคาร รถยนต์ หรือเงินฝากธนาคาร`}
+          ModalTitle="14.ทรัพย์สินอื่น ๆ"
         />
         <InputField
           label="15. รวมสิ่งที่เตรียมไว้แล้ว"
@@ -396,6 +463,8 @@ const ProtectionPlan: React.FC = () => {
           addonAfter="บาท"
           readOnly
           imgUrl={ProtectionPlan35}
+          ModalBody={`การรวบรวมข้อมูลทั้งหมดที่เกี่ยวกับทรัพย์สินที่เรามีอยู่ ไม่ว่าจะเป็นที่ดิน บ้าน รถยนต์ เงินฝาก หรือทรัพย์สินอื่นๆ ที่มีค่าทางเศรษฐกิจ เพื่อให้เราทราบว่าเรามีทรัพย์สินอะไรบ้าง มีมูลค่าเท่าไหร่ และอยู่ที่ไหน`}
+          ModalTitle="15.รวมสิ่งที่เตรียมไว้แล้ว"
         />
         <div className=" ">
           <InputField
@@ -405,6 +474,8 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan36}
+            ModalBody={`การรวบรวมข้อมูลทั้งหมดที่เกี่ยวกับทรัพย์สินที่เรามีอยู่ ไม่ว่าจะเป็นที่ดิน บ้าน รถยนต์ เงินฝาก หรือทรัพย์สินอื่นๆ ที่มีค่าทางเศรษฐกิจ เพื่อให้เราทราบว่าเรามีทรัพย์สินอะไรบ้าง มีมูลค่าเท่าไหร่ และอยู่ที่ไหน`}
+          ModalTitle="16.ความคุ้มครองที่จำเป็น"
           />
         </div>
       </>)
