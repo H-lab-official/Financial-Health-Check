@@ -76,7 +76,7 @@ export const NavBar = () => {
     };
 
     return (
-        <div className='flex flex-row justify-between items-center py-4 w-[400px] px-2 bg-white mb-2'>
+        <div className='flex flex-row justify-between items-center py-4 w-[400px] px-4 bg-white mb-2'>
             <div className='flex flex-row items-center gap-2'>
                 <img src={logo} alt="logo" />
                 <div className='flex flex-col'>

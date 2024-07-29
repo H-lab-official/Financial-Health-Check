@@ -4,10 +4,12 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import InputField from "@/components/InputField";
 import { useNavigate, useLocation } from "react-router";
 import {
-  educationPlanState,
+
   requiredScholarshipsSelector,
   yearsOfeducationSelector,
   totalPreparationAssetsSelector,
+  calculateTotalPreparationAssets,
+  educationPlanState,
   totalMissingSelector,
 } from "@/recoil/educationPlanState";
 import {
@@ -25,7 +27,23 @@ const { Text } = Typography;
 import { nameState, nameData } from "@/recoil/nameState";
 import { NavBar } from "@/components/navbar";
 import { saveEducationplan } from "@/components/api/saveeducationPlan";
-
+import EducationPlan11 from '@/assets/images/icons/EducationPlan/EducationPlan1-1.svg'
+import EducationPlan12 from '@/assets/images/icons/EducationPlan/EducationPlan1-2.svg'
+import EducationPlan13 from '@/assets/images/icons/EducationPlan/EducationPlan1-3.svg'
+import EducationPlan14 from '@/assets/images/icons/EducationPlan/EducationPlan1-4.svg'
+import EducationPlan15 from '@/assets/images/icons/EducationPlan/EducationPlan1-5.svg'
+import EducationPlan16 from '@/assets/images/icons/EducationPlan/EducationPlan1-6.svg'
+import EducationPlan17 from '@/assets/images/icons/EducationPlan/EducationPlan1-7.svg'
+import EducationPlan18 from '@/assets/images/icons/EducationPlan/EducationPlan1-8.svg'
+import EducationPlan19 from '@/assets/images/icons/EducationPlan/EducationPlan1-9.svg'
+import EducationPlan110 from '@/assets/images/icons/EducationPlan/EducationPlan1-10.svg'
+import EducationPlan111 from '@/assets/images/icons/EducationPlan/EducationPlan1-11.svg'
+import EducationPlan21 from '@/assets/images/icons/EducationPlan/EducationPlan2-1.svg'
+import EducationPlan22 from '@/assets/images/icons/EducationPlan/EducationPlan2-2.svg'
+import EducationPlan23 from '@/assets/images/icons/EducationPlan/EducationPlan2-3.svg'
+import EducationPlan24 from '@/assets/images/icons/EducationPlan/EducationPlan2-4.svg'
+import EducationPlan25 from '@/assets/images/icons/EducationPlan/EducationPlan2-5.svg'
+import EducationPlan26 from '@/assets/images/icons/EducationPlan/EducationPlan2-6.svg'
 const EducationPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -43,7 +61,7 @@ const EducationPlan: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
 
   const [levelOfeducation2, setLevelOfeducation2] = useState(formData.levelOfeducation);
- 
+
   const [typeOfeducation2, setTypeOfeducation2] = useState(formData.typeOfeducation);
 
   const handleInputChange = (field: keyof typeof formData) => (value: string) => {
@@ -66,7 +84,10 @@ const EducationPlan: React.FC = () => {
     }));
   };
 
-
+  const toFloat = (num: any) => {
+    const floatValue = parseFloat(num.toString().replace(/,/g, ''));
+    return floatValue;
+  };
 
   const handleTypeOfEducationChange = (value: string) => {
     setFormData((prevFormData) => ({
@@ -97,15 +118,21 @@ const EducationPlan: React.FC = () => {
   }, [formData.typeOfeducation]);
 
   useEffect(() => {
+
     const expensesDuringStudy = (parseFloat(formData.typeOfeducation2) * 0.25).toFixed(2);
     setFormData((prevFormData) => ({
       ...prevFormData,
-     
       expensesDuringStudy,
     }));
-  }, [formData.typeOfeducation2]);
-console.log(formData);
 
+  }, [formData.typeOfeducation]);
+  console.log(formData);
+  const handleyearsOfeducationChange = () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+     
+    }));
+  }
   let allImages;
   switch (current) {
     case 1:
@@ -134,7 +161,12 @@ console.log(formData);
       handleMultipleSelections(urlMap);
     }
   };
-
+  const convertMoney = (value: any) => {
+    return parseFloat(value).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== "5") {
@@ -334,6 +366,18 @@ console.log(formData);
     }
   };
 
+  let TotalPreparationAssets = convertMoney(calculateTotalPreparationAssets(formData));
+  let yearsOfeducationFrontCount = parseInt(formData.levelOfeducation2) - (parseInt(formData.child) - 4);
+  const expensesDuringStudy = parseFloat(formData.expensesDuringStudy) || 0;
+  const typeOfEducation = parseFloat(formData.typeOfeducation2) || 0;
+  const inflationRate = parseFloat(formData.inflationRate) || 0;
+
+
+
+  let RequiredScholarships = (typeOfEducation + expensesDuringStudy) *
+    ((1 - Math.pow(1 + inflationRate, yearsOfeducationFrontCount)) /
+      (1 - (1 + inflationRate)));
+
   const steps = [
     {
       title: "แผนที่ 4",
@@ -360,28 +404,33 @@ console.log(formData);
                 onChange={handleInputChange("child")}
                 addonAfter="ปี"
                 placeholder="กรุณาใส่อายุบุตร"
+                imgUrl={EducationPlan12}
               />
             </Row>
-            <Col>
-              <Text className="text-[#243286]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</Text>
-            </Col>
-            <Row className="gap-4">
-              <div className="flex flex-row justify-start items-center">
-                <Select
-                  style={{ width: "260px" }}
-                  value={formData.levelOfeducation}
-                  placeholder="กรุณาเลือก"
-                  onChange={handleSelectChange('levelOfeducation')}
-                  options={[
-                    { value: "19", label: "ปริญญาตรี" },
-                    { value: "21", label: "ปริญญาโท" },
-                    { value: "25", label: "ปริญญาเอก" },
-                  ]}
-                />
-              </div>
-              <Button onClick={info}>!</Button>
-            </Row>
-
+            <div className="flex flex-row justify-start items-center gap-4 mb-5">
+              <Col><img src={EducationPlan13} alt="icons" /></Col>
+              <Col>
+                <Col>
+                  <Text className="text-[#243286]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</Text>
+                </Col>
+                <Row className="gap-4">
+                  <div className="flex flex-row justify-start items-center">
+                    <Select
+                      style={{ width: "190px" }}
+                      value={formData.levelOfeducation}
+                      placeholder="กรุณาเลือก"
+                      onChange={handleSelectChange('levelOfeducation')}
+                      options={[
+                        { value: "19", label: "ปริญญาตรี" },
+                        { value: "21", label: "ปริญญาโท" },
+                        { value: "25", label: "ปริญญาเอก" },
+                      ]}
+                    />
+                  </div>
+                  <Button onClick={info}>!</Button>
+                </Row>
+              </Col>
+            </div>
             <Row className="mt-4">
               <InputField
                 label="3. จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
@@ -389,42 +438,48 @@ console.log(formData);
                 onChange={handleInputChange('levelOfeducation2')}
                 addonAfter="ปี"
                 placeholder=""
+                readOnly
+                imgUrl={EducationPlan14}
               />
               <InputField
                 label="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
                 value={yearsOfeducation}
-                onChange={() => { }}
+                onChange={handleInputChange('yearsOfeducation2')}
                 addonAfter="ปี"
-                readOnly
+
                 placeholder=""
+                imgUrl={EducationPlan15}
               />
             </Row>
 
-            <Col>
+            <div className="flex flex-row justify-start items-center gap-4 mb-5">
+              <Col><img src={EducationPlan16} alt="icons" /></Col>
               <Col>
-                <Text className="text-[#243286]">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
+                <Col>
+                  <Text className="text-[#243286]">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
+                </Col>
+                <Col>
+                  <div className="flex flex-row justify-start items-center">
+                    <Select
+                      style={{ width: "190px" }}
+                      value={formData.typeOfeducation}
+                      placeholder="กรุณาเลือก"
+                      onChange={handleTypeOfEducationChange}
+                      options={[
+                        { value: "30000.00", label: "รัฐบาล" },
+                        { value: "90000.00", label: "เอกชน" },
+                        { value: "700000.00", label: "อินเตอร์" },
+                        { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
+                      ]}
+                    />
+                  </div>
+                </Col>
               </Col>
-              <Col>
-                <div className="flex flex-row justify-start items-center">
-                  <Select
-                    style={{ width: "260px" }}
-                    value={formData.typeOfeducation}
-                    placeholder="กรุณาเลือก"
-                    onChange={handleTypeOfEducationChange}
-                    options={[
-                      { value: "30000.00", label: "รัฐบาล" },
-                      { value: "90000.00", label: "เอกชน" },
-                      { value: "700000.00", label: "อินเตอร์" },
-                      { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
-                    ]}
-                  />
-                </div>
-              </Col>
-            </Col>
+            </div>
           </Form.Item>
 
-          <Row className="my-2 ">
-            <Text className="text-xl font-bold text-[#243286]">ทุนการศึกษาที่จำเป็น</Text>
+          <Row className="my-2 gap-5">
+            <img src={EducationPlan17} alt="" /> <Text className="text-xl font-bold text-[#243286]">ทุนการศึกษาที่จำเป็น</Text>
           </Row>
           <InputField
             label="6. ค่าเล่าเรียน"
@@ -432,6 +487,7 @@ console.log(formData);
             onChange={handleInputChange("typeOfeducation2")}
             addonAfter="บาท/ปี"
             placeholder=""
+            imgUrl={EducationPlan18}
           />
           <InputField
             label="7. ค่าใช้จ่ายระหว่างศึกษา"
@@ -439,17 +495,19 @@ console.log(formData);
             onChange={handleInputChange("expensesDuringStudy")}
             addonAfter="บาท/ปี"
             placeholder=""
+            imgUrl={EducationPlan19}
           />
 
-          <Form.Item>
+          <div className="flex flex-row justify-start items-center gap-4 mb-5">
+            <Col><img src={EducationPlan110} alt="icons" /></Col>
             <Col>
               <Col>
-                <Text className="text-[#243286]">{"7. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
+                <Text className="text-[#243286]">{"8. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
               </Col>
               <Col>
                 <div className="flex flex-row justify-start items-center gap-5 ">
                   <Select
-                    style={{ width: "260px" }}
+                    style={{ width: "190px" }}
                     value={formData.inflationRate}
                     placeholder="กรุณาเลือก"
                     onChange={handleSelectChange("inflationRate")}
@@ -465,15 +523,15 @@ console.log(formData);
                 </div>
               </Col>
             </Col>
-          </Form.Item>
-
+          </div>
           <InputField
-            label="8. รวมทุนการศึกษาที่จำเป็น"
+            label="9. รวมทุนการศึกษาที่จำเป็น"
             value={requiredScholarships}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="บาท"
+            imgUrl={EducationPlan111}
           />
         </div>
       ),
@@ -483,47 +541,147 @@ console.log(formData);
       content: (
         <div>
           <InputField
-            label="9. เงินฝากให้ลูกเรียนหนังสือ"
+            label="10. เงินฝากให้ลูกเรียนหนังสือ"
             value={formData.deposit}
             onChange={handleInputChange("deposit")}
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
+            imgUrl={EducationPlan22}
           />
 
           <InputField
-            label="10. กรมธรรม์ที่ครบกำหนด"
+            label="11. กรมธรรม์ที่ครบกำหนด"
             value={formData.insuranceFund}
             onChange={handleInputChange("insuranceFund")}
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
+            imgUrl={EducationPlan23}
           />
           <InputField
-            label="11. อื่นๆ"
+            label="12. อื่นๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
+            imgUrl={EducationPlan24}
           />
           <InputField
-            label="12. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
+            label="13. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
             value={totalPreparationAssets}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="บาท"
+            imgUrl={EducationPlan25}
           />
 
           <InputField
-            label="13. รวมที่ขาดอยู่"
+            label="14. รวมที่ขาดอยู่"
             value={renderTotalMissingMessage()}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="บาท"
+            imgUrl={EducationPlan26}
           />
         </div>
       ),
     },
+    {
+      title: "สรุปผล",
+      content: (
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1rem] mb-3 flex flex-row justify-between items-center"><p>วางแผนเพื่อการศึกษาบุตร</p> <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between">
+              <p>1. อายุของบุตร</p>
+              <p>{convertMoney(formData.child)} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2. ระดับการศึกษาที่คาดหวัง</p>
+              <p>{[
+                { value: "19", label: "ปริญญาตรี" },
+                { value: "21", label: "ปริญญาโท" },
+                { value: "25", label: "ปริญญาเอก" },
+              ]
+                .filter(
+                  (obj) => obj.value === formData.levelOfeducation
+                )
+                .map((obj) => obj.label)
+                .join(",")}</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>3. จำนวนปีสำหรับการศึกษาลูกทั้งหมด</p>
+              <p>{convertMoney(formData.levelOfeducation2)} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>4. จำนวนปีการศึกษาที่เหลือที่ต้องส่ง</p>
+              <p>{yearsOfeducationFrontCount} ปี</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+              <p>{[
+                { value: "30000.00", label: "รัฐบาล" },
+                { value: "90000.00", label: "เอกชน" },
+                { value: "700000.00", label: "อินเตอร์" },
+                { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
+              ]
+                .filter(
+                  (obj) => obj.value === formData.typeOfeducation
+                )
+                .map((obj) => obj.label)
+                .join(",")}</p></div>
+            <div className="flex flex-row justify-between items-center my-2 text-[1rem] text-[#0E2B81]">
+              <p>ทุนการศึกษาที่จำเป็น</p>
+              {/* <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 1)}>แก้ไข</button> */}
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6. ค่าเล่าเรียน</p>
+              <p>{convertMoney(formData.typeOfeducation)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>7. ค่าใช้จ่ายระหว่างศึกษา</p>
+              <p>{convertMoney(formData.expensesDuringStudy)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>8. อัตราการเฟ้อของค่าเทอมต่อปี</p>
+              <p>{parseFloat(formData.inflationRate) * 100} %</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9. รวมทุนการศึกษาที่จำเป็น</p>
+              <p>{convertMoney(RequiredScholarships)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between items-center my-2 text-[1rem] text-[#0E2B81]">
+              <p>สิ่งที่เตรียมไว้แล้ว</p><button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 1)}>แก้ไข</button>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10. เงินฝาก</p>
+              <p>{convertMoney(formData.deposit)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>11.กรมธรรม์ที่ครบกำหนด</p>
+              <p>{convertMoney(formData.insuranceFund)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>12. อื่นๆ</p>
+              <p>{convertMoney(formData.otherAssets)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>13. รวมทุนการศึกษาที่เตรียมไว้แล้ว</p>
+              <p>{TotalPreparationAssets} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>14. รวมที่ขาดอยู่</p>
+              <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
+            </div>
+          </div>
+        </div>
+      ),
+    }
   ];
 
   return (
@@ -537,15 +695,15 @@ console.log(formData);
           <h1 className=" text-2xl font-bold text-center">
             {current == 0 ? "Education Plan" : "Education Plan"}{" "}
           </h1>
-          <ProgressBar percent={progress.percent} current={current} />
+          {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />}
           <img src={allImages} alt="" className="w-[265px] mt-5" />
-          <DotsComponent steps={steps} current={current} />
+          {current === 3 ? "" : <DotsComponent steps={steps} current={current} />}
         </div>
         <div
           className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"
             }`}
         >
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "วางแผนเพื่อการศึกษาบุตร" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan21} alt="" />{steps[current].title}</div> : steps[current].title}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
@@ -565,7 +723,7 @@ console.log(formData);
                   type="primary"
                   onClick={() => next()}
                   disabled={handleDisabled()}
-                  className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w/[120px]"}`}
+                  className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}
                 >
                   ถัดไป
                 </Button>
@@ -576,7 +734,7 @@ console.log(formData);
               <Button
                 disabled={handleDisabled()}
                 onClick={nextlast}
-                className="bg-[#003781] rounded-full w/[120px] text-white"
+                className="bg-[#003781] rounded-full w-[120px] text-white"
               >
                 ถัดไป
               </Button>

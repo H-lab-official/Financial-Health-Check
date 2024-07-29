@@ -1,7 +1,7 @@
 import { Button, Col, Form, Select, Typography, Steps } from "antd";
 import React, { useState } from "react";
 import InputField from "@/components/InputField";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import protection from "@/assets/images/protection.png"
 import { useRecoilState, useRecoilValue } from "recoil";
 import DotsComponent from "@/components/DotsComponent";
@@ -12,10 +12,33 @@ import {
   initialYearlyExpenseSelector,
   totalAmountSelector,
   requiredAmountSelector,
-  coverageSelector,
+  coverageSelector, calculateCoverage,
+  calculateExpenses,
+  calculateInitialYearlyExpense,
+  calculateRequiredAmount,
+  calculateTotalAssets,
+  calculateTotalDebts,
 } from "@/recoil/protectionPlanState";
 
-
+import ProtectionPlan11 from "@/assets/images/icons/ProtectionPlan/protection1-1.svg";
+import ProtectionPlan12 from "@/assets/images/icons/ProtectionPlan/protection1-2.svg";
+import ProtectionPlan13 from "@/assets/images/icons/ProtectionPlan/protection1-3.svg";
+import ProtectionPlan14 from "@/assets/images/icons/ProtectionPlan/protection1-4.svg";
+import ProtectionPlan15 from "@/assets/images/icons/ProtectionPlan/protection1-5.svg";
+import ProtectionPlan16 from "@/assets/images/icons/ProtectionPlan/protection1-6.svg";
+import ProtectionPlan17 from "@/assets/images/icons/ProtectionPlan/protection1-7.svg";
+import ProtectionPlan21 from "@/assets/images/icons/ProtectionPlan/protection2-1.svg";
+import ProtectionPlan22 from "@/assets/images/icons/ProtectionPlan/protection2-2.svg";
+import ProtectionPlan23 from "@/assets/images/icons/ProtectionPlan/protection2-3.svg";
+import ProtectionPlan24 from "@/assets/images/icons/ProtectionPlan/protection2-4.svg";
+import ProtectionPlan25 from "@/assets/images/icons/ProtectionPlan/protection2-5.svg";
+import ProtectionPlan26 from "@/assets/images/icons/ProtectionPlan/protection2-6.svg";
+import ProtectionPlan31 from "@/assets/images/icons/ProtectionPlan/protection3-1.svg";
+import ProtectionPlan32 from "@/assets/images/icons/ProtectionPlan/protection3-2.svg";
+import ProtectionPlan33 from "@/assets/images/icons/ProtectionPlan/protection3-3.svg";
+import ProtectionPlan34 from "@/assets/images/icons/ProtectionPlan/protection3-4.svg";
+import ProtectionPlan35 from "@/assets/images/icons/ProtectionPlan/protection3-5.svg";
+import ProtectionPlan36 from "@/assets/images/icons/ProtectionPlan/protection3-6.svg";
 import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import { nameState, nameData } from "@/recoil/nameState";
 import protection1 from "@/assets/images/protection1.png"
@@ -67,7 +90,12 @@ const ProtectionPlan: React.FC = () => {
       break;
 
   }
-
+  const convertMoney = (value: any) => {
+    return parseFloat(value).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
   const toGoNext = () => {
     const urlMap: { [key: string]: string } = {
       '1': '/protection-plan',
@@ -85,10 +113,10 @@ const ProtectionPlan: React.FC = () => {
   };
 
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
-     const value = sortedSelected[0];
-    if (sortedSelected.length === 1&&value!=='5') {
+    const value = sortedSelected[0];
+    if (sortedSelected.length === 1 && value !== '5') {
       navigator('/report');
-    } else {   
+    } else {
 
       if (value === '5') {
         navigateThroughSequence(urlMap);
@@ -126,7 +154,7 @@ const ProtectionPlan: React.FC = () => {
   };
 
   const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
-   
+
     if (urlMap[value]) {
 
       navigator(urlMap[value]);
@@ -202,9 +230,9 @@ const ProtectionPlan: React.FC = () => {
     {
       title: "Protection Plan",
       content: (
-        <div className="flex flex-col justify-center items-center text-[2rem] mb-10">
+        <div className="flex flex-col justify-center items-center text-[2rem] mb-4">
           {/* <h1 className=" font-bold">Protection Plan</h1> */}
-          <h1 className=" text-center mt-5">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว <br />ในกรณีที่ต้องจากไป</h1>
+          <h1 className=" text-center">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว <br />ในกรณีที่ต้องจากไป</h1>
 
         </div>
       )
@@ -219,6 +247,7 @@ const ProtectionPlan: React.FC = () => {
             onChange={handleInputChange("initialMonthlyExpense")}
             addonAfter="ต่อเดือน"
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+            imgUrl={ProtectionPlan12}
           />
           <InputField
             label="2. ค่าใช้จ่ายภายในครอบครัวต่อปี"
@@ -227,7 +256,7 @@ const ProtectionPlan: React.FC = () => {
             readOnly
             placeholder=""
             addonAfter="ต่อปี"
-
+            imgUrl={ProtectionPlan13}
 
           />
           <InputField
@@ -236,15 +265,18 @@ const ProtectionPlan: React.FC = () => {
             onChange={handleInputChange("numberOfYears")}
             addonAfter="ปี"
             placeholder="กรุณากรอกจำนวนปี"
+            imgUrl={ProtectionPlan14}
           />
           <InputField
-            label="4.เงินสำรองฉุกเฉิน"
+            label="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
             placeholder="กรุณากรอกข้อมูลเงินสำรองฉุกเฉิน"
+            imgUrl={ProtectionPlan15}
           />
-          <Form.Item>
+          <div className="flex flex-row justify-start items-center gap-4 mb-5">
+            <Col><img src={ProtectionPlan16} alt="icons" /></Col>
             <Col>
               <Col>
                 <Text className="text-[#243286]">{"5. เงินเฟ้อ"}</Text>
@@ -252,7 +284,7 @@ const ProtectionPlan: React.FC = () => {
               <Col>
                 <div className="flex flex-row justify-start items-center gap-5 ">
                   <Select
-                    style={{ width: '260px' }}
+                    style={{ width: '190px' }}
                     defaultValue={formData.inflationRate}
                     onChange={handleInputChange("inflationRate")}
                     options={[
@@ -268,7 +300,7 @@ const ProtectionPlan: React.FC = () => {
                 </div>
               </Col>
             </Col>
-          </Form.Item>
+          </div>
           <div className="">
             <InputField
               label="6. เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
@@ -276,6 +308,7 @@ const ProtectionPlan: React.FC = () => {
               onChange={() => { }}
               readOnly
               addonAfter="บาท"
+              imgUrl={ProtectionPlan17}
             />
           </div>
         </>
@@ -290,6 +323,7 @@ const ProtectionPlan: React.FC = () => {
             onChange={handleInputChange("homePayments")}
             addonAfter="บาท"
             placeholder="3,000.00"
+            imgUrl={ProtectionPlan22}
           />
           <InputField
             label="8. ค่าผ่อนรถคงค้างทั้งหมด"
@@ -297,6 +331,7 @@ const ProtectionPlan: React.FC = () => {
             onChange={handleInputChange("carPayments")}
             addonAfter="บาท"
             placeholder="300,000.00"
+            imgUrl={ProtectionPlan23}
           />
           <InputField
             label="9 .หนี้สินอื่นๆ"
@@ -304,6 +339,7 @@ const ProtectionPlan: React.FC = () => {
             onChange={handleInputChange("otherDebts")}
             addonAfter="บาท"
             placeholder="50,000.00"
+            imgUrl={ProtectionPlan24}
           />
           <InputField
             label="10. รวมหนี้สิน"
@@ -311,6 +347,7 @@ const ProtectionPlan: React.FC = () => {
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
+            imgUrl={ProtectionPlan25}
           />
           <div className="">
             <InputField
@@ -319,6 +356,7 @@ const ProtectionPlan: React.FC = () => {
               onChange={() => { }}
               addonAfter="บาท"
               readOnly
+              imgUrl={ProtectionPlan26}
             />
           </div>
         </>
@@ -333,6 +371,7 @@ const ProtectionPlan: React.FC = () => {
           onChange={handleInputChange("bankDeposit")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={ProtectionPlan32}
         />
         <InputField
           label="13. ทุนประกันชีวิต"
@@ -340,6 +379,7 @@ const ProtectionPlan: React.FC = () => {
           onChange={handleInputChange("lifeInsuranceFund")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={ProtectionPlan33}
         />
         <InputField
           label="14. ทรัพย์สินอื่น ๆ"
@@ -347,6 +387,7 @@ const ProtectionPlan: React.FC = () => {
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={ProtectionPlan34}
         />
         <InputField
           label="15. รวมสิ่งที่เตรียมไว้แล้ว"
@@ -354,6 +395,7 @@ const ProtectionPlan: React.FC = () => {
           onChange={() => { }}
           addonAfter="บาท"
           readOnly
+          imgUrl={ProtectionPlan35}
         />
         <div className=" ">
           <InputField
@@ -362,13 +404,106 @@ const ProtectionPlan: React.FC = () => {
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
+            imgUrl={ProtectionPlan36}
           />
         </div>
+      </>)
+    },
+    {
+      title: "สรุปผล",
+      content: (<>
+        {/* <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]"> */}
+        <div className="  rounded-lg p-5 shadow-lg mb-5">
+          <div className="text-[1rem] mb-3 flex flex-row justify-between items-center">
+            <p>ค่าใช้จ่าย</p>
+            <button
+              className="bg-[#243286] py-1 px-3 text-white rounded-xl"
+              onClick={() => setCurrent(current - 3)}
+            >
+              แก้ไข
+            </button>
+          </div>
+
+          <div className=" text-black text-[0.8rem]">
+            <div className="flex flex-row justify-between">
+              <p>1.ค่าใช้จ่ายภายในครอบครัว</p>
+              <p>{convertMoney(formData.initialMonthlyExpense)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>2.ค่าใช้จ่ายภายในครอบครัวบาทต่อปี</p>
+              <p>{convertMoney(calculateInitialYearlyExpense(formData))} บาท</p></div>
+            <div className="flex flex-row justify-between">
+              <p>3.จำนวนปีที่ต้องการดูแลครอบครัว</p>
+              <p>{formData.numberOfYears} ปี</p></div>
+            <div className="flex flex-row justify-between">
+              <p>4.เงินสำรองฉุกเฉิน (50% ของรายได้บาท/ปี)</p>
+              <p>{convertMoney(formData.adjustedYearlyExpenses)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>5.เงินเฟ้อ</p>
+              <p>{parseFloat(formData.inflationRate) * 100} %</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้</p>
+              <p>{convertMoney(calculateExpenses(formData))} บาท</p>
+            </div>
+            <div className="text-[1rem] my-3 flex flex-row justify-between items-center text-[#0E2B81]"><p>หนี้สินค้างชำระ</p> <button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
+            <div className="flex flex-row justify-between mt-2">
+              <p>7.ค่าผ่อนบ้านคงค้างทั้งหมด</p>
+              <p>{convertMoney(formData.homePayments)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>8.ค่าผ่อนรถคงค้างทั้งหมด</p>
+              <p>{convertMoney(formData.carPayments)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>9.หนี้สินอื่นๆ</p>
+              <p>{convertMoney(formData.otherDebts)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>10.รวมหนี้สิน</p>
+              <p>{convertMoney(calculateTotalDebts(formData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>11.จำนวนเงินที่ต้องการ</p>
+              <p>{convertMoney(calculateRequiredAmount(formData))} บาท</p>
+            </div>
+            <div className="text-[1rem] my-3 flex flex-row justify-between items-center text-[#0E2B81]"><p>สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)</p> <button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 1)}>แก้ไข</button></div>
+            <div className="flex flex-row justify-between mt-2">
+              <p>12.เงินฝากธนาคาร</p>
+              <p>{convertMoney(formData.bankDeposit)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>13.ทุนประกันชีวิต</p>
+              <p>{convertMoney(formData.lifeInsuranceFund)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>14.ทรัพย์สินอื่น ๆ</p>
+              <p>{convertMoney(formData.otherAssets)} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>15.รวมสิ่งที่เตรียมไว้แล้ว</p>
+              <p>{convertMoney(calculateTotalAssets(formData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-between mt-5 text-red-500">
+              <p>16.ความคุ้มครองที่จำเป็น</p>
+              <p>{convertMoney(calculateTotalAssets(formData))} บาท</p>
+            </div>
+            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+              <p>ผลลัพธ์</p>
+              <p>{convertMoney(calculateCoverage(formData))} บาท</p>
+            </div>
+          </div>
+
+        </div>
+
+
+        {/* </div> */}
       </>)
     }
 
   ]
-  console.log();
+
 
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
@@ -378,12 +513,12 @@ const ProtectionPlan: React.FC = () => {
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "Protection Plan" : "Protection Plan"}</h1>
-          <ProgressBar percent={progress.percent} current={current} />
+          {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />}
           <img src={allImages} alt="" className="w-[265px] mt-5" />
-          <DotsComponent steps={steps} current={current} />
+          {current === 4 ? "" : <DotsComponent steps={steps} current={current} />}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current==0?"":"shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" />{steps[current].title}</div> : steps[current].title}</p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current > 0 && (

@@ -11,7 +11,12 @@ import {
   totalRetirementPreparationAssetsSelector,
   totalPreparationSelector,
   workingYearsSelector,
-  mustBeSavedSelector,
+  mustBeSavedSelector, calculatePreparationYears,
+  calculateTotalCosts,
+  calculateTotalPreparation,
+  calculateWorkingYears,
+  calculateisTotalPreparationAssets,
+
 } from "@/recoil/retirementPlanState";
 import DotsComponent from "@/components/DotsComponent";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -23,6 +28,28 @@ const { Text } = Typography;
 import { nameState, nameData } from "@/recoil/nameState";
 import { saveRetirementPlan } from "@/components/api/saveretirementPlan";
 import { NavBar } from "@/components/navbar";
+import RetirementPlan11 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-1.svg"
+import RetirementPlan12 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-2.svg"
+import RetirementPlan13 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-3.svg"
+import RetirementPlan14 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-4.svg"
+import RetirementPlan15 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-5.svg"
+import RetirementPlan16 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-6.svg"
+import RetirementPlan17 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-7.svg"
+import RetirementPlan18 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-8.svg"
+import RetirementPlan19 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-9.svg"
+import RetirementPlan110 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-10.svg"
+import RetirementPlan111 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-11.svg"
+import RetirementPlan112 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-12.svg"
+import RetirementPlan113 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-13.svg"
+import RetirementPlan114 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-14.svg"
+import RetirementPlan115 from "@/assets/images/icons/RetirementPlan/RetirementPlan1-15.svg"
+import RetirementPlan21 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-1.svg"
+import RetirementPlan22 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-2.svg"
+import RetirementPlan23 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-3.svg"
+import RetirementPlan24 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-4.svg"
+import RetirementPlan25 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-5.svg"
+import RetirementPlan26 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-6.svg"
+import RetirementPlan27 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-7.svg"
 const RetirementPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -51,7 +78,7 @@ const RetirementPlan: React.FC = () => {
         [field]: formattedValue,
       }));
     };
-console.log(formData);
+  console.log(formData);
 
   let allImages
 
@@ -88,20 +115,25 @@ console.log(formData);
 
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
-   if (sortedSelected.length === 1&&value!=='5') {
-     navigator('/report');
-   } else {   
+    if (sortedSelected.length === 1 && value !== '5') {
+      navigator('/report');
+    } else {
 
-     if (value === '5') {
-       navigateThroughSequence(urlMap);
-     } else {
-       console.log(value);
+      if (value === '5') {
+        navigateThroughSequence(urlMap);
+      } else {
+        console.log(value);
 
-       navigateToValue(urlMap, value, '/report');
-     }
-   }
- };
-
+        navigateToValue(urlMap, value, '/report');
+      }
+    }
+  };
+  const convertMoney = (value: any) => {
+    return parseFloat(value).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
   const handleMultipleSelections = (urlMap: { [key: string]: string }) => {
     if (currentIndex < sortedSelected.length - 1) {
       const value = sortedSelected[currentIndex];
@@ -174,20 +206,20 @@ console.log(formData);
   const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
-       
+
       navigateBackToValue(urlMap, value);
     } else if (currentIndex === 1) {
       const firstValue = sortedSelected[0];
-  
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
       // navigateBackToValue(urlMap, firstValue);
     } else if (currentIndex === 0) {
-      
+
       navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     } else {
-      console.log("Unexpected index value");     
+      console.log("Unexpected index value");
     }
   };
 
@@ -287,21 +319,24 @@ console.log(formData);
           label="1. กินอยู่"
           value={formData.livingCosts}
           onChange={handleInputChange("livingCosts")}
-          addonAfter="บาท / เดือน"
+          addonAfter="บาท ต่อ เดือน"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={RetirementPlan12}
         />
         <InputField
           label="2. ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
           value={formData.houseCosts}
           onChange={handleInputChange("houseCosts")}
-          addonAfter="บาท / เดือน"
+          addonAfter="บาท ต่อ เดือน"
+          imgUrl={RetirementPlan13}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
         />
         <InputField
           label="3. ค่ามือถือ อินเตอร์เน็ต"
           value={formData.internetCosts}
           onChange={handleInputChange("internetCosts")}
-          addonAfter="บาท / เดือน"
+          addonAfter="บาท ต่อ เดือน"
+          imgUrl={RetirementPlan14}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
         />
 
@@ -311,7 +346,8 @@ console.log(formData);
             value={formData.clothingCosts}
             onChange={handleInputChange("clothingCosts")}
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-            addonAfter="บาท / เดือน"
+            addonAfter="บาท ต่อ เดือน"
+            imgUrl={RetirementPlan15}
           />
         </div>
         <InputField
@@ -319,14 +355,16 @@ console.log(formData);
           value={formData.medicalCosts}
           onChange={handleInputChange("medicalCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          addonAfter="บาท / เดือน"
+          addonAfter="บาท ต่อ เดือน"
+          imgUrl={RetirementPlan16}
         />
         <InputField
           label="6. ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)"
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          addonAfter="บาท / เดือน"
+          addonAfter="บาท ต่อ เดือน"
+          imgUrl={RetirementPlan17}
         />
 
         <div className="">
@@ -337,6 +375,7 @@ console.log(formData);
             readOnly
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
             addonAfter="บาท"
+            imgUrl={RetirementPlan18}
           />
         </div>
 
@@ -346,6 +385,7 @@ console.log(formData);
           onChange={handleInputChange("age")}
           placeholder="กรุณากรอกอายุของคุณ"
           addonAfter="ปี"
+          imgUrl={RetirementPlan19}
         />
 
         <InputField
@@ -354,6 +394,7 @@ console.log(formData);
           onChange={handleInputChange("retireAge")}
           placeholder="กรุณากรอกอายุประเมิน"
           addonAfter="ปี"
+          imgUrl={RetirementPlan110}
         />
         <InputField
           label="10. คาดการณ์อายุขัย"
@@ -361,6 +402,7 @@ console.log(formData);
           onChange={handleInputChange("lifExpectancy")}
           placeholder="กรุณากรอกอายุประเมิน"
           addonAfter="ปี"
+          imgUrl={RetirementPlan111}
         />
         <div className="">
           <InputField
@@ -370,6 +412,7 @@ console.log(formData);
             readOnly
             placeholder="34"
             addonAfter="ปี"
+            imgUrl={RetirementPlan112}
           />
         </div>
         <InputField
@@ -379,8 +422,10 @@ console.log(formData);
           readOnly
           placeholder="34"
           addonAfter="ปี"
+          imgUrl={RetirementPlan113}
         />
-        <Form.Item>
+        <div className="flex flex-row justify-start items-center gap-4 mb-5">
+          <Col><img src={RetirementPlan114} alt="icons" /></Col>
           <Col>
             <Col>
               <Text className="text-[#243286]">{"13. เงินเฟ้อ"}</Text>
@@ -388,7 +433,7 @@ console.log(formData);
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '220px' }}
+                  style={{ width: '190px' }}
                   value={formData.inflationRate || undefined}
                   placeholder="เลือกประเภทโรงพยาบาล"
                   onChange={handleInputChange("inflationRate")}
@@ -406,7 +451,7 @@ console.log(formData);
               </div>
             </Col>
           </Col>
-        </Form.Item>
+        </div>
 
 
         <InputField
@@ -416,6 +461,7 @@ console.log(formData);
           readOnly
           placeholder="30,626,766.28"
           addonAfter="บาท"
+          imgUrl={RetirementPlan115}
         />
       </div>
     )
@@ -429,6 +475,7 @@ console.log(formData);
         onChange={handleInputChange("deposit")}
         addonAfter="บาท"
         placeholder="2,000.00"
+        imgUrl={RetirementPlan22}
       />
         <InputField
           label="16. ทุนประกัน"
@@ -436,6 +483,7 @@ console.log(formData);
           onChange={handleInputChange("insuranceFund")}
           addonAfter="บาท"
           placeholder="2,000.00"
+          imgUrl={RetirementPlan23}
         />
         <InputField
           label="17. ทรัพย์สินอื่น ๆ"
@@ -443,6 +491,7 @@ console.log(formData);
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
           placeholder="2,000.00"
+          imgUrl={RetirementPlan24}
         />
         <InputField
           label="18. รวมสิ่งที่เตรียมไว้แล้ว"
@@ -451,6 +500,7 @@ console.log(formData);
           readOnly
           addonAfter="บาท"
           placeholder="2,000.00"
+          imgUrl={RetirementPlan25}
         />
         <div className="pt-4">
           <InputField
@@ -460,6 +510,7 @@ console.log(formData);
             readOnly
             placeholder="34"
             addonAfter="บาท"
+            imgUrl={RetirementPlan26}
           />
         </div>
         <InputField
@@ -469,7 +520,106 @@ console.log(formData);
           readOnly
           addonAfter="บาท"
           placeholder="2,000.00"
+          imgUrl={RetirementPlan27}
         /></div>
+    )
+  }, {
+    title: "สรุปผล",
+    content: (
+
+      <div className="  rounded-lg p-5 shadow-lg mb-5">
+        <div className="text-[1rem] mb-3 flex flex-row justify-between items-center "><p>ค่าใช้จ่ายหลังเกษียณ</p><button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
+        <div className=" text-black text-[0.8rem]">
+          <div className="flex flex-row justify-between">
+            <p>1.กินอยู่</p>
+            <p>{convertMoney(formData.livingCosts)} บาท/เดือน</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน</p>
+            <p>{convertMoney(formData.houseCosts)} บาท/ปี</p></div>
+          <div className="flex flex-row justify-between">
+            <p>3.ค่ามือถือ อินเตอร์เน็ต</p>
+            <p>{convertMoney(formData.internetCosts)} บาท/เดือน</p></div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>4.ค่าเสื้อผ้า</p>
+            <p>{convertMoney(formData.clothingCosts)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>5.ค่ารักษาพยาบาล</p>
+            <p>{convertMoney(formData.medicalCosts)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>6.ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)</p>
+            <p>{convertMoney(formData.otherCosts)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>7.รวมค่าใช้จ่ายต่อปี</p>
+            <p>{convertMoney(calculateTotalCosts(formData))} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>8.อายุตอนนี้</p>
+            <p>{formData.age} ปี</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>9.อายุเกษียณ</p>
+            <p>{formData.retireAge} ปี</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>10.คาดการณ์อายุขัย</p>
+            <p>{formData.lifExpectancy} ปี</p>
+          </div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>11.จำนวนปีที่ทำงานได้</p>
+            <p>{calculateWorkingYears(formData)} ปี</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>12.จำนวนปีที่ต้องเตรียม</p>
+            <p>{calculatePreparationYears(formData)} ปี</p>
+          </div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>13.เงินเฟ้อ</p>
+            <p>{parseFloat(formData.inflationRate) * 100} %</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>14.รวมค่าใช้จ่ายที่ต้องเตรียม</p>
+            <p>{convertMoney(calculateTotalPreparation(formData))} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between mt-2 text-[1rem] text-[#0E2B81]">
+            <p>สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)</p><button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 1)}>แก้ไข</button>
+
+          </div>
+          <div className="flex flex-row justify-between mt-1">
+            <p>15.เงินฝาก</p>
+            <p>{convertMoney(formData.deposit)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>16.ทุนประกัน</p>
+            <p>{convertMoney(formData.insuranceFund)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>17.ทรัพย์สินอื่น ๆ</p>
+            <p>{convertMoney(formData.otherAssets)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>18.รวมสิ่งที่เตรียมไว้แล้ว</p>
+            <p>{convertMoney(calculateisTotalPreparationAssets(formData))} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between mt-3">
+            <p>19.รวมที่ขาดอยู่</p>
+            <p>{convertMoney(totalMissing)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>20.ต่อปีที่ต้องเก็บได้</p>
+            <p>{convertMoney(mustBeSaved)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+            <p>ผลลัพธ์</p>
+            <p>{convertMoney(totalMissing)} บาท</p>
+          </div>
+        </div>
+      </div>
+
+
     )
   }
   ]
@@ -480,13 +630,13 @@ console.log(formData);
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "Retirement Plan" : "Retirement Plan"}</h1>
+          {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />}
 
-          <ProgressBar percent={progress.percent} current={current} />
           <img src={allImages} alt="" className="w-[265px] mt-5" />
-          <DotsComponent steps={steps} current={current} />
+          {current === 3 ? "" : <DotsComponent steps={steps} current={current} />}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current==0?"":"shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title}</p>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" />{steps[current].title}</div> : steps[current].title}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
