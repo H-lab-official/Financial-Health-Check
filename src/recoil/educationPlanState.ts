@@ -4,8 +4,9 @@ export interface EducationPlanData {
   levelOfeducation: string; //ค่าเริ่มต้นที่กำหนดไว้
   levelOfeducation2: string; //ค่าที่มีการเปลี่ยน มาจากlevelOfeducation
   typeOfeducation: string;//ค่าเริ่มต้นที่กำหนดไว้
-  typeOfeducation2:string//ค่าที่มีการเปลี่ยน มาจากtypeOfeducation
-  yearsOfeducation: string;
+  typeOfeducation2: string//ค่าที่มีการเปลี่ยน มาจากtypeOfeducation
+  yearsOfeducation: string;//ค่าเริ่มต้นที่กำหนดไว้
+  yearsOfeducation2: string;//ค่าที่มีการเปลี่ยน มาจากyearsOfeducation
   inflationRate: string;
   requiredScholarships: string;
   deposit: string;
@@ -16,6 +17,7 @@ export interface EducationPlanData {
   child: string;
   expensesDuringStudy: string;
 
+
 }
 
 export const educationPlanState = atom<EducationPlanData>({
@@ -24,9 +26,10 @@ export const educationPlanState = atom<EducationPlanData>({
     levelOfeducation: "19",
     levelOfeducation2: "19",
     typeOfeducation: "30000.00",
-    typeOfeducation2:"30000.00",
+    typeOfeducation2: "30000.00",
     inflationRate: "0.03",
     yearsOfeducation: "",
+    yearsOfeducation2: "",
     requiredScholarships: "",
     deposit: "0",
     insuranceFund: "0",
@@ -34,16 +37,24 @@ export const educationPlanState = atom<EducationPlanData>({
     totalPreparationAssets: "",
     totalMissing: "",
     child: "",
-    expensesDuringStudy: (parseFloat("30000.00") * 0.15).toFixed(2),
+    expensesDuringStudy: (parseFloat("30000.00") * 0.25).toFixed(2),
   },
 });
 
-export const calculateYearsOfEducation = (levelOfeducation2: string, child: string) => {
+export const calculateYearsOfEducation = (levelOfeducation2: string, child: string, yearsOfeducation2: string) => {
   const levelOfeducationNumber = parseInt(levelOfeducation2, 10);
   const childNumber = parseInt(child, 10);
+  const yearsOfeducationX = parseInt(yearsOfeducation2, 10);
 
   if (!isNaN(levelOfeducationNumber) && !isNaN(childNumber)) {
-    return (levelOfeducationNumber - (childNumber - 4)).toString();
+    if (!yearsOfeducationX) {
+      const number = (childNumber - 4) < 0 ? 0 : childNumber - 4
+
+      return (levelOfeducationNumber - number).toString();
+    } else {
+      return yearsOfeducationX.toString()
+    }
+
   }
   return "";
 };
@@ -80,7 +91,7 @@ export const yearsOfeducationSelector = selector({
   key: "yearsOfeducationSelector",
   get: ({ get }) => {
     const state = get(educationPlanState);
-    return calculateYearsOfEducation(state.levelOfeducation2, state.child);
+    return calculateYearsOfEducation(state.levelOfeducation2, state.child, state.yearsOfeducation2);
   },
 });
 

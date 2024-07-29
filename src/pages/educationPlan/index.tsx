@@ -118,15 +118,21 @@ const EducationPlan: React.FC = () => {
   }, [formData.typeOfeducation]);
 
   useEffect(() => {
+
     const expensesDuringStudy = (parseFloat(formData.typeOfeducation2) * 0.25).toFixed(2);
     setFormData((prevFormData) => ({
       ...prevFormData,
-
       expensesDuringStudy,
     }));
-  }, [formData.typeOfeducation2]);
-  console.log(formData);
 
+  }, [formData.typeOfeducation]);
+  console.log(formData);
+  const handleyearsOfeducationChange = () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+     
+    }));
+  }
   let allImages;
   switch (current) {
     case 1:
@@ -363,7 +369,7 @@ const EducationPlan: React.FC = () => {
   let TotalPreparationAssets = convertMoney(calculateTotalPreparationAssets(formData));
   let yearsOfeducationFrontCount = parseInt(formData.levelOfeducation2) - (parseInt(formData.child) - 4);
   const expensesDuringStudy = parseFloat(formData.expensesDuringStudy) || 0;
-  const typeOfEducation = parseFloat(formData.typeOfeducation) || 0;
+  const typeOfEducation = parseFloat(formData.typeOfeducation2) || 0;
   const inflationRate = parseFloat(formData.inflationRate) || 0;
 
 
@@ -438,7 +444,7 @@ const EducationPlan: React.FC = () => {
               <InputField
                 label="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
                 value={yearsOfeducation}
-                onChange={() => { }}
+                onChange={handleInputChange('yearsOfeducation2')}
                 addonAfter="ปี"
 
                 placeholder=""
@@ -626,7 +632,7 @@ const EducationPlan: React.FC = () => {
                 .map((obj) => obj.label)
                 .join(",")}</p></div>
             <div className="flex flex-row justify-between items-center my-2 text-[1rem] text-[#0E2B81]">
-              <p>ทุนการศึกษาที่จำเป็น</p> 
+              <p>ทุนการศึกษาที่จำเป็น</p>
               {/* <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 1)}>แก้ไข</button> */}
             </div>
             <div className="flex flex-row justify-between">
