@@ -1,13 +1,15 @@
-import { Form, Input, Typography, Row, Col } from "antd";
+import { Form, Input, Typography, Row, Col, Modal,Button } from "antd";
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import tooltip from '@/assets/images/icons/tooltip.svg'
 const { Text } = Typography;
-
+import "@/components/css/InputField.css"
 interface InputFieldProps {
   label: string;
-  imgUrl: string
+  imgUrl: string;
   value: string;
+  ModalTitle: string
+  ModalBody: string
   onChange: (value: string) => void;
   addonAfter?: string;
   placeholder?: string;
@@ -25,11 +27,12 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   addonAfter,
   placeholder,
-  readOnly,
+  readOnly, ModalTitle, ModalBody
 }) => {
   const location = useLocation();
   const isRetirementPlan = location.pathname === '/retirement-plan';
   const [inputValue, setInputValue] = useState(value);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setInputValue(formatNumber(value));
@@ -44,13 +47,28 @@ const InputField: React.FC<InputFieldProps> = ({
     onChange(rawValue);
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Form.Item>
       <Row gutter={10} className="flex flex-row justify-start items-center">
-        <div className="w-[60px] flex justify-start items-center px-3" > <img src={imgUrl} alt="icons" /></div>
+        <div className="w-[60px] flex justify-start items-center px-3">
+          <img src={imgUrl} alt="icons" />
+        </div>
         <Col>
           <div className="flex flex-row gap-2">
-            <Text className={`font-sans truncate w-[180px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"} `}>{label}</Text> <img src={tooltip} alt="tooltip" />
+            <Text className={`font-sans truncate w-[180px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
+            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
           </div>
           <Col>
             <div className="flex flex-row justify-center items-center gap-5 font-sans">
@@ -61,8 +79,8 @@ const InputField: React.FC<InputFieldProps> = ({
                 placeholder={placeholder}
                 readOnly={readOnly}
                 className={`${isRetirementPlan ? 'w-[190px]' : 'w-[190px]'} ${readOnly
-                    ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
-                    : "none"
+                  ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
+                  : "none"
                   }`}
               />
               <Text className="text-[#243286] w-8 flex justify-start items-center">{addonAfter}</Text>
@@ -70,6 +88,20 @@ const InputField: React.FC<InputFieldProps> = ({
           </Col>
         </Col>
       </Row>
+      <Modal 
+        title={<div className="custom-modal-title">{ModalTitle}</div>} 
+        open={isModalOpen} 
+        onCancel={handleCancel} 
+        footer={[
+          <Button key="close" className="custom-close-button" onClick={handleCancel}>
+            ปิด
+          </Button>
+        ]}
+        closable={false}
+        className="custom-modal"
+      >
+        <div className="custom-modal-body" dangerouslySetInnerHTML={{ __html: ModalBody }} />
+      </Modal>
     </Form.Item>
   );
 };

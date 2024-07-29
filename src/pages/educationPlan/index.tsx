@@ -405,6 +405,8 @@ const EducationPlan: React.FC = () => {
                 addonAfter="ปี"
                 placeholder="กรุณาใส่อายุบุตร"
                 imgUrl={EducationPlan12}
+                ModalBody=""
+                ModalTitle=""
               />
             </Row>
             <div className="flex flex-row justify-start items-center gap-4 mb-5">

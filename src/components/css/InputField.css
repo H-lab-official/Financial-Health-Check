@@ -1,0 +1,42 @@
+.custom-modal .ant-modal-content {
+    background-color: #243286 !important;
+    border-radius: 8px;
+  }
+  
+  .custom-modal .ant-modal-header {
+    background-color: #243286 !important;
+    border-bottom: none;
+    text-align: center;
+  }
+  
+  .custom-modal .ant-modal-title {
+    color: white;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .custom-modal .ant-modal-body {
+    background-color: #D9D9D9;
+    color: #243286;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .custom-modal .ant-modal-footer {
+    border-top: none;
+  }
+  
+  .custom-close-button {
+    background-color: #F2F3FF !important;
+    color: #243286 !important;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+  }
+  
+  .custom-close-button:hover, .custom-close-button:focus {
+    background-color: #F2F3FF !important;
+    color: white !important;
+    border: none;
+  }
+  
