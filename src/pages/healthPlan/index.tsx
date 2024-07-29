@@ -8,8 +8,13 @@ import {
   annualTreatmentSelector,
   dailyCompensationSelector,
   emergencyCostsSelector,
+
+  treatingSeriousIllnessSelector, calculateAdditionalRoomFee,
+  calculateAnnualTreatments,
+  calculateDailyCompensation,
+  calculateEmergencyCosts,
+  calculateTreatingSeriousIllness,
   healthPlanState,
-  treatingSeriousIllnessSelector,
 } from "@/recoil/healthPlanState";
 import { savehealthPlan } from '@/components/api/savehealthPlan';
 import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
@@ -19,7 +24,27 @@ import health from "@/assets/images/health.png";
 import health1 from "@/assets/images/health1.png";
 import health2 from "@/assets/images/health2.png";
 import health3 from "@/assets/images/health3.png";
-
+import HealthPlan11 from "@/assets/images/icons/HealthPlan/HealthPlan1-1.svg";
+import HealthPlan12 from "@/assets/images/icons/HealthPlan/HealthPlan1-2.svg";
+import HealthPlan13 from "@/assets/images/icons/HealthPlan/HealthPlan1-3.svg";
+import HealthPlan14 from "@/assets/images/icons/HealthPlan/HealthPlan1-4.svg";
+import HealthPlan15 from "@/assets/images/icons/HealthPlan/HealthPlan1-5.svg";
+import HealthPlan16 from "@/assets/images/icons/HealthPlan/HealthPlan1-6.svg";
+import HealthPlan17 from "@/assets/images/icons/HealthPlan/HealthPlan1-7.svg";
+import HealthPlan18 from "@/assets/images/icons/HealthPlan/HealthPlan1-8.svg";
+import HealthPlan19 from "@/assets/images/icons/HealthPlan/HealthPlan1-9.svg";
+import HealthPlan21 from "@/assets/images/icons/HealthPlan/HealthPlan2-1.svg";
+import HealthPlan22 from "@/assets/images/icons/HealthPlan/HealthPlan2-2.svg";
+import HealthPlan23 from "@/assets/images/icons/HealthPlan/HealthPlan2-3.svg";
+import HealthPlan24 from "@/assets/images/icons/HealthPlan/HealthPlan2-4.svg";
+import HealthPlan25 from "@/assets/images/icons/HealthPlan/HealthPlan2-5.svg";
+import HealthPlan26 from "@/assets/images/icons/HealthPlan/HealthPlan2-6.svg";
+import HealthPlan31 from "@/assets/images/icons/HealthPlan/HealthPlan3-1.svg";
+import HealthPlan32 from "@/assets/images/icons/HealthPlan/HealthPlan3-2.svg";
+import HealthPlan33 from "@/assets/images/icons/HealthPlan/HealthPlan3-3.svg";
+import HealthPlan34 from "@/assets/images/icons/HealthPlan/HealthPlan3-4.svg";
+import HealthPlan35 from "@/assets/images/icons/HealthPlan/HealthPlan3-5.svg";
+import HealthPlan36 from "@/assets/images/icons/HealthPlan/HealthPlan3-6.svg";
 const { Text } = Typography;
 import { nameState, nameData } from "@/recoil/nameState";
 import { NavBar } from "@/components/navbar";
@@ -54,6 +79,12 @@ const HealthPlan: React.FC = () => {
 
 
     };
+  const convertMoney = (value: any) => {
+    return parseFloat(value).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
   useEffect(() => {
     if (formData.hospitals !== hospitals2) {
       setFormData((prevFormData) => ({
@@ -300,7 +331,8 @@ const HealthPlan: React.FC = () => {
     title: "วางแผนเพื่อสุขภาพ",
     content: (
       <div>
-        <Form.Item>
+        <div className="flex flex-row justify-start items-center gap-5 mb-5">
+          <Col><img src={HealthPlan12} alt="icons" /></Col>
           <Col>
             <Col>
               <Text className="text-[#243286]">{"1. กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text>
@@ -308,7 +340,7 @@ const HealthPlan: React.FC = () => {
             <Col>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
-                  style={{ width: '260px' }}
+                  style={{ width: '190px' }}
                   value={formData.hospitals}
                   onChange={handleInputChange("hospitals")}
                   placeholder="เลือกประเภทโรงพยาบาล"
@@ -322,15 +354,16 @@ const HealthPlan: React.FC = () => {
               </div>
             </Col>
           </Col>
-        </Form.Item>
+        </div>
 
         <InputField
-          label="2. ค่าห้องต่อวันประมาณ"
+          label="2. ค่าห้องต่อวันประมาณ (ค่าประมาณการ)"
           value={formData.hospitals}
           onChange={handleInputChange("hospitals")}
           addonAfter="บาท"
           placeholder=""
           readOnly
+          imgUrl={HealthPlan13}
         />
         <div>
           <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
@@ -341,6 +374,7 @@ const HealthPlan: React.FC = () => {
               onChange={handleInputChange("hospitals2")}
               placeholder=""
               addonAfter="บาท"
+              imgUrl={HealthPlan14}
             />
             <InputField
               label="4 .ค่ารักษาโรคร้ายแรง"
@@ -348,6 +382,7 @@ const HealthPlan: React.FC = () => {
               onChange={handleInputChange("treatingSeriousIllness")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              imgUrl={HealthPlan15}
             />
             <InputField
               label="5. ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -355,6 +390,7 @@ const HealthPlan: React.FC = () => {
               onChange={handleInputChange("emergencyCosts")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              imgUrl={HealthPlan16}
             />
             <InputField
               label="6. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
@@ -362,6 +398,7 @@ const HealthPlan: React.FC = () => {
               onChange={handleInputChange("annualTreatment")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              imgUrl={HealthPlan17}
             />
           </div>
         </div>
@@ -377,6 +414,7 @@ const HealthPlan: React.FC = () => {
           onChange={handleInputChange("roomFeeFromCompany")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           addonAfter="บาท"
+          imgUrl={HealthPlan22}
         />
         <InputField
           label="8. ค่ารักษาโรคร้ายแรง"
@@ -384,12 +422,14 @@ const HealthPlan: React.FC = () => {
           onChange={handleInputChange("treatingSeriousIllnessFromCompany")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={HealthPlan24}
         />
         <InputField
           label="9. ค่ารักษาอุบัติเหตุฉุกเฉิน"
           value={formData.emergencyCostsFromCompany}
           onChange={handleInputChange("emergencyCostsFromCompany")}
           addonAfter="บาท"
+          imgUrl={HealthPlan25}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
         />
         <InputField
@@ -398,6 +438,7 @@ const HealthPlan: React.FC = () => {
           onChange={handleInputChange("annualTreatmentFromCompany")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          imgUrl={HealthPlan26}
         />
       </div>
     )
@@ -412,6 +453,7 @@ const HealthPlan: React.FC = () => {
           placeholder="6,000.00"
           addonAfter="บาท"
           readOnly
+          imgUrl={HealthPlan32}
         />
         <InputField
           label="12. ค่ารักษาโรคร้ายแรง"
@@ -419,6 +461,7 @@ const HealthPlan: React.FC = () => {
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
+          imgUrl={HealthPlan34}
         />
         <InputField
           label="13. ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -426,6 +469,7 @@ const HealthPlan: React.FC = () => {
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
+          imgUrl={HealthPlan35}
         />
         <InputField
           label="14. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
@@ -433,8 +477,113 @@ const HealthPlan: React.FC = () => {
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
+          imgUrl={HealthPlan36}
         />
       </div>
+    )
+  }, {
+    title: "",
+    content: (
+
+      <div className="  rounded-lg p-5 shadow-lg mb-5">
+        <div className="text-[1rem] mb-3 flex flex-row items-center justify-between"><p>วางแผนเพื่อสุขภาพ</p>
+          <button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 3)}>แก้ไข</button>
+        </div>
+        <div className=" text-black text-[0.8rem]">
+
+          <div className="flex flex-row justify-between text-[0.7rem]">
+            <p>1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</p>
+            <p>{[
+              { label: "โรงพยาบาลรัฐ", value: "1500.00" },
+              { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
+              { label: "โรงพยาบาลเอกชน", value: "4000.00" },
+              { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
+            ].filter((obj) => obj.value === formData.hospitals)
+              .map((obj) => obj.label)
+              .join(",")}</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>2.ค่าห้องต่อวันประมาณ</p>
+            <p>{convertMoney(formData.hospitals)} บาท</p></div>
+          <div className="flex flex-row justify-start my-2 text-[1.4rem] text-[#0E2B81]">
+            <p className="text-[1rem]">สวัสดิการที่คาดหวังจะได้</p>
+          </div>
+          <div className="flex flex-row justify-between mt-2">
+            <p>3.ค่าห้องวันละ</p>
+            <p>{convertMoney(formData.hospitals)} บาท</p></div>
+          {/* <div className="flex flex-row justify-between">
+                      <p>3.1.ค่าชดเชยรายวัน</p>
+                      <p>{convertMoney(formData.dailyCompensationFromWelfare)} บาท</p>
+                    </div> */}
+          <div className="flex flex-row justify-between">
+            <p>4.ค่ารักษาโรคร้ายแรง</p>
+            <p>{convertMoney(formData.treatingSeriousIllness)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>5.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+            <p>{convertMoney(formData.emergencyCosts)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>6.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+            <p>{convertMoney(formData.annualTreatment)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between items-center my-3 text-[1rem] text-[#0E2B81]">
+            <p>สวัสดิการปัจจุบันจากบริษัท หรือ จากประกันที่มี</p>
+            <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 2)}>แก้ไข</button>
+          </div>
+          <div className="flex flex-row justify-between mt-2">
+            <p>7.ค่าห้องวันละ</p>
+            <p>{convertMoney(formData.roomFeeFromCompany)} บาท</p>
+          </div>
+          {/* <div className="flex flex-row justify-between">
+                      <p>7.1.ค่าชดเชยรายวัน</p>
+                      <p>{convertMoney(formData.dailyCompensationFromWelfare)} บาท</p>
+                    </div> */}
+          <div className="flex flex-row justify-between">
+            <p>8.ค่ารักษาโรคร้ายแรง</p>
+            <p>{convertMoney(formData.treatingSeriousIllnessFromCompany)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>9.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+            <p>{convertMoney(formData.emergencyCostsFromCompany)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>10.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+            <p>{convertMoney(formData.annualTreatmentFromCompany)} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between items-center  my-2 text-[1rem] text-[#0E2B81]">
+            <p>สวัสดิการที่ต้องเพิ่มเติม</p>
+            <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 1)}>แก้ไข</button>
+          </div>
+          <div className="flex flex-row justify-between mt-2">
+            <p>11.ค่าห้องวันละ</p>
+            <p>{convertMoney(calculateAdditionalRoomFee(formData))} บาท</p>
+          </div>
+          {/* <div className="flex flex-row justify-between">
+                      <p>11.1.ค่าชดเชยรายวัน</p>
+                      <p>{convertMoney(calculateDailyCompensation(formData))} บาท</p>
+                    </div> */}
+          <div className="flex flex-row justify-between">
+            <p>12.ค่ารักษาโรคร้ายแรง</p>
+            <p>{convertMoney(calculateTreatingSeriousIllness(formData))} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>13.ค่ารักษาอุบัติเหตุฉุกเฉิน</p>
+            <p>{convertMoney(calculateEmergencyCosts(formData))} บาท</p>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>14.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+            <p>{convertMoney(calculateAnnualTreatments(formData))} บาท</p>
+          </div>
+          {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+                      <p>ผลลัพธ์</p>
+                      <p>{convertMoney(calculateAnnualTreatments(formData))} บาท</p>
+                    </div> */}
+        </div>
+      </div>
+
+
+
     )
   }];
 
@@ -444,14 +593,20 @@ const HealthPlan: React.FC = () => {
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current === 0 ? "Health Plan" : "Health Plan"}</h1>
-          <ProgressBar percent={progress.percent} current={current} />
-          <img src={allImages} alt="" className=" w-[265px] mt-5" />
-          <DotsComponent steps={steps} current={current} />
+          {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />}
+          {current === 4 ? "" : <img src={allImages} alt="" className=" w-[265px] mt-5" />}
+          {current === 4 ? "" : <DotsComponent steps={steps} current={current} />}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : "shadow-xl"}`}>
-          <p className={`text-xl mb-3 ${current === 2 ? " text-base" : null}`}>{current === 0 ? "" : steps[current].title}</p>
+          <p className={`text-xl mb-3`}>
+            {current === 0 ? "" : steps[current].title === "วางแผนเพื่อสุขภาพ" ?
+              <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan11} alt="" />{steps[current].title}</div> :
+              steps[current].title === "สวัสดิการปัจจุบันจากบริษัทหรือจากประกันที่มี" ?
+                <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan21} alt="" />{steps[current].title}</div> :
+                steps[current].title === "สวัสดิการที่ต้องเพิ่มเติม" ?
+                  <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan31} alt="" />{steps[current].title}</div> : steps[current].title}
+          </p>
           {steps[current].content}
-
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current === 0 && (
               <Button

@@ -1,22 +1,20 @@
 import { questionsState } from "@/recoil/questionsState";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, { useState, useEffect } from "react";
-import {
-  Button, Radio, RadioChangeEvent, Row,
-} from "antd";
+import React, { useState } from "react";
+import { Button, Row } from "antd";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
 import { NavBar } from "@/components/navbar";
-import PlanFetcher from "@/components/api/getDataById";
-import protection from "@/assets/images/protection.png"
-import health from "@/assets/images/health.png"
-import retirement from "@/assets/images/retirement.png"
-import Education from "@/assets/images/Education.png"
-
+import protection from "@/assets/images/protection.png";
+import health from "@/assets/images/health.png";
+import retirement from "@/assets/images/retirement.png";
+import Education from "@/assets/images/Education.png";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nameState, nameData } from "@/recoil/nameState";
-import '@/components/css/customRadio.css'
-import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
+import "@/components/css/customRadio.css";
+import { selectedState, sortedSelectedState, currentIndexState, progressState } from "@/recoil/progressState";
 import { saveQuestionsState } from "@/components/api/saveQuestionsState";
+
 const Summary: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -25,37 +23,52 @@ const Summary: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const [progress, setProgress] = useRecoilState<progressState>(progressState);
   const sortedSelected = useRecoilValue(sortedSelectedState);
-
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
-  const dataname = useRecoilValue<nameData>(nameState)
-  const handleRadioChange =
-    (field: keyof typeof formData) =>
-      ({ target: { value } }: RadioChangeEvent) => {
-        const selectedValue = parseInt(value, 10);
+  const dataname = useRecoilValue<nameData>(nameState);
 
-        setFormData((prevFormData) => {
-          const updatedFormData = { ...prevFormData };
+  const handleDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
 
-          // ตรวจสอบว่ามีฟิลด์อื่นที่มีค่าเดียวกับที่เลือกหรือไม่
-          Object.keys(updatedFormData).forEach((key) => {
-            if (key !== field && updatedFormData[key as keyof typeof formData] === selectedValue) {
-              updatedFormData[key as keyof typeof formData] = 0; // กำหนดค่าเป็น 0 สำหรับฟิลด์ที่ซ้ำกัน
-            }
-          });
+    const reorderedList = Array.from(sortedSelected);
+    const [removed] = reorderedList.splice(result.source.index, 1);
+    reorderedList.splice(result.destination.index, 0, removed);
 
-          updatedFormData[field] = selectedValue;
-          return updatedFormData;
-        });
-      };
-  console.log();
+    // Update your recoil state with the new order
+    // Assuming you have a setter for sortedSelectedState
+    setRecoilState(sortedSelectedState, reorderedList);
+
+    // Update formData order accordingly
+    const updatedFormData = { ...formData };
+    reorderedList.forEach((value, index) => {
+      switch (value) {
+        case "1":
+          updatedFormData.protectionPlanOrder = index + 1;
+          break;
+        case "2":
+          updatedFormData.healthPlanOrder = index + 1;
+          break;
+        case "3":
+          updatedFormData.retirementPlanOrder = index + 1;
+          break;
+        case "4":
+          updatedFormData.educationPlanOrder = index + 1;
+          break;
+        default:
+          break;
+      }
+    });
+    setFormData(updatedFormData);
+  };
 
   const toGoNext = () => {
     const urlMap: { [key: string]: string } = {
-      '1': '/protection-plan',
-      '2': '/health-plan',
-      '3': '/retirement-plan',
-      '4': '/education-plan',
-      '5': '/protection-plan',
+      "1": "/protection-plan",
+      "2": "/health-plan",
+      "3": "/retirement-plan",
+      "4": "/education-plan",
+      "5": "/protection-plan",
     };
 
     if (sortedSelected.length === 1) {
@@ -67,16 +80,13 @@ const Summary: React.FC = () => {
 
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
-    if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/export-pdf');
+    if (sortedSelected.length === 1 && value !== "5") {
+      navigator("/export-pdf");
     } else {
-
-      if (value === '5') {
+      if (value === "5") {
         navigateThroughSequence(urlMap);
       } else {
-        console.log(value);
-
-        navigateToValue(urlMap, value, '/export-pdf');
+        navigateToValue(urlMap, value, "/export-pdf");
       }
     }
   };
@@ -89,32 +99,28 @@ const Summary: React.FC = () => {
       const lastValue = sortedSelected[currentIndex];
       navigateToValue(urlMap, lastValue);
     } else if (currentIndex === sortedSelected.length) {
-      navigator('/summary');
+      navigator("/summary");
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
 
   const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
-    const sequence = ['1', '2', '3', '4'];
+    const sequence = ["1", "2", "3", "4"];
 
     if (currentIndex < sequence.length) {
       const currentValue = sequence[currentIndex];
       navigateToValue(urlMap, currentValue);
     } else if (currentIndex === sequence.length) {
-      navigator('/summary');
+      navigator("/summary");
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
 
-  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = '/summary') => {
-
+  const navigateToValue = (urlMap: { [key: string]: string }, value: string, finalDestination: string = "/summary") => {
     if (urlMap[value]) {
-
       navigator(urlMap[value]);
       setCurrentIndex((prevIndex) => prevIndex + 1);
     } else if (currentIndex === 0) {
-      console.log('3');
-
       navigator(finalDestination);
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
@@ -127,23 +133,14 @@ const Summary: React.FC = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
-  const steps = [
-    {
-      title: "",
-      content: (
-        <div>
 
-        </div>
-      )
-    }
-  ]
   const toGoBack = () => {
-    const urlMap: { [key: string]: { path: string, state: { current: number } } } = {
-      '1': { path: '/protection-plan', state: { current: 3 } },
-      '2': { path: '/health-plan', state: { current: 3 } },
-      '3': { path: '/retirement-plan', state: { current: 2 } },
-      '4': { path: '/education-plan', state: { current: 2 } },
-      '5': { path: '/protection-plan', state: { current: 3 } },
+    const urlMap: { [key: string]: { path: string; state: { current: number } } } = {
+      "1": { path: "/protection-plan", state: { current: 3 } },
+      "2": { path: "/health-plan", state: { current: 3 } },
+      "3": { path: "/retirement-plan", state: { current: 2 } },
+      "4": { path: "/education-plan", state: { current: 2 } },
+      "5": { path: "/protection-plan", state: { current: 3 } },
     };
 
     if (sortedSelected.length === 1) {
@@ -153,17 +150,17 @@ const Summary: React.FC = () => {
     }
   };
 
-  const handleSingleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+  const handleSingleBack = (urlMap: { [key: string]: { path: string; state: { current: number } } }) => {
     const value = sortedSelected[0];
 
-    if (value === '5') {
+    if (value === "5") {
       navigateThroughBackSequence(urlMap);
     } else {
       navigateBackToValue(urlMap, value);
     }
   };
 
-  const handleMultipleBack = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
+  const handleMultipleBack = (urlMap: { [key: string]: { path: string; state: { current: number } } }) => {
     if (currentIndex > 1) {
       const value = sortedSelected[currentIndex - 2];
       navigateBackToValue(urlMap, value);
@@ -171,133 +168,63 @@ const Summary: React.FC = () => {
       const firstValue = sortedSelected[0];
       navigateBackToValue(urlMap, firstValue);
     } else {
-      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     }
   };
 
-  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string, state: { current: number } } }) => {
-    const sequence = ['1', '2', '3', '4'];
-
-    console.log(currentIndex); //5
+  const navigateThroughBackSequence = (urlMap: { [key: string]: { path: string; state: { current: number } } }) => {
+    const sequence = ["1", "2", "3", "4"];
 
     if (currentIndex > 0) {
-      console.log(currentIndex);
       const previousValue = sequence[currentIndex - 2];
-      console.log(previousValue); //undefined
-
-
       navigateBackToValue(urlMap, previousValue);
     } else {
-
-
-      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } });
       setCurrentIndex(0);
     }
   };
 
-  const navigateBackToValue = (urlMap: { [key: string]: { path: string, state: { current: number } } }, value: string) => {
+  const navigateBackToValue = (urlMap: { [key: string]: { path: string; state: { current: number } } }, value: string) => {
     if (urlMap[value]) {
       navigator(urlMap[value].path, { state: urlMap[value].state });
       setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
+
   const backlast = () => {
     let newPercent = progress.percent;
     newPercent -= 3;
-    setProgress({ percent: newPercent, steps: progress.steps })
-    toGoBack()
-  }
+    setProgress({ percent: newPercent, steps: progress.steps });
+    toGoBack();
+  };
+
   const nextlast = async () => {
     let newPercent = progress.percent;
     newPercent += 1;
-    setProgress({ percent: newPercent, steps: progress.steps })
-    await handleSave()
-    navigator('/showdata')
-  }
-  // const toShow = async () => {
-  //   const ProtectionPlan = localStorage.getItem('saveProtectionPlan');
-  //   const healthPlan = localStorage.getItem('savehealthPlan');
-  //   const RetirementPlan = localStorage.getItem('saveRetirementPlan');
-  //   const Educationplan = localStorage.getItem('saveEducationplan');
-  //   const QuestionsState = localStorage.getItem('saveQuestionsState');
-
-  //   const ids: { [key: string]: string } = {};
-
-  //   if (ProtectionPlan) {
-  //     const dataProtection = JSON.parse(ProtectionPlan);
-  //     ids['1'] = dataProtection.id;
-  //   }
-
-  //   if (healthPlan) {
-  //     const dataHealth = JSON.parse(healthPlan);
-  //     ids['2'] = dataHealth.id;
-  //   }
-
-  //   if (RetirementPlan) {
-  //     const dataRetirement = JSON.parse(RetirementPlan);
-  //     ids['3'] = dataRetirement.id;
-  //   }
-
-  //   if (Educationplan) {
-  //     const dataEducation = JSON.parse(Educationplan);
-  //     ids['4'] = dataEducation.id;
-  //   }
-
-  //   if (QuestionsState) {
-  //     const dataQuestions = JSON.parse(QuestionsState);
-  //     ids['5'] = dataQuestions.id;
-  //   }
-
-  //   return ids;
-  // };
-  // const toShow = async () => {
-  //   const planTypes = ['1', '2', '3', '4', '5'];
-  //   const ids: { [key: string]: string } = {};
-
-  //   for (const type of planTypes) {
-  //     const planData = localStorage.getItem(`save${type}`);
-  //     if (planData) {
-  //       const data = JSON.parse(planData);
-  //       ids[type] = data.id;
-  //     }
-  //   }
-
-  //   return ids;
-  // };
-
-
-  // // Usage
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const ids = await toShow();
-  //     const types = Object.keys(ids);
-  //     setPlanTypes(types);
-  //     setId(ids[types[0]]); 
-  //   };
-
-  //   fetchData();
-  // }, []);
+    setProgress({ percent: newPercent, steps: progress.steps });
+    await handleSave();
+    navigator("/showdata");
+  };
 
   const handleSave = async () => {
-    await saveQuestionsState({ data: formData, nameData: dataname, })
-
+    await saveQuestionsState({ data: formData, nameData: dataname });
   };
+
   const handleDisabled = () => {
     if (current === 0) {
-      // If only one plan is selected
       if (sortedSelected.length === 1) {
         const value = sortedSelected[0];
         switch (value) {
-          case '1':
+          case "1":
             return !formData.protectionPlanOrder;
-          case '2':
+          case "2":
             return !formData.healthPlanOrder;
-          case '3':
+          case "3":
             return !formData.retirementPlanOrder;
-          case '4':
+          case "4":
             return !formData.educationPlanOrder;
-          case '5':
+          case "5":
             return (
               !formData.protectionPlanOrder ||
               !formData.healthPlanOrder ||
@@ -309,43 +236,40 @@ const Summary: React.FC = () => {
         }
       }
 
-      // If two plans are selected and first < second
       if (sortedSelected.length === 2) {
         const [first, second] = sortedSelected;
         if (first < second) {
-          if (first === '1' && second === '2') {
+          if (first === "1" && second === "2") {
             return !formData.protectionPlanOrder || !formData.healthPlanOrder;
-          } else if (first === '1' && second === '3') {
+          } else if (first === "1" && second === "3") {
             return !formData.protectionPlanOrder || !formData.retirementPlanOrder;
-          } else if (first === '1' && second === '4') {
+          } else if (first === "1" && second === "4") {
             return !formData.protectionPlanOrder || !formData.educationPlanOrder;
-          } else if (first === '2' && second === '3') {
+          } else if (first === "2" && second === "3") {
             return !formData.healthPlanOrder || !formData.retirementPlanOrder;
-          } else if (first === '2' && second === '4') {
+          } else if (first === "2" && second === "4") {
             return !formData.healthPlanOrder || !formData.educationPlanOrder;
-          } else if (first === '3' && second === '4') {
+          } else if (first === "3" && second === "4") {
             return !formData.retirementPlanOrder || !formData.educationPlanOrder;
           }
         }
       }
 
-      // If three plans are selected and first < second < third
       if (sortedSelected.length === 3) {
         const [first, second, third] = sortedSelected;
         if (first < second && second < third) {
-          if (first === '1' && second === '2' && third === '3') {
+          if (first === "1" && second === "2" && third === "3") {
             return !formData.protectionPlanOrder || !formData.healthPlanOrder || !formData.retirementPlanOrder;
-          } else if (first === '1' && second === '2' && third === '4') {
+          } else if (first === "1" && second === "2" && third === "4") {
             return !formData.protectionPlanOrder || !formData.healthPlanOrder || !formData.educationPlanOrder;
-          } else if (first === '1' && second === '3' && third === '4') {
+          } else if (first === "1" && second === "3" && third === "4") {
             return !formData.protectionPlanOrder || !formData.retirementPlanOrder || !formData.educationPlanOrder;
-          } else if (first === '2' && second === '3' && third === '4') {
+          } else if (first === "2" && second === "3" && third === "4") {
             return !formData.healthPlanOrder || !formData.retirementPlanOrder || !formData.educationPlanOrder;
           }
         }
       }
 
-      // If all four plans are selected
       if (sortedSelected.length === 4) {
         const [first, second, third, fourth] = sortedSelected;
         if (first < second && second < third && third < fourth) {
@@ -361,162 +285,71 @@ const Summary: React.FC = () => {
     return false;
   };
 
-  const renderRadio = (): JSX.Element[] | null => {
-    if (sortedSelected.length === 1) {
-      if (sortedSelected[0] === '5') {
-        return [1, 2, 3, 4].map(value => (
-          <Radio value={value} className="custom-radio" key={value}>
-            {/* Add any additional content here if needed */}
-          </Radio>
-        ));
-      }
-      return null;
-    } else if (sortedSelected.length > 1 && sortedSelected.length <= 4) {
-      return sortedSelected.map((value, index) => (
-        <Radio value={index + 1} className="custom-radio" key={index}>
-          {/* Add any additional content here if needed */}
-        </Radio>
-      ));
-    }
-    return null; // ไม่มี Radio ที่จะแสดง
+  const divs: { [key: string]: { img: string; label: string; orderKey: keyof typeof formData } } = {
+    "1": { img: protection, label: "แผนคุ้มครองรายได้ให้กับครอบครัวในกรณีที่ต้องจากไป", orderKey: "protectionPlanOrder" },
+    "2": { img: health, label: "การวางแผนเตรียมเงินเรื่องสุขภาพ", orderKey: "healthPlanOrder" },
+    "3": { img: retirement, label: "การวางแผนเตรียมเงินไว้ยามเกษียณ", orderKey: "retirementPlanOrder" },
+    "4": { img: Education, label: "การเก็บออมเพื่อค่าเล่าเรียนบุตร", orderKey: "educationPlanOrder" },
   };
-  const divs: { [key: string]: JSX.Element } = {
-    '1': <div className="protectionPlanOrder flex justify-between items-start">
-      <div className="">
-        <img src={protection} width={70} height={70} />
-        <p className=" text-[12px]">แผนคุ้มครองรายได้ <br />ให้กับครอบครัว<br /> ในกรณีที่ต้องจากไป</p>
-      </div>
-      <div>
-        <div className="mt-12 w-[222px]">
-          <Radio.Group
-            onChange={handleRadioChange("protectionPlanOrder")}
-            value={formData.protectionPlanOrder}
-            size="large"
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            {renderRadio()}
-          </Radio.Group>
-        </div>
-      </div>
-    </div>,
-    '2': <div className="healthPlanOrder flex justify-between items-start">
-      <div className="">
-        <img src={health} width={70} height={70} />
-        <p className=" text-[12px]">การวางแผนเตรียมเงิน <br /> เรื่องสุขภาพ</p>
-      </div>
-      <div>
-        <div className="mt-12 w-[222px]">
-          <Radio.Group
-            onChange={handleRadioChange("healthPlanOrder")}
-            value={formData.healthPlanOrder}
-            size="large"
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            {renderRadio()}
-          </Radio.Group>
-        </div>
-      </div>
-    </div>,
-    '3': <div className="retirementPlanOrder flex justify-between items-start">
-      <div className="">
-        <img src={retirement} width={70} height={70} />
-        <p className=" text-[12px]">การวางแผนเตรียมเงิน<br />ไว้ยามเกษียณ </p>
-      </div>
-      <div>
-        <div className="mt-12 w-[222px]">
-          <Radio.Group
-            onChange={handleRadioChange("retirementPlanOrder")}
-            value={formData.retirementPlanOrder}
-            size="large"
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            {renderRadio()}
-          </Radio.Group>
-        </div>
-      </div>
-    </div>,
-    '4': <div className="educationPlanOrder flex justify-between items-start">
-      <div className="">
-        <img src={Education} width={70} height={70} />
-        <p className=" text-[12px]">การเก็บออม<br />เพื่อค่าเล่าเรียนบุตร </p>
-      </div>
-      <div>
-        <div className="mt-12 w-[222px]">
-          <Radio.Group
-            onChange={handleRadioChange("educationPlanOrder")}
-            value={formData.educationPlanOrder}
-            size="large"
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            {renderRadio()}
-          </Radio.Group>
-        </div>
-      </div>
-    </div>,
-  };
-  
-  const renderDivs = (): JSX.Element[] | null => {
-    if (sortedSelected.length === 1) {
-      const value = sortedSelected[0];
-      if (value === '5') {
-        // ถ้า value เป็น '5' ให้แสดงทุกอัน 1-4
-        return Object.keys(divs).map(key => divs[key]);
-      } else if (divs[value]) {
-        // ถ้า value เป็น 1-4 แสดงเฉพาะ value นั้น
-        return [divs[value]];
-      }
-    } else if (sortedSelected.length >= 1 && sortedSelected.length <= 4) {
-      // ถ้ามีการเลือกมากกว่า 1 และไม่เกิน 4 ตัว ให้แสดงทุกตัวที่เลือก
-      return sortedSelected.map(value => divs[value]);
-    }
-    return null; // ไม่มี div ที่จะแสดง
-  };
-  
 
-  
+  const renderDivs = (): JSX.Element[] => {
+    return sortedSelected.map((value, index) => {
+      const item = divs[value];
+
+      if (!item) {
+        console.error(`Invalid value: ${value}`);
+        return null;
+      }
+
+      const { img, label, orderKey } = item;
+      return (
+        <Draggable key={value} draggableId={value} index={index}>
+          {(provided) => (
+            <div
+              className="flex justify-between items-start"
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <div>
+                <img src={img} width={70} height={70} alt={label} />
+                <p className="text-[12px]">{label}</p>
+              </div>
+              <div className="mt-12 w-[222px]">
+                <p className="text-[12px]">{index + 1}</p>
+              </div>
+            </div>
+          )}
+        </Draggable>
+      );
+    });
+  };
+
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
-      <div className=" fixed top-0 z-40"><NavBar /></div>
-
-
-      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-
-
+      <div className="fixed top-0 z-40"><NavBar /></div>
+      <div className="bg-white shadow-md rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3">
         <Row className="flex justify-center items-center mb-3 gap-5 relative">
-          {/* <PlanFetcher planType={planTypes} id={id} /> */}
           <h1 className="text-[24px] text-center text-[#0E2B81]">การจัดลำดับความสำคัญ</h1>
-
           <ProgressBar percent={progress.percent} current={current} />
           <div className="flex flex-row gap-16 justify-center items-center absolute top-16 right-6">
             <p>น้อย</p>
             <div className="long-arrow-right"></div>
-            {/* <img src={arrow} alt="" className=" h-5"/> */}
             <p>มาก</p>
           </div>
-
         </Row>
-        {renderDivs()}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="plans">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {renderDivs()}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
         <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
-          <Button
-            onClick={backlast}
-            className="bg-white rounded-full w-[120px]"
-          >
+          <Button onClick={backlast} className="bg-white rounded-full w-[120px]">
             ย้อนกลับ
           </Button>
           <Button

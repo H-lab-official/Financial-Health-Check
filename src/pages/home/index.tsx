@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      // checkUsers()
+      checkUsers()
 
       setIsLoading(false)
 
