@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      checkUsers()
+      // checkUsers()
 
       setIsLoading(false)
 
@@ -237,21 +237,15 @@ const HomePage: React.FC = () => {
         <p className="text-[#243286] text-center text-[1.2rem] mb-3 font-sans">การตรวจสอบสุขภาพทางการเงิน</p>
 
         <p className="mb-3 text-[#243286] font-sans text-[0.85rem]">
-          &nbsp;&nbsp;&nbsp;&nbsp;                                                    การตรวจสอบสุขภาพทางการเงิน เป็นกระบวนการที่สำคัญ<br />
-          ในการประเมินและทำความเข้าใจสถานะทางการเงินของคุณ<br />
-          สามารถช่วยให้คุณเห็นภาพรวมของการจัดการเงินส่วนบุคคล<br />
-          และระบุจุดที่ต้องปรับปรุงเพื่อเพิ่มความมั่นคงทางการเงินโดย
+          &nbsp;&nbsp;&nbsp;&nbsp;การตรวจสอบสุขภาพทางการเงินคือการประเมินสถานะทางการเงินของคุณ เพื่อช่วยให้คุณเห็นภาพรวมของการจัดการเงินส่วนบุคคล และระบุจุดที่ต้องปรับปรุง
         </p>
         <div className="font-sans text-[#243286] text-[0.85rem]">
-          <ul>
-            <li>• การวางแผนการเงิน ช่วยให้คุณสามารถวางแผนการเงินได้ <br />&nbsp;&nbsp;อย่างมีประสิทธิภาพทั้งในระยะสั้นและระยะยาว</li>
-            <li>• การจัดการหนี้สิน ทำให้คุณเห็นภาพรวมของหนี้สินและ<br />&nbsp;&nbsp;สามารถวางแผน
-              การชำระหนี้ได้ดีขึ้น</li>
-            <li>• การประหยัดและการลงทุน ช่วยให้คุณสามารถวางแผน<br />&nbsp;&nbsp;การออมและการลงทุน
-              เพื่ออนาคตได้อย่างมีประสิทธิภาพ</li>
-            <li>• การเพิ่มความมั่นคงทางการเงิน ทำให้คุณมีความมั่นคง<br />&nbsp;&nbsp;ทางการเงินมากขึ้น
-              ลดความเสี่ยงทางการเงิน</li>
-          </ul>
+
+          <li>การวางแผนการเงิน  ช่วยในการวางแผนการเงินระยะสั้นและระยะยาว</li>
+          <li>การจัดการหนี้สิน  เห็นภาพรวมของหนี้สินและวางแผนการชำระหนี้ได้ดีขึ้น</li>
+          <li>การประหยัดและการลงทุน  วางแผนการออมและการลงทุนเพื่ออนาคตได้มีประสิทธิภาพ</li>
+          <li>การเพิ่มความมั่นคงทางการเงิน  ทำให้มีความมั่นคงทางการเงินมากขึ้นและลดความเสี่ยงทางการเงิน</li>
+
         </div>
       </div>
 
@@ -262,12 +256,9 @@ const HomePage: React.FC = () => {
     content: (
       <div className="flex flex-col tracking-normal leading-tight">
         <div>
-          <div className="flex flex-row gap-5">
-            <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} onClick={() => handleClickChange('gender')('Man')} />
-            <img src={Women} alt="manOrWomen" className={`cursor-pointer rounded-full ${selectedGender === 'Women' ? 'border-[#050C9C] border-4' : ''}`} onClick={() => handleClickChange('gender')('Women')} />
-          </div>
 
-          <p className="text-2xl my-2 text-center font-bold">กรุณากรอกชื่อของคุณ</p>
+
+          <p className="text-2xl my-2 text-center font-bold">กรุณากรอกข้อมูลของคุณ</p>
         </div>
         <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
         <input
@@ -307,6 +298,18 @@ const HomePage: React.FC = () => {
             required
           />
         </div>
+        <div className="flex flex-row justify-center items-center gap-5">
+          <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Man')}>
+            <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} />
+            <p className="bg-[#050C9C] py-2 px-5 text-white rounded-full">MALE</p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Women')}>
+            <img src={Women} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Women' ? 'border-[#050C9C] border-4' : ''}`} />
+            <p className="bg-[#050C9C] py-2 px-3 text-white rounded-full">FEMALE</p>
+          </div>
+
+
+        </div>
       </div>
     )
   }, {
@@ -314,7 +317,17 @@ const HomePage: React.FC = () => {
     content: (
       <div className="flex flex-col">
         <div className="w-full flex flex-col justify-center items-center gap-4">
-
+          <LabelImages
+            selectedValue={sortedSelected}
+            handleOptionChange={handleOptionChange}
+            normalImage={FHCAllPlanNormal}
+            hoverImage={FHCAllPlanHover}
+            activeImage={FHCAllPlanActive}
+            selectedImage={FHCAllPlanActive}
+            value="5"
+            width="320px"
+            height="96px"
+          />
           <LabelImages
             selectedValue={sortedSelected}
             handleOptionChange={handleOptionChange}
@@ -359,35 +372,22 @@ const HomePage: React.FC = () => {
             width="320px"
             height="96px"
           />
-          <LabelImages
-            selectedValue={sortedSelected}
-            handleOptionChange={handleOptionChange}
-            normalImage={FHCAllPlanNormal}
-            hoverImage={FHCAllPlanHover}
-            activeImage={FHCAllPlanActive}
-            selectedImage={FHCAllPlanActive}
-            value="5"
-            width="320px"
-            height="96px"
-          />
-
-
         </div>
       </div>
     )
   }]
-  {/* <div className="loader"></div> */ }
+
 
   return (
     isLoading ? <><LoadingPage /></> :
       <div className="flex flex-col justify-center items-center text-[#0E2B81]">
-        <div className=" fixed top-0 z-40"><NavBar /></div>
+        <div className=" fixed top-0 z-40 "><NavBar /></div>
 
 
-        <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-12 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+        <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-16 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
 
           <Row align={"middle"} justify={"center"}>
-            <img src={current == 0 ? homeTop : ""} alt="" className={`rounded-xl `} height={150} />
+            {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl `} height={150} /> : null}
           </Row>
           <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
             <p className={`text-2xl my-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
@@ -401,17 +401,13 @@ const HomePage: React.FC = () => {
               )}
               {current == 0 && (<Button
                 onClick={() => next()}
-                // onClick={() => navigator("/protection-plan")}
+
                 className="flex items-center justify-center rounded-full p-5 bg-[#003781] text-white w-full font-sans"
               >
                 เริ่มทำแบบทดสอบกัน
               </Button>)
               }
-              {/* {current > 1 && (
-              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
-                ย้อนกลับ
-              </Button>
-            )} */}
+
               {current == 2 && (
                 <Button
                   onClick={toGoFirst}

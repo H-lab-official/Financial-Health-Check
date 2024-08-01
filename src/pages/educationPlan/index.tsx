@@ -18,6 +18,7 @@ import {
   currentIndexState,
   progressState,
 } from "@/recoil/progressState";
+import tooltip from '@/assets/images/icons/tooltip.svg'
 import ProgressBar from "@/components/progressBar";
 import Education from "@/assets/images/Education.png";
 import Education1 from "@/assets/images/Education1.png";
@@ -59,7 +60,7 @@ const EducationPlan: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [levelOfeducation2, setLevelOfeducation2] = useState(formData.levelOfeducation);
 
   const [typeOfeducation2, setTypeOfeducation2] = useState(formData.typeOfeducation);
@@ -83,7 +84,17 @@ const EducationPlan: React.FC = () => {
       [field]: value,
     }));
   };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const toFloat = (num: any) => {
     const floatValue = parseFloat(num.toString().replace(/,/g, ''));
     return floatValue;
@@ -130,7 +141,7 @@ const EducationPlan: React.FC = () => {
   const handleyearsOfeducationChange = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-     
+
     }));
   }
   let allImages;
@@ -330,6 +341,17 @@ const EducationPlan: React.FC = () => {
   };
 
   const handleSave = async () => {
+    const missingTotal = convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))
+
+    // ดึงค่าเดิมจาก localStorage
+    const currentData = JSON.parse(localStorage.getItem('beforeImport') || '{}');
+
+    // อัปเดตค่าใหม่เข้าไปใน currentData
+    currentData.missingTotal = missingTotal;
+
+
+    // Save the updated data to localStorage with the key 'beforeImport'
+    localStorage.setItem('beforeImport', JSON.stringify(currentData));
     await saveEducationplan({ data: formData, nameData: dataname });
   };
 
@@ -405,17 +427,32 @@ const EducationPlan: React.FC = () => {
                 addonAfter="ปี"
                 placeholder="กรุณาใส่อายุบุตร"
                 imgUrl={EducationPlan12}
-                ModalBody=""
-                ModalTitle=""
+                ModalBody="ระยะเวลาที่บุคคลหนึ่งมีชีวิตอยู่ นับตั้งแต่วันที่เกิดจนถึงปัจจุบัน หรือวันที่เราต้องการทราบอายุของบุตรคนนั้น"
+                ModalTitle="1.อายุของบุตร"
               />
             </Row>
-            <div className="flex flex-row justify-start items-center gap-4 mb-5">
-              <Col><img src={EducationPlan13} alt="icons" /></Col>
-              <Col>
-                <Col>
-                  <Text className="text-[#243286]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</Text>
-                </Col>
-                <Row className="gap-4">
+            <div className="flex flex-row justify-start items-center">
+              <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan13} alt="icons" className="w-10" /></div>
+              <div>
+                <div>
+                  <p className="text-[#243286]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</p><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+                </div>
+                <Modal
+                  title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
+                  open={isModalOpen}
+                  onCancel={handleCancel}
+                  footer={[
+                    <Button key="close" className="custom-close-button" onClick={handleCancel}>
+                      ปิด
+                    </Button>
+                  ]}
+                  closable={false}
+                  className="custom-modal"
+                >
+                  <div className="custom-modal-body">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
+                  </div>
+                </Modal>
+                <div className="gap-4">
                   <div className="flex flex-row justify-start items-center">
                     <Select
                       style={{ width: "190px" }}
@@ -429,9 +466,9 @@ const EducationPlan: React.FC = () => {
                       ]}
                     />
                   </div>
-                  <Button onClick={info}>!</Button>
-                </Row>
-              </Col>
+                 
+                </div>
+              </div>
             </div>
             <Row className="mt-4">
               <InputField
@@ -442,6 +479,8 @@ const EducationPlan: React.FC = () => {
                 placeholder=""
                 readOnly
                 imgUrl={EducationPlan14}
+                ModalBody=""
+                ModalTitle="3.จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
               />
               <InputField
                 label="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
@@ -451,11 +490,13 @@ const EducationPlan: React.FC = () => {
 
                 placeholder=""
                 imgUrl={EducationPlan15}
+                ModalBody="ระยะเวลาทั้งหมดที่ผู้ปกครองตั้งใจจะส่งลูกเรียน ตั้งแต่เข้าเรียนระดับแรกจนถึงระดับสูงสุดที่วางแผนไว้"
+                ModalTitle="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
               />
             </Row>
 
-            <div className="flex flex-row justify-start items-center gap-4 mb-5">
-              <Col><img src={EducationPlan16} alt="icons" /></Col>
+            <div className="flex flex-row justify-start items-center">
+              <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan16} alt="icons" className="w-10" /></div>
               <Col>
                 <Col>
                   <Text className="text-[#243286]">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
@@ -490,6 +531,8 @@ const EducationPlan: React.FC = () => {
             addonAfter="บาท/ปี"
             placeholder=""
             imgUrl={EducationPlan18}
+            ModalBody="เงินที่ต้องชำระให้กับสถาบันการศึกษาเพื่อแลกกับการได้รับความรู้และการศึกษาในระดับต่างๆ ไม่ว่าจะเป็นโรงเรียน มหาวิทยาลัย หรือสถาบันอื่นๆ"
+            ModalTitle="6.ค่าเล่าเรียน"
           />
           <InputField
             label="7. ค่าใช้จ่ายระหว่างศึกษา"
@@ -498,10 +541,12 @@ const EducationPlan: React.FC = () => {
             addonAfter="บาท/ปี"
             placeholder=""
             imgUrl={EducationPlan19}
+            ModalBody="เงินที่ต้องใช้จ่ายนอกเหนือจากค่าเล่าเรียนที่สถาบันการศึกษาเรียกเก็บ ซึ่งรวมถึงค่าใช้จ่ายที่จำเป็นสำหรับการศึกษาและการดำรงชีวิตในระหว่างที่กำลังศึกษาอยู่"
+            ModalTitle="7.ค่าใช้จ่ายระหว่างการศึกษา"
           />
 
-          <div className="flex flex-row justify-start items-center gap-4 mb-5">
-            <Col><img src={EducationPlan110} alt="icons" /></Col>
+          <div className="flex flex-row justify-start items-center mb-2">
+            <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan110} alt="icons" className="w-10" /></div>
             <Col>
               <Col>
                 <Text className="text-[#243286]">{"8. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
@@ -534,6 +579,8 @@ const EducationPlan: React.FC = () => {
             placeholder=""
             addonAfter="บาท"
             imgUrl={EducationPlan111}
+            ModalBody="การรวมเอาค่าใช้จ่ายทั้งหมดที่เกี่ยวข้องกับการศึกษา ไม่ว่าจะเป็นค่าเล่าเรียน ค่าอุปกรณ์การเรียน ค่าที่พัก ค่าอาหาร และค่าใช้จ่ายส่วนตัวอื่นๆ เข้าด้วยกัน เพื่อให้ได้ภาพรวมของจำนวนเงินทั้งหมดที่จำเป็นสำหรับการศึกษาในช่วงเวลาหนึ่งๆ"
+            ModalTitle="9. รวมทุนการศึกษาที่จำเป็น"
           />
         </div>
       ),
@@ -549,6 +596,8 @@ const EducationPlan: React.FC = () => {
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
             imgUrl={EducationPlan22}
+            ModalBody="การออมเงินหรือลงทุนเงินก้อนหนึ่งไว้ เพื่อเตรียมไว้สำหรับค่าใช้จ่ายในการศึกษาของบุตรหลานในอนาคต ไม่ว่าจะเป็นค่าเล่าเรียน ค่าใช้จ่ายในการดำรงชีวิตขณะศึกษา หรือค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการศึกษา"
+            ModalTitle="10. เงินฝากให้ลูกเรียนหนังสือ"
           />
 
           <InputField
@@ -558,6 +607,8 @@ const EducationPlan: React.FC = () => {
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
             imgUrl={EducationPlan23}
+            ModalBody="สัญญาประกันชีวิตหรือประกันอื่นๆ ที่ถึงระยะเวลาสิ้นสุดตามที่ระบุไว้ในกรมธรรม์ฉบับนั้นๆ กล่าวคือ เมื่อถึงวันที่กำหนดไว้ในกรมธรรม์ สัญญานั้นจะสิ้นสุดลง และบริษัทประกันจะดำเนินการตามเงื่อนไขที่ระบุไว้ในกรมธรรม์"
+            ModalTitle="11.กรมธรรม์ที่ครบกำหนด"
           />
           <InputField
             label="12. อื่นๆ"
@@ -566,6 +617,8 @@ const EducationPlan: React.FC = () => {
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
             imgUrl={EducationPlan24}
+            ModalBody="การบริหารจัดการเงิน การทำบัญชีรายรับรายจ่าย"
+            ModalTitle="12. อื่นๆ"
           />
           <InputField
             label="13. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
@@ -575,6 +628,8 @@ const EducationPlan: React.FC = () => {
             placeholder=""
             addonAfter="บาท"
             imgUrl={EducationPlan25}
+            ModalBody="การคำนวณและวางแผนค่าใช้จ่ายในการศึกษาทั้งหมด รวมถึงแหล่งเงินทุนต่างๆ ที่จะนำมาใช้ในการศึกษา ไม่ว่าจะเป็นทุนการศึกษาที่ได้รับ เงินออมส่วนตัว หรือเงินสนับสนุนจากครอบครัว"
+            ModalTitle="13.รวมทุนการศึกษาที่เตรียมไว้แล้ว"
           />
 
           <InputField
@@ -585,6 +640,8 @@ const EducationPlan: React.FC = () => {
             placeholder=""
             addonAfter="บาท"
             imgUrl={EducationPlan26}
+            ModalBody="การนำข้อมูลทางการเงินทั้งหมดที่เกี่ยวข้องมารวมกัน เพื่อให้ได้ภาพรวมทางการเงินที่สมบูรณ์และถูกต้องที่สุด"
+            ModalTitle="14.รวมที่ขาดอยู่"
           />
         </div>
       ),
@@ -697,9 +754,9 @@ const EducationPlan: React.FC = () => {
           <h1 className=" text-2xl font-bold text-center">
             {current == 0 ? "Education Plan" : "Education Plan"}{" "}
           </h1>
-          {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />}
-          <img src={allImages} alt="" className="w-[265px] mt-5" />
-          {current === 3 ? "" : <DotsComponent steps={steps} current={current} />}
+          {/* {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
+          {current === 0 && <img src={Education} alt="" className="w-[265px] mt-5" />}
+          {/* {current === 3 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div
           className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"

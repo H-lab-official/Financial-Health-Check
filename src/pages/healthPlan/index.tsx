@@ -291,9 +291,26 @@ const HealthPlan: React.FC = () => {
   };
 
   const handleSave = async () => {
+    const treatmentBudget = convertMoney(calculateAnnualTreatments(formData)); //งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)
+    const roomRates = convertMoney(calculateAdditionalRoomFee(formData)) // ค่าห้อง
+    const severeMedicalExpenses = convertMoney(calculateTreatingSeriousIllness(formData)) //ค่ารักษาโรค้รายแรง 
+    const emergencyAccidentTreatmentCosts = convertMoney(calculateEmergencyCosts(formData))//ค่ารักษาอุบัติเหตุฉุกเฉิน
+    // ดึงค่าเดิมจาก localStorage
+    const currentData = JSON.parse(localStorage.getItem('beforeImport') || '{}');
+
+    // อัปเดตค่าใหม่เข้าไปใน currentData
+    currentData.treatmentBudget = treatmentBudget;
+    currentData.roomRates = roomRates;
+    currentData.severeMedicalExpenses = severeMedicalExpenses;
+    currentData.emergencyAccidentTreatmentCosts = emergencyAccidentTreatmentCosts;
+
+    // Save the updated data to localStorage with the key 'beforeImport'
+    localStorage.setItem('beforeImport', JSON.stringify(currentData));
+
     await savehealthPlan({ data: formData, nameData: dataname });
     toGoNext();
   };
+
 
   const handleDisabled = () => {
     if (current === 1) {
@@ -364,6 +381,8 @@ const HealthPlan: React.FC = () => {
           placeholder=""
           readOnly
           imgUrl={HealthPlan13}
+          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
+          ModalTitle="2.ค่าห้องต่อวันประมาณ"
         />
         <div>
           <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
@@ -375,6 +394,8 @@ const HealthPlan: React.FC = () => {
               placeholder=""
               addonAfter="บาท"
               imgUrl={HealthPlan14}
+              ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาล เป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+              ModalTitle="3.ค่าห้องวันละ"
             />
             <InputField
               label="4 .ค่ารักษาโรคร้ายแรง"
@@ -383,6 +404,8 @@ const HealthPlan: React.FC = () => {
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
               imgUrl={HealthPlan15}
+              ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+              ModalTitle="4.ค่ารักษาโรคร้ายแรง"
             />
             <InputField
               label="5. ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -391,6 +414,8 @@ const HealthPlan: React.FC = () => {
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
               imgUrl={HealthPlan16}
+              ModalBody={`เป็นค่าใช้จ่ายที่อาจเกิดขึ้นได้อย่างไม่คาดคิด และมักจะมีจำนวนสูง ซึ่งอาจส่งผลกระทบต่อสภาพคล่องทางการเงินของเราได้อย่างมาก ดังนั้น การมีประกันสุขภาพที่คุ้มครองค่าใช้จ่ายเหล่านี้จึงเป็นสิ่งสำคัญอย่างยิ่ง`}
+              ModalTitle="5. ค่ารักษาอุบัติเหตุฉุกเฉิน"
             />
             <InputField
               label="6. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
@@ -399,6 +424,8 @@ const HealthPlan: React.FC = () => {
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
               imgUrl={HealthPlan17}
+              ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
+              ModalTitle="6.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
             />
           </div>
         </div>
@@ -415,6 +442,8 @@ const HealthPlan: React.FC = () => {
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           addonAfter="บาท"
           imgUrl={HealthPlan22}
+          ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาล เป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+          ModalTitle="7.ค่าห้องวันละ"
         />
         <InputField
           label="8. ค่ารักษาโรคร้ายแรง"
@@ -423,6 +452,8 @@ const HealthPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={HealthPlan24}
+          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+          ModalTitle="8.ค่ารักษาโรคร้ายแรง"
         />
         <InputField
           label="9. ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -431,6 +462,8 @@ const HealthPlan: React.FC = () => {
           addonAfter="บาท"
           imgUrl={HealthPlan25}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
+          ModalTitle="9. ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
           label="10. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
@@ -439,6 +472,8 @@ const HealthPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={HealthPlan26}
+          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
+          ModalTitle="10.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
         />
       </div>
     )
@@ -454,6 +489,8 @@ const HealthPlan: React.FC = () => {
           addonAfter="บาท"
           readOnly
           imgUrl={HealthPlan32}
+          ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาลเป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+          ModalTitle="11.ค่าห้องวันละ"
         />
         <InputField
           label="12. ค่ารักษาโรคร้ายแรง"
@@ -462,6 +499,8 @@ const HealthPlan: React.FC = () => {
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan34}
+          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+          ModalTitle="12.ค่ารักษาโรคร้ายแรง"
         />
         <InputField
           label="13. ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -470,6 +509,8 @@ const HealthPlan: React.FC = () => {
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan35}
+          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
+          ModalTitle="13. ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
           label="14. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
@@ -478,6 +519,8 @@ const HealthPlan: React.FC = () => {
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan36}
+          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
+          ModalTitle="14.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
         />
       </div>
     )
@@ -593,9 +636,9 @@ const HealthPlan: React.FC = () => {
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current === 0 ? "Health Plan" : "Health Plan"}</h1>
-          {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />}
-          {current === 4 ? "" : <img src={allImages} alt="" className=" w-[265px] mt-5" />}
-          {current === 4 ? "" : <DotsComponent steps={steps} current={current} />}
+          {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
+          {current === 0 && <img src={health} alt="" className=" w-[265px] mt-5" />}
+          {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : "shadow-xl"}`}>
           <p className={`text-xl mb-3`}>

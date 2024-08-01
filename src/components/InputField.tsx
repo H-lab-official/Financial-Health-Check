@@ -1,4 +1,4 @@
-import { Form, Input, Typography, Row, Col, Modal,Button } from "antd";
+import { Form, Input, Typography, Row, Col, Modal, Button } from "antd";
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import tooltip from '@/assets/images/icons/tooltip.svg'
@@ -62,18 +62,19 @@ const InputField: React.FC<InputFieldProps> = ({
   return (
     <Form.Item>
       <Row gutter={10} className="flex flex-row justify-start items-center">
-        <div className="w-[60px] flex justify-start items-center px-3">
-          <img src={imgUrl} alt="icons" />
+        <div className="w-[60px] flex justify-start items-center pl-3">
+          <img src={imgUrl} alt="icons" className="w-10" />
         </div>
-        <Col>
+        <div>
           <div className="flex flex-row gap-2">
-            <Text className={`font-sans truncate w-[180px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
-            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            <Text className={`font-sans  w-[190px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
+            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer " />
           </div>
-          <Col>
+          <div>
             <div className="flex flex-row justify-center items-center gap-5 font-sans">
               <Input
                 type="text"
+                style={{ fontSize: '16px' }}
                 value={inputValue}
                 onChange={handleChange}
                 placeholder={placeholder}
@@ -85,13 +86,13 @@ const InputField: React.FC<InputFieldProps> = ({
               />
               <Text className="text-[#243286] w-8 flex justify-start items-center">{addonAfter}</Text>
             </div>
-          </Col>
-        </Col>
+          </div>
+        </div>
       </Row>
-      <Modal 
-        title={<div className="custom-modal-title">{ModalTitle}</div>} 
-        open={isModalOpen} 
-        onCancel={handleCancel} 
+      <Modal
+        title={<div className="custom-modal-title">{ModalTitle}</div>}
+        open={isModalOpen}
+        onCancel={handleCancel}
         footer={[
           <Button key="close" className="custom-close-button" onClick={handleCancel}>
             ปิด
