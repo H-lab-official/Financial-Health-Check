@@ -272,6 +272,17 @@ const RetirementPlan: React.FC = () => {
     toGoBack()
   }
   const handleSave = async () => {
+    const totalMissingX = convertMoney(totalMissing);
+
+    // ดึงค่าเดิมจาก localStorage
+    const currentData = JSON.parse(localStorage.getItem('beforeImport') || '{}');
+
+    // อัปเดตค่าใหม่เข้าไปใน currentData
+    currentData.totalMissing = totalMissingX;
+
+
+    // Save the updated data to localStorage with the key 'beforeImport'
+    localStorage.setItem('beforeImport', JSON.stringify(currentData));
 
     await saveRetirementPlan({ data: formData, nameData: dataname, })
 
@@ -319,25 +330,33 @@ const RetirementPlan: React.FC = () => {
           label="1. กินอยู่"
           value={formData.livingCosts}
           onChange={handleInputChange("livingCosts")}
-          addonAfter="บาท ต่อ เดือน"
+          addonAfter="บาท/เดือน"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={RetirementPlan12}
+          ModalBody={`เงินที่เราต้องใช้จ่ายไปกับการดำรงชีวิตประจำวัน โดยเฉพาะอย่างยิ่งค่าอาหารและค่าที่อยู่อาศัย ซึ่งเป็นปัจจัยพื้นฐานที่จำเป็นต่อการยังชีพของมนุษย์`}
+          ModalTitle="1.กินอยู่"
         />
         <InputField
           label="2. ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
           value={formData.houseCosts}
           onChange={handleInputChange("houseCosts")}
-          addonAfter="บาท ต่อ เดือน"
+          addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan13}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          ModalBody={`เงินที่เราต้องใช้จ่ายสำหรับการดำรงชีวิตภายในบ้าน`}
+          ModalTitle="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
         />
         <InputField
           label="3. ค่ามือถือ อินเตอร์เน็ต"
           value={formData.internetCosts}
           onChange={handleInputChange("internetCosts")}
-          addonAfter="บาท ต่อ เดือน"
+          addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan14}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการโทรศัพท์มือถือและบริการอินเทอร์เน็ตผ่านโทรศัพท์มือถือ ซึ่งรวมถึง
+ค่าแพ็กเกจรายเดือน ค่าโทร ค่าส่งข้อความ และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการใช้งานโทรศัพท์มือถือ
+`}
+          ModalTitle="3.ค่ามือถือ อินเตอร์เน็ต"
         />
 
         <div className="">
@@ -346,8 +365,10 @@ const RetirementPlan: React.FC = () => {
             value={formData.clothingCosts}
             onChange={handleInputChange("clothingCosts")}
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-            addonAfter="บาท ต่อ เดือน"
+            addonAfter="บาท/เดือน"
             imgUrl={RetirementPlan15}
+            ModalBody={`เงินที่เราใช้จ่ายไปกับการซื้อเสื้อผ้า เครื่องแต่งกาย และอุปกรณ์ที่เกี่ยวข้อง เช่น รองเท้า กระเป๋า หมวก เป็นต้น ซึ่งเป็นค่าใช้จ่ายที่จำเป็นสำหรับการดำรงชีวิตประจำวัน และการแสดงออกถึงบุคลิกภาพของแต่ละคน`}
+            ModalTitle="4.ค่าเสื้อผ้า"
           />
         </div>
         <InputField
@@ -355,16 +376,20 @@ const RetirementPlan: React.FC = () => {
           value={formData.medicalCosts}
           onChange={handleInputChange("medicalCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          addonAfter="บาท ต่อ เดือน"
+          addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan16}
+          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการทางการแพทย์ในการรักษาโรคภัยไข้เจ็บ หรือเพื่อป้องกันโรค เช่น ค่าตรวจสุขภาพ ค่าพบแพทย์ ค่ายา ค่าผ่าตัด ค่าโรงพยาบาล และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการดูแลสุขภาพ`}
+          ModalTitle="5.ค่ารักษาพยาบาล"
         />
         <InputField
           label="6. ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)"
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          addonAfter="บาท ต่อ เดือน"
+          addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan17}
+          ModalBody={`ที่นอกเหนือไปจากปัจจัย 4 (อาหาร, ที่อยู่อาศัย, เสื้อผ้า, และยารักษาโรค) คือ เงินที่เราต้องใช้จ่ายไปกับสิ่งของหรือบริการต่างๆ ที่ช่วยให้ชีวิตมีความสะดวกสบายมากขึ้น หรือเป็นค่าใช้จ่ายที่จำเป็นต่อการดำรงชีวิตในสังคมปัจจุบัน แม้จะไม่ใช่ปัจจัยพื้นฐานที่สุดก็ตาม`}
+          ModalTitle="6.ค่าใช้จ่ายอื่นๆ (ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
         />
 
         <div className="">
@@ -376,6 +401,8 @@ const RetirementPlan: React.FC = () => {
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
             addonAfter="บาท"
             imgUrl={RetirementPlan18}
+            ModalBody={`การนำเอาค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในรอบ 1 ปี มาบวกกัน เพื่อหาผลรวมว่าเราใช้เงินไปกับอะไรบ้างในระยะเวลา 1 ปี โดยรวมค่าใช้จ่ายทั้งหมด ไม่ว่าจะเป็นค่าใช้จ่ายประจำวัน ประจำเดือน หรือประจำปี ก็ตาม`}
+            ModalTitle="7.รวมค่าใช้จ่ายต่อปี"
           />
         </div>
 
@@ -386,6 +413,8 @@ const RetirementPlan: React.FC = () => {
           placeholder="กรุณากรอกอายุของคุณ"
           addonAfter="ปี"
           imgUrl={RetirementPlan19}
+          ModalBody={`จำนวนปีที่ผ่านไปนับตั้งแต่เราเกิดจนถึงปัจจุบัน หรืออีกนัยหนึ่งคือช่วงเวลาที่เราใช้ชีวิตอยู่บนโลกใบนี้`}
+          ModalTitle="8.อายุตอนนี้"
         />
 
         <InputField
@@ -395,6 +424,8 @@ const RetirementPlan: React.FC = () => {
           placeholder="กรุณากรอกอายุประเมิน"
           addonAfter="ปี"
           imgUrl={RetirementPlan110}
+          ModalBody={`อายุที่บุคคลหนึ่งมีสิทธิ์เลิกทำงานประจำและได้รับสิทธิประโยชน์ต่างๆ เช่น บำนาญ หรือเงินชดเชย ตามที่กฎหมายหรือข้อตกลงกับนายจ้างกำหนด โดยทั่วไป อายุเกษียณจะแตกต่างกันไปตามแต่ละประเทศ องค์กร หรืออาชีพ`}
+          ModalTitle="9.อายุเกษียณ"
         />
         <InputField
           label="10. คาดการณ์อายุขัย"
@@ -403,6 +434,8 @@ const RetirementPlan: React.FC = () => {
           placeholder="กรุณากรอกอายุประเมิน"
           addonAfter="ปี"
           imgUrl={RetirementPlan111}
+          ModalBody={`การประมาณการว่าบุคคลหนึ่งๆ จะมีชีวิตอยู่ได้นานเท่าไร โดยพิจารณาจากปัจจัยต่างๆ เช่น เพศ อายุ สุขภาพ สภาพแวดล้อม และปัจจัยทางพันธุกรรม`}
+          ModalTitle="10.คาดการณ์อายุขัย"
         />
         <div className="">
           <InputField
@@ -413,6 +446,8 @@ const RetirementPlan: React.FC = () => {
             placeholder="34"
             addonAfter="ปี"
             imgUrl={RetirementPlan112}
+            ModalBody={`ระยะเวลาที่บุคคลหนึ่งสามารถทำงานได้อย่างมีประสิทธิภาพและมีสุขภาพที่ดี โดยทั่วไปจะหมายถึงช่วงอายุตั้งแต่เริ่มทำงานจนถึงอายุเกษียณ`}
+            ModalTitle="11.จำนวนปีที่ทำงานได้"
           />
         </div>
         <InputField
@@ -423,9 +458,11 @@ const RetirementPlan: React.FC = () => {
           placeholder="34"
           addonAfter="ปี"
           imgUrl={RetirementPlan113}
+          ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อให้บรรลุเป้าหมายบางอย่าง เช่น การเกษียณอายุ การซื้อบ้าน การศึกษาต่อ หรือการเริ่มต้นธุรกิจใหม่`}
+          ModalTitle="12.จำนวนปีที่ต้องเตรียม"
         />
         <div className="flex flex-row justify-start items-center gap-4 mb-5">
-          <Col><img src={RetirementPlan114} alt="icons" /></Col>
+          <Col><img src={RetirementPlan114} alt="icons" className="w-10" /></Col>
           <Col>
             <Col>
               <Text className="text-[#243286]">{"13. เงินเฟ้อ"}</Text>
@@ -462,6 +499,8 @@ const RetirementPlan: React.FC = () => {
           placeholder="30,626,766.28"
           addonAfter="บาท"
           imgUrl={RetirementPlan115}
+          ModalBody={`การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ`}
+          ModalTitle="14.รวมค่าใช้จ่ายที่ต้องเตรียม"
         />
       </div>
     )
@@ -476,6 +515,8 @@ const RetirementPlan: React.FC = () => {
         addonAfter="บาท"
         placeholder="2,000.00"
         imgUrl={RetirementPlan22}
+        ModalBody={`เงินที่เราฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
+        ModalTitle="15.เงินฝาก"
       />
         <InputField
           label="16. ทุนประกัน"
@@ -484,6 +525,8 @@ const RetirementPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan23}
+          ModalBody={`จำนวนเงินสูงสุดที่บริษัทประกันภัยจะจ่ายให้กับผู้เอาประกัน หรือผู้รับผลประโยชน์ ในกรณีที่เกิดเหตุการณ์ตามที่ระบุไว้ในกรมธรรม์ประกันภัย เช่น การเสียชีวิต การเจ็บป่วย การสูญเสียทรัพย์สิน เป็นต้น`}
+          ModalTitle="16.ทุนประกัน"
         />
         <InputField
           label="17. ทรัพย์สินอื่น ๆ"
@@ -492,6 +535,8 @@ const RetirementPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan24}
+          ModalBody={`เป็นคำที่ค่อนข้างกว้างและอาจมีความหมายแตกต่างกันไปขึ้นอยู่กับบริบทที่ใช้ แต่โดยทั่วไปแล้ว หมายถึง <b>ทรัพย์สินที่ไม่ได้ระบุเจาะจงเป็นรายการ</b> ในเอกสารหรือสัญญาฉบับนั้น ๆ`}
+          ModalTitle="17.ทรัพย์สินอื่น ๆ"
         />
         <InputField
           label="18. รวมสิ่งที่เตรียมไว้แล้ว"
@@ -501,6 +546,8 @@ const RetirementPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan25}
+          ModalBody={`การรวบรวมรายการสิ่งของหรือทรัพย์สินทั้งหมดที่เราได้เตรียมเอาไว้แล้ว เพื่อให้เห็นภาพรวมของสิ่งที่เรามีอยู่ทั้งหมด`}
+          ModalTitle="18.รวมสิ่งที่เตรียมไว้แล้ว"
         />
         <div className="pt-4">
           <InputField
@@ -511,6 +558,8 @@ const RetirementPlan: React.FC = () => {
             placeholder="34"
             addonAfter="บาท"
             imgUrl={RetirementPlan26}
+            ModalBody={`การรวบรวมรายการสิ่งของหรือข้อมูลที่ขาดหายไปจากชุดข้อมูลที่มีอยู่ทั้งหมด เพื่อให้ได้ภาพรวมที่สมบูรณ์และครบถ้วน`}
+            ModalTitle="19.รวมที่ขาดอยู่"
           />
         </div>
         <InputField
@@ -521,6 +570,8 @@ const RetirementPlan: React.FC = () => {
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan27}
+          ModalBody={`จำนวนเงินที่เราตั้งเป้าหมายว่าจะสามารถออมหรือเก็บสะสมได้ภายในหนึ่งปี เป็นตัวเลขที่แสดงถึงเป้าหมายทางการเงินของเราในระยะเวลาหนึ่งปี`}
+          ModalTitle="20.ต่อปีที่ต้องเก็บได้"
         /></div>
     )
   }, {
@@ -630,13 +681,13 @@ const RetirementPlan: React.FC = () => {
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "Retirement Plan" : "Retirement Plan"}</h1>
-          {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />}
+          {/* {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
+          {current === 0 && <img src={retirement} alt="" className="w-[265px] mt-5" />}
 
-          <img src={allImages} alt="" className="w-[265px] mt-5" />
-          {current === 3 ? "" : <DotsComponent steps={steps} current={current} />}
+          {/* {current === 3 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" />{steps[current].title}</div> : steps[current].title}</p>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">

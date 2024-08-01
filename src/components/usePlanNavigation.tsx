@@ -1,13 +1,12 @@
 import { useRecoilState } from 'recoil';
 import { addressPlans, historyAddress } from '@/recoil/address';
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 const usePlanNavigation = () => {
   const [plans, setPlans] = useRecoilState(addressPlans);
   const [history, setHistory] = useRecoilState(historyAddress);
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
     setPlans(storedPlans);
@@ -30,7 +29,7 @@ const usePlanNavigation = () => {
     }
   }, [setPlans]);
 
-  const toone = () => {
+  const toone = (name:any) => {
     return new Promise<void>((resolve) => {
       if (plans.length > 0) {
         const nextPlan = plans[0];
@@ -52,9 +51,10 @@ const usePlanNavigation = () => {
         setPlans(updatedPlans);
         setHistory(updatedHistory);
       } else {
-        console.log('No more plans to navigate to.');
+
+        navigate('/congratulations', { state: { name } });
       }
-      resolve();  // Ensure the promise is resolved
+      resolve();
     });
   };
 

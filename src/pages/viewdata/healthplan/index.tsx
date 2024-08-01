@@ -30,6 +30,7 @@ const Viewehealthplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [linkButton, setLinkButton] = useState(false)
   const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  const [shareLink, setShareLink] = useState<string>("");
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 0,
@@ -41,13 +42,17 @@ const Viewehealthplan: React.FC = () => {
     const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
     const addressPlansLength = addressPlans.length;
     const historyAddressLength = historyAddress.length;
-    if ((addressPlansLength + historyAddressLength) == 1) {
-      setLinkButton(true)
+    if ((addressPlansLength + historyAddressLength) === 1) {
+      setLinkButton(true);
+      setShareLink(location.pathname);
     } else {
-      setLinkButton(false)
+      setLinkButton(false);
+      const linkshare = localStorage.getItem('linkshare');
+      if (linkshare) {
+        setShareLink(`/share/${linkshare}`);
+      }
     }
-
-  }
+  };
   useEffect(() => {
     const fetchEducationPlan = async () => {
       try {
@@ -66,6 +71,16 @@ const Viewehealthplan: React.FC = () => {
 
     fetchEducationPlan();
     checkLocalStorageLengths()
+    // const address = JSON.parse(localStorage.getItem('addressPlans') || "[]")
+    // if (address.length === 1) {
+    //   setShareLink(location.pathname);
+    // } else {
+
+    //   const linkshare = localStorage.getItem('linkshare');
+    //   if (linkshare) {
+    //     setShareLink(`/share/${linkshare}`);
+    //   }
+    // }
   }, [id]);
 
   if (loading) {
@@ -199,14 +214,20 @@ const Viewehealthplan: React.FC = () => {
               </div>
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
-                  <ShareOnSocial linkFavicon={logo} linkTitle={"Health Plan Data"}>
-                    <Button className="bg-[#003781] flex flex-row justify-center items-center gap-5  rounded-full w-[260px] h-10 text-white "><img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p></Button>
-                  </ShareOnSocial>
+                  {shareLink && <ShareOnSocial
+                    link={`http://localhost:5173${shareLink}`} // Specify the link using the shareLink state
+                    linkFavicon={logo}
+                    linkTitle={"Health Plan Data"}
+                  >
+                    <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8]">
+                      <img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p>
+                    </button>
+                  </ShareOnSocial>}
                   {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
                       ย้อนกลับ
                     </Button>
-                    <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                    <Button onClick={()=>toone(healthPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
                       ถัดไป
                     </Button>
                   </div>}

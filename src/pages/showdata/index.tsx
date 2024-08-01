@@ -17,10 +17,21 @@ import health from "@/assets/images/health.png";
 import retirement from "@/assets/images/retirement.png";
 import Education2 from "@/assets/images/Education2.png";
 import usePlanNavigation from "@/components/usePlanNavigation";
+import axios from 'axios';
 
 const getPlansFromLocalStorage = () => {
   const plans = [];
-
+  const questionsState = localStorage.getItem('saveQuestionsState');
+  if (questionsState) {
+    try {
+      const { id } = JSON.parse(questionsState);
+      plans.push(`/view/conclusion/${id}`);
+    } catch (e) {
+      console.error("Error parsing summaryPlan:", e);
+    }
+  } else {
+    console.log("saveQuestionsState not found in localStorage");
+  }
   const protectionPlan = localStorage.getItem('saveProtectionPlan');
   if (protectionPlan) {
     try {
@@ -79,11 +90,23 @@ const getPlansFromLocalStorage = () => {
   return plans;
 };
 
+const saveAddressPlans = async (plans: string[]) => {
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/addressplan`, { plans });
+    console.log("Plans saved successfully:", response.data);
+    return response.data.id; // Assuming the API returns an 'id'
+  } catch (error) {
+    console.error("Error saving plans:", error);
+    throw error;
+  }
+};
+
 const Showdata: React.FC = () => {
   const location = useLocation();
   const currentStep = location.state?.current || 0;
   const [current, setCurrent] = useState(currentStep);
   const sortedSelected = useRecoilValue(sortedSelectedState);
+  const newsSlectedState = useRecoilValue(selectedState)
   const [questionsData] = useRecoilState(questionsState);
   const [protectionPlanData] = useRecoilState(protectionPlanState);
   const [healthPlanData] = useRecoilState(healthPlanState);
@@ -114,6 +137,11 @@ const Showdata: React.FC = () => {
     console.log(plansFromLocalStorage);
 
     setPlans(plansFromLocalStorage);
+
+    // Save plans to the database and get the id
+    const id = await saveAddressPlans(plansFromLocalStorage);
+    // Save the id to localStorage
+    localStorage.setItem('linkshare', id);
   };
 
   const toone = () => {
@@ -170,9 +198,10 @@ const Showdata: React.FC = () => {
       break;
   }
 
-  const next = () => {
-    fullDetails();
+  const next = async () => {
+    await fullDetails();
     setCurrent((prev) => Math.min(prev + 1, steps.length - 1));
+    toone();
   };
 
   const prev = () => {
@@ -201,7 +230,7 @@ const Showdata: React.FC = () => {
     questionsData.retirementPlanOrder
   ];
 
-  const nonZeroOrders = orders.map((order, index) => ({ order, index: index + 1 })).filter(({ order }) => order !== 0).sort((a, b) => b.order - a.order);
+  const nonZeroOrders = orders.map((order, index) => ({ order, index: index + 1 })).filter(({ order }) => order !== 0).sort((a, b) => a.order - b.order);
 
   const texts: { [key: string]: string } = {
     '1': 'Protection plan',
@@ -209,10 +238,11 @@ const Showdata: React.FC = () => {
     '3': 'Retirement plan',
     '4': 'Education plan',
   };
+  console.log(newsSlectedState);
 
   const renderTexts = (): JSX.Element[] | null => {
-    if (sortedSelected.length === 1) {
-      const value = sortedSelected[0];
+    if (newsSlectedState.length === 1) {
+      const value = newsSlectedState[0];
       if (value === '5') {
         return Object.keys(texts).map(key => (
           <p key={key} className={`animate__animated animate__backInUp animate__delay-${key}s animate__duration-2s`}>{texts[key]}</p>
@@ -220,8 +250,8 @@ const Showdata: React.FC = () => {
       } else if (texts[value]) {
         return [<p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>];
       }
-    } else if (sortedSelected.length >= 1 && sortedSelected.length <= 4) {
-      return sortedSelected.map(value => (
+    } else if (newsSlectedState.length >= 1 && newsSlectedState.length <= 4) {
+      return newsSlectedState.map(value => (
         <p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>
       ));
     }
@@ -243,72 +273,13 @@ const Showdata: React.FC = () => {
         )}
       </div>
     )
-  }, {
-    title: "Financial  Health Check",
-    content: (
-      <>
-        <div className="rounded-lg p-5 shadow-lg mb-5">
-          <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
-          <div className="text-black">
-            {nonZeroOrders.map(({ order }) => {
-              if (order === questionsData.protectionPlanOrder) {
-                return (
-                  <div key={order} className="flex flex-row justify-between">
-                    <p>ค่าใช้จ่ายในครอบครัว</p>
-                    <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
-                  </div>
-                );
-              }
-              if (order === questionsData.healthPlanOrder) {
-                return (
-                  <div key={order} className="flex flex-row justify-between">
-                    <p>วางแผนเพื่อสุขภาพ</p>
-                    <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
-                  </div>
-                );
-              }
-              if (order === questionsData.retirementPlanOrder) {
-                return (
-                  <div key={order} className="flex flex-row justify-between">
-                    <p>ค่าใช้จ่ายหลังเกษียณ</p>
-                    <p>{convertMoney(totalMissing)} บาท</p>
-                  </div>
-                );
-              }
-              if (order === questionsData.educationPlanOrder) {
-                return (
-                  <div key={order} className="flex flex-row justify-between">
-                    <p>วางแผนเพื่อการศึกษาบุตร</p>
-                    <p>{convertMoney(educationMissing)} บาท</p>
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </div>
-        </div>
-        <div className="rounded-lg p-5 shadow-lg mb-5">
-          <div className="text-[1.4rem] mb-3">
-            <p>ความสำคัญที่คุณเลือกเป็นดังนี้</p>
-          </div>
-          <div className="text-black text-[0.9rem]">
-            {nonZeroOrders.map(({ order }, i) => (
-              <div className="flex flex-row" key={i}>
-                <p className="text-red-500 font-bold">{i + 1}.</p>
-                <p>{getPlanText(order)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </>
-    )
   }];
 
   return (
     <div>
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className="fixed top-0 z-40"><NavBar /></div>
-        <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 mt-10 w-[375px]">
+        <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5  w-[375px] mt-16">
           {steps[current].content}
           <div className={`steps-action h-20 flex flex-row font-sans`}>
             {current == 1 && (
@@ -326,11 +297,11 @@ const Showdata: React.FC = () => {
                 ถัดไป
               </Button>
             )}
-            {current === steps.length - 1 && (
+            {/* {current === steps.length - 1 && (
               <Button onClick={toone} className={`bg-[#003781] rounded-full w-[180px] text-white`}>
                 สรุปฉบับเต็ม
               </Button>
-            )}
+            )} */}
           </div>
         </div>
       </div>

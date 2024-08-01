@@ -77,11 +77,12 @@ export const useLocalStorage = () => {
     const saveEducationplan = localStorage.getItem("saveEducationplan")
     const addressPlans = localStorage.getItem("addressPlans")
     const historyAddress = localStorage.getItem('historyAddress')
+    const beforeImport = localStorage.getItem('beforeImport')
     if (storedData) {
       const parsedData: {
         nickname: string;
         age: string;
-        gender?:string
+        gender?: string
         educationPlan?: EducationPlanStorageData;
         healthPlan?: HealthPlanStorageData;
         protection?: ProtectionPlanStorageData;
@@ -129,6 +130,7 @@ export const useLocalStorage = () => {
         localStorage.removeItem("saveEducationplan");
         localStorage.removeItem("addressPlans");
         localStorage.removeItem("historyAddress");
+        localStorage.removeItem('beforeImport')
       }
     } else {
       const storageKeys = [
@@ -138,14 +140,14 @@ export const useLocalStorage = () => {
         saveProtectionPlan,
         saveEducationplan,
         addressPlans,
-        historyAddress
+        historyAddress, beforeImport
       ];
       const localStorageKeys = [
         "saveQuestionsState",
         "savehealthPlan",
         "saveRetirementPlan",
         "saveProtectionPlan",
-        "saveEducationplan", "addressPlans", "historyAddress"
+        "saveEducationplan", "addressPlans", "historyAddress", "beforeImport"
       ];
 
       for (let i = 0; i < storageKeys.length; i++) {
@@ -155,7 +157,7 @@ export const useLocalStorage = () => {
             id: string;
             nickname: string;
             age: string;
-            gender?:string
+            gender?: string
           } = JSON.parse(key);
 
           if (parsedData.nickname !== name.nickname) {
@@ -169,7 +171,7 @@ export const useLocalStorage = () => {
   const saveData = (dataToSave: {
     nickname?: string;
     age?: string;
-    gender?:string
+    gender?: string
     educationPlan?: EducationPlanStorageData;
     healthPlan?: HealthPlanStorageData;
     protection?: ProtectionPlanStorageData;

@@ -80,7 +80,7 @@ export const NavBar = () => {
             <div className='flex flex-row items-center gap-2'>
                 <img src={logo} alt="logo" />
                 <div className='flex flex-col'>
-                    <p className='text-[0.9rem] font-bold'>AGENCY JOURNEY</p>
+                    <p className='text-[0.8rem] font-bold'>AGENCY JOURNEY</p>
                     <p className='text-[0.7rem] font-semibold'>ALLIANZ BOARDING</p>
                 </div>
             </div>

@@ -49,6 +49,7 @@ const { Text } = Typography;
 import ProgressBar from "@/components/progressBar";
 import { saveProtectionPlan } from "@/components/api/saveProtectionPlan";
 import { NavBar } from "@/components/navbar";
+
 const ProtectionPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -129,7 +130,7 @@ const ProtectionPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/report');
+      navigator('/showdata');
     } else {
 
       if (value === '5') {
@@ -137,7 +138,7 @@ const ProtectionPlan: React.FC = () => {
       } else {
         console.log(value);
 
-        navigateToValue(urlMap, value, '/report');
+        navigateToValue(urlMap, value, '/showdata');
       }
     }
   };
@@ -189,11 +190,14 @@ const ProtectionPlan: React.FC = () => {
 
 
   const handleSave = async () => {
+    const coverageValue = convertMoney(calculateCoverage(formData));
+
+    // Save the protectiondata to localStorage
+    localStorage.setItem('beforeImport', JSON.stringify({ protectiondata: coverageValue }));
 
     await saveProtectionPlan({ data: formData, nameData: dataname });
     toGoNext();
   };
-
   const handleDisabled = () => {
     if (current === 1) {
       return (
@@ -304,12 +308,12 @@ const ProtectionPlan: React.FC = () => {
             ModalBody="การเก็บเงินสำรองไว้ใช้ในยามฉุกเฉิน โดยคิดเป็นครึ่งหนึ่งของเงินที่คุณได้รับทั้ง หมดในแต่ละเดือน"
             ModalTitle="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
           />
-          <div className="flex flex-row justify-start items-center gap-4 mb-5">
-            <Col><img src={ProtectionPlan16} alt="icons" /></Col>
-            <Col>
-              <Col className="flex flex-row justify-between items-center">
-                <Text className="text-[#243286]">{"5. เงินเฟ้อ"}</Text> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-              </Col>
+          <div className="flex flex-row justify-start items-center mb-5">
+            <div className="w-[55px] flex justify-start items-center pl-2"><img src={ProtectionPlan16} alt="icons" className="w-10" /></div>
+            <div>
+              <div className="flex flex-row justify-between items-center">
+                <p className="text-[#243286]">{"5. เงินเฟ้อ"}</p> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+              </div>
               <Modal
                 title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
                 open={isModalOpen}
@@ -325,8 +329,8 @@ const ProtectionPlan: React.FC = () => {
                 <div className="custom-modal-body">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
                 </div>
               </Modal>
-              <Col>
-                <div className="flex flex-row justify-start items-center gap-5 ">
+              <div>
+                <div className="gap-4 ">
                   <Select
                     style={{ width: '190px' }}
                     defaultValue={formData.inflationRate}
@@ -342,8 +346,8 @@ const ProtectionPlan: React.FC = () => {
                   />
 
                 </div>
-              </Col>
-            </Col>
+              </div>
+            </div>
           </div>
           <div className="">
             <InputField
@@ -475,7 +479,7 @@ const ProtectionPlan: React.FC = () => {
             readOnly
             imgUrl={ProtectionPlan36}
             ModalBody={`การรวบรวมข้อมูลทั้งหมดที่เกี่ยวกับทรัพย์สินที่เรามีอยู่ ไม่ว่าจะเป็นที่ดิน บ้าน รถยนต์ เงินฝาก หรือทรัพย์สินอื่นๆ ที่มีค่าทางเศรษฐกิจ เพื่อให้เราทราบว่าเรามีทรัพย์สินอะไรบ้าง มีมูลค่าเท่าไหร่ และอยู่ที่ไหน`}
-          ModalTitle="16.ความคุ้มครองที่จำเป็น"
+            ModalTitle="16.ความคุ้มครองที่จำเป็น"
           />
         </div>
       </>)
@@ -584,12 +588,13 @@ const ProtectionPlan: React.FC = () => {
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-5">
           <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "Protection Plan" : "Protection Plan"}</h1>
-          {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />}
-          <img src={allImages} alt="" className="w-[265px] mt-5" />
-          {current === 4 ? "" : <DotsComponent steps={steps} current={current} />}
+          {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
+          {current === 0 && <img src={protection} alt="" className="w-[265px] mt-5" />}
+
+          {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" />{steps[current].title}</div> : steps[current].title}</p>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan11} alt="" className="w-9" />{steps[current].title}</div> : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" className="w-8" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" className="w-10" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current > 0 && (

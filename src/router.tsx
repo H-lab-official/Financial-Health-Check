@@ -19,8 +19,13 @@ import Vieweducationplan from "@/pages/viewdata/educationplan";
 import Viewhealthplan from "@/pages/viewdata/healthplan";
 import Viewprotectionplan from "@/pages/viewdata/protectionplan";
 import Viewretirementplan from "@/pages/viewdata/retirementplan";
+import ViewConclusionplan from "@/pages/viewdata/Conclusion"
 //logs
 import Logs from '@/pages/savelogs'
+//share
+import Share from "@/pages/share";
+//congratulations
+import Congratulations from "@/pages/congratulations"
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -104,6 +109,19 @@ export const router = createBrowserRouter([
       },{
         path:"/logs",
         element:<Logs/>
+      },
+      {
+        path: "/view/conclusion/:id",
+        element: <ViewConclusionplan />,
+        children: [],
+      },{
+        path: "/share/:id",
+        element: <Share />,
+        children: [],
+      },{
+        path: "/congratulations",
+        element: <Congratulations/>,
+        children: [],
       }
     ],
   },
