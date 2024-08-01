@@ -121,12 +121,13 @@ const Showdata: React.FC = () => {
 
   useEffect(() => {
     if (current === 0) {
-      const animationDuration = 6000; // Duration of the animation in milliseconds
+      const animationDuration = 10; // Duration of the animation in milliseconds
       const timeoutId = setTimeout(() => {
         setShowButton(true);
       }, animationDuration);
-
+      next()
       return () => clearTimeout(timeoutId);
+
     } else {
       setShowButton(false);
     }
@@ -245,14 +246,14 @@ const Showdata: React.FC = () => {
       const value = newsSlectedState[0];
       if (value === '5') {
         return Object.keys(texts).map(key => (
-          <p key={key} className={`animate__animated animate__backInUp animate__delay-${key}s animate__duration-2s`}>{texts[key]}</p>
+          <p key={key} className={``}>{texts[key]}</p>
         ));
       } else if (texts[value]) {
-        return [<p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>];
+        return [<p key={value} className={``}>{texts[value]}</p>];
       }
     } else if (newsSlectedState.length >= 1 && newsSlectedState.length <= 4) {
       return newsSlectedState.map(value => (
-        <p key={value} className={`animate__animated animate__backInUp animate__delay-${value}s animate__duration-2s`}>{texts[value]}</p>
+        <p key={value} className={``}>{texts[value]}</p>
       ));
     }
     return null;
@@ -280,7 +281,7 @@ const Showdata: React.FC = () => {
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className="fixed top-0 z-40"><NavBar /></div>
         <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5  w-[375px] mt-16">
-          {steps[current].content}
+          {/* {steps[current].content} */}
           <div className={`steps-action h-20 flex flex-row font-sans`}>
             {current == 1 && (
               <Button style={{ margin: "0 8px" }} onClick={prev} className={`bg-white rounded-full w-[180px]`}>

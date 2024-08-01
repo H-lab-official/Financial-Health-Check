@@ -312,7 +312,7 @@ const ProtectionPlan: React.FC = () => {
             <div className="w-[55px] flex justify-start items-center pl-2"><img src={ProtectionPlan16} alt="icons" className="w-10" /></div>
             <div>
               <div className="flex flex-row justify-between items-center">
-                <p className="text-[#243286]">{"5. เงินเฟ้อ"}</p> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+                <p className="text-[#243286] w-[197px] font-sans">{"5. เงินเฟ้อ"}</p> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
               </div>
               <Modal
                 title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
@@ -376,7 +376,7 @@ const ProtectionPlan: React.FC = () => {
             value={formData.homePayments}
             onChange={handleInputChange("homePayments")}
             addonAfter="บาท"
-            placeholder="3,000.00"
+            placeholder=""
             imgUrl={ProtectionPlan22}
             ModalBody={`เงินที่เราต้องจ่ายให้กับธนาคารเป็นงวดๆ เพื่อชำระคืนเงินที่เราได้กู้มาซื้อบ้านมา`}
             ModalTitle="7.ค่าผ่อนบ้านคงค้างทั้งหมด"
@@ -386,7 +386,7 @@ const ProtectionPlan: React.FC = () => {
             value={formData.carPayments}
             onChange={handleInputChange("carPayments")}
             addonAfter="บาท"
-            placeholder="300,000.00"
+            placeholder=""
             imgUrl={ProtectionPlan23}
             ModalBody={`จำนวนเงินทั้งหมดที่เรายังค้างชำระอยู่สำหรับรถคันนั้น นับตั้งแต่วันที่กู้เงินมาซื้อรถจนถึงปัจจุบัน`}
             ModalTitle="8.ค่าผ่อนรถคงค้างทั้งหมด"
@@ -396,7 +396,7 @@ const ProtectionPlan: React.FC = () => {
             value={formData.otherDebts}
             onChange={handleInputChange("otherDebts")}
             addonAfter="บาท"
-            placeholder="50,000.00"
+            placeholder=""
             imgUrl={ProtectionPlan24}
             ModalBody={`หนี้สินที่เกิดขึ้นจากการใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้สินหลักๆ เช่น หนี้บ้าน หนี้รถ หรือหนี้บัตรเครดิต`}
             ModalTitle="9.หนี้สินอื่นๆ"
@@ -509,14 +509,14 @@ const ProtectionPlan: React.FC = () => {
               <p>{convertMoney(calculateInitialYearlyExpense(formData))} บาท</p></div>
             <div className="flex flex-row justify-between">
               <p>3.จำนวนปีที่ต้องการดูแลครอบครัว</p>
-              <p>{formData.numberOfYears} ปี</p></div>
+              <p>{formData.numberOfYears} ปี&nbsp;&nbsp;&nbsp;&nbsp;</p></div>
             <div className="flex flex-row justify-between">
-              <p>4.เงินสำรองฉุกเฉิน (50% ของรายได้บาท/ปี)</p>
+              <p>4.เงินสำรองฉุกเฉิน</p>
               <p>{convertMoney(formData.adjustedYearlyExpenses)} บาท</p>
             </div>
             <div className="flex flex-row justify-between">
               <p>5.เงินเฟ้อ</p>
-              <p>{parseFloat(formData.inflationRate) * 100} %</p>
+              <p>{(parseFloat(formData.inflationRate) * 100).toFixed(0)} %&nbsp;&nbsp;&nbsp;&nbsp;</p>
             </div>
             <div className="flex flex-row justify-between">
               <p>6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้</p>
@@ -581,15 +581,15 @@ const ProtectionPlan: React.FC = () => {
 
 
   return (
-    <div className="flex flex-col justify-center items-center text-[#0E2B81]">
+    <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
       <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
-      <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-        <div className="flex flex-col justify-center items-center gap-3 mb-5">
+      <div className="bg-white  rounded-lg px-6 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-1 ">
+        <div className="flex flex-col justify-center items-center gap-1 mb-1">
           <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "Protection Plan" : "Protection Plan"}</h1>
           {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
-          {current === 0 && <img src={protection} alt="" className="w-[265px] mt-5" />}
+          {current === 0 && <img src={allImages} alt="" className="w-[265px] mt-5" />}
 
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
@@ -625,6 +625,10 @@ const ProtectionPlan: React.FC = () => {
               </Button>
             )}
           </div>
+          <div className="flex flex-row justify-center items-center mb-5">
+            {current > 0 && current < 4 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
+          </div>
+
         </div>
       </div>
     </div>

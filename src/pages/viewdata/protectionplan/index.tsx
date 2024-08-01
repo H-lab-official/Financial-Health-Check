@@ -131,20 +131,22 @@ const Vieweprotectionplan: React.FC = () => {
                       <p>{convertMoney(calculateInitialYearlyExpense(protectionPlanData))} บาท</p></div>
                     <div className="flex flex-row justify-between">
                       <p>3.จำนวนปีที่ต้องการดูแลครอบครัว</p>
-                      <p>{protectionPlanData.numberOfYears} ปี</p></div>
+                      <p>{protectionPlanData.numberOfYears} ปี&nbsp;&nbsp;&nbsp;&nbsp;</p></div>
                     <div className="flex flex-row justify-between">
                       <p>4.เงินสำรองฉุกเฉิน (50% ของรายได้บาท/ปี)</p>
                       <p>{convertMoney(protectionPlanData.adjustedYearlyExpenses)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
                       <p>5.เงินเฟ้อ</p>
-                      <p>{parseFloat(protectionPlanData.inflationRate) * 100} %</p>
+                      <p>{(parseFloat(protectionPlanData.inflationRate) * 100).toFixed(0)} %&nbsp;&nbsp;&nbsp;&nbsp;</p>
                     </div>
+                    
                     <div className="flex flex-row justify-between">
                       <p>6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้</p>
                       <p>{convertMoney(calculateExpenses(protectionPlanData))} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-5">
+                    <div className="text-[1rem] my-3 flex flex-row justify-between items-center text-[#0E2B81]"><p>หนี้สินค้างชำระ</p> </div>
+                    <div className="flex flex-row justify-between mt-1">
                       <p>7.ค่าผ่อนบ้านคงค้างทั้งหมด</p>
                       <p>{convertMoney(protectionPlanData.homePayments)} บาท</p>
                     </div>
@@ -164,7 +166,8 @@ const Vieweprotectionplan: React.FC = () => {
                       <p>11.จำนวนเงินที่ต้องการ</p>
                       <p>{convertMoney(calculateRequiredAmount(protectionPlanData))} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-5">
+                    <div className="text-[1rem] my-3 flex flex-row justify-between items-center text-[#0E2B81]"><p>สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)</p> </div>
+                    <div className="flex flex-row justify-between mt-1">
                       <p>12.เงินฝากธนาคาร</p>
                       <p>{convertMoney(protectionPlanData.bankDeposit)} บาท</p>
                     </div>
@@ -196,7 +199,7 @@ const Vieweprotectionplan: React.FC = () => {
               </div>
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
-                  {shareLink && <ShareOnSocial
+                  {shareLink &&linkButton &&  <ShareOnSocial
                     link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
                     linkFavicon={logo}
                     linkTitle={"ข้อมูลสรุป"}

@@ -43,11 +43,12 @@ export const protectionPlanState = atom<ProtectionPlanData>({
 
 export const calculateInitialYearlyExpense = (state: ProtectionPlanData) => {
   if (state.initialMonthlyExpense) {
-    const initialYearlyExpense = parseFloat(state.initialMonthlyExpense) * 12;
-    return initialYearlyExpense.toFixed(2);
+    const initialYearlyExpense = Math.floor(parseFloat(state.initialMonthlyExpense) * 12);
+    return initialYearlyExpense.toString();
   }
   return "";
 };
+
 export const calculateExpenses = (state: ProtectionPlanData) => {
   if (
     state.initialMonthlyExpense &&
@@ -55,9 +56,9 @@ export const calculateExpenses = (state: ProtectionPlanData) => {
     state.numberOfYears &&
     state.inflationRate
   ) {
-    const initialYearlyExpense = calculateInitialYearlyExpense(state);
+    const initialYearlyExpense = parseFloat(calculateInitialYearlyExpense(state));
     const totalAmount =
-      (parseFloat(initialYearlyExpense) +
+      (initialYearlyExpense +
         parseFloat(state.adjustedYearlyExpenses)) *
       ((1 -
         Math.pow(
@@ -66,7 +67,7 @@ export const calculateExpenses = (state: ProtectionPlanData) => {
         )) /
         (1 - (1 + parseFloat(state.inflationRate))));
 
-    return totalAmount.toFixed(2);
+    return Math.floor(totalAmount).toString();
   }
   return "";
 };
@@ -78,7 +79,7 @@ export const calculateTotalAssets = (state: ProtectionPlanData) => {
       parseFloat(state.lifeInsuranceFund) +
       parseFloat(state.otherAssets);
 
-    return totalAssets.toFixed(2);
+    return Math.floor(totalAssets).toString();
   }
   return "";
 };
@@ -90,34 +91,29 @@ export const calculateTotalDebts = (state: ProtectionPlanData) => {
       parseFloat(state.carPayments) +
       parseFloat(state.otherDebts);
 
-    return totalDebts.toFixed(2);
+    return Math.floor(totalDebts).toString();
   }
   return "";
 };
 
 export const calculateRequiredAmount = (state: ProtectionPlanData) => {
-  const totalAmount = calculateExpenses(state);
-  const totalDebts = calculateTotalDebts(state);
-  if (totalDebts && totalAmount) {
-    const totalRequiredAmount =
-      parseFloat(totalDebts) + parseFloat(totalAmount);
-
-    return totalRequiredAmount.toFixed(2);
-  } else {
-    return "";
+  const totalAmount = parseFloat(calculateExpenses(state));
+  const totalDebts = parseFloat(calculateTotalDebts(state));
+  if (!isNaN(totalDebts) && !isNaN(totalAmount)) {
+    const totalRequiredAmount = totalDebts + totalAmount;
+    return Math.floor(totalRequiredAmount).toString();
   }
+  return "";
 };
 
 export const calculateCoverage = (state: ProtectionPlanData) => {
-  const requiredAmount = calculateRequiredAmount(state);
-  const totalAssets = calculateTotalAssets(state);
-  if (totalAssets && requiredAmount) {
-    const coverage = parseFloat(requiredAmount) - parseFloat(totalAssets);
-
-    return coverage.toFixed(2);
-  } else {
-    return "";
+  const requiredAmount = parseFloat(calculateRequiredAmount(state));
+  const totalAssets = parseFloat(calculateTotalAssets(state));
+  if (!isNaN(requiredAmount) && !isNaN(totalAssets)) {
+    const coverage = requiredAmount - totalAssets;
+    return Math.floor(coverage).toString();
   }
+  return "";
 };
 
 export const initialYearlyExpenseSelector = selector({
@@ -127,6 +123,7 @@ export const initialYearlyExpenseSelector = selector({
     return calculateInitialYearlyExpense(state);
   },
 });
+
 export const totalAmountSelector = selector({
   key: "totalAmountSelector",
   get: ({ get }) => {
@@ -150,6 +147,7 @@ export const totalDebtsSelector = selector({
     return calculateTotalDebts(state);
   },
 });
+
 export const requiredAmountSelector = selector({
   key: "requiredAmountSelector",
   get: ({ get }) => {
@@ -157,6 +155,7 @@ export const requiredAmountSelector = selector({
     return calculateRequiredAmount(state);
   },
 });
+
 export const coverageSelector = selector({
   key: "coverageSelector",
   get: ({ get }) => {
