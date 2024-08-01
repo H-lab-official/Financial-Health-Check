@@ -119,11 +119,7 @@ const Showdata: React.FC = () => {
   const [, setPlans] = useState(plans);
   const [showButton, setShowButton] = useState(false);
 
-  useEffect(() => {
-  
-      next()
-  
-  }, []);
+
 
   const fullDetails = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
@@ -267,7 +263,11 @@ const Showdata: React.FC = () => {
       </div>
     )
   }];
+  useEffect(() => {
 
+    next()
+
+  }, []);
   return (
     <div>
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
