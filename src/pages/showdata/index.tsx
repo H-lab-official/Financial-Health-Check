@@ -120,18 +120,10 @@ const Showdata: React.FC = () => {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    if (current === 0) {
-      const animationDuration = 10; // Duration of the animation in milliseconds
-      const timeoutId = setTimeout(() => {
-        setShowButton(true);
-      }, animationDuration);
+  
       next()
-      return () => clearTimeout(timeoutId);
-
-    } else {
-      setShowButton(false);
-    }
-  }, [current]);
+  
+  }, []);
 
   const fullDetails = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
@@ -201,7 +193,7 @@ const Showdata: React.FC = () => {
 
   const next = async () => {
     await fullDetails();
-    setCurrent((prev) => Math.min(prev + 1, steps.length - 1));
+    // setCurrent((prev) => Math.min(prev + 1, steps.length - 1));
     toone();
   };
 

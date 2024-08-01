@@ -18,7 +18,9 @@ import { questionsState } from "@/recoil/questionsState";
 import { protectionPlanState, calculateCoverage } from "@/recoil/protectionPlanState";
 import { healthPlanState, calculateAnnualTreatments } from "@/recoil/healthPlanState";
 import { retirementPlanState, totalRetirementMissingSelector, mustBeSavedSelector } from "@/recoil/retirementPlanState";
-
+import health from "@/assets/images/health.png";
+import Education2 from "@/assets/images/Education2.png";
+import protection from "@/assets/images/protection.png"
 const VieweConclusionplan: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,13 +120,41 @@ const VieweConclusionplan: React.FC = () => {
   const getPlanText = (order: number) => {
     switch (order) {
       case 4:
-        return 'การเก็บออมเพื่อค่าเล่าเรียนบุตร';
+        return (
+          <div className='flex flex-row justify-start items-center gap-1 p-2 bg-[#F2F3FF] rounded-lg w-[233px] '>
+            <div>
+              <p className='text-[#0E2B81] font-bold'>Education Plan</p>
+              <p className='text-[#0E2B81] text-[0.8rem]'>แผนการเก็บออมเพื่อค่าเล่าเรียนบุตร</p>
+            </div>
+            <div><img src={Education2} alt="" className='w-7' /></div>
+          </div>)
       case 2:
-        return 'การวางแผนเกี่ยวกับสุขภาพ';
+        return (
+          <div className='flex flex-row justify-between items-center gap-5 p-2 bg-[#F2F3FF] rounded-lg w-[233px]'>
+            <div>
+              <p className='text-[#0E2B81] font-bold'>Health Plan</p>
+              <p className='text-[#0E2B81] text-[0.85rem]'>แผนการคุ้มครองเรื่องสุขภาพ</p>
+            </div>
+            <div><img src={health} alt="" className='w-7' /></div>
+          </div>)
       case 1:
-        return 'คุ้มครองรายได้ให้กับครอบครัวในกรณีที่ต้องจากไป';
+        return (
+          <div className='flex flex-row justify-start items-center gap-5 p-2 bg-[#F2F3FF] rounded-lg w-[233px]'>
+            <div>
+              <p className='text-[#0E2B81] font-bold'>Protection Plan</p>
+              <p className='text-[#0E2B81] text-[0.8rem]'>แผนคุ้มครองรายได้ให้ครอบครัว</p>
+            </div>
+            <div><img src={protection} alt="" className='w-7' /></div>
+          </div>)
       case 3:
-        return 'การวางแผนเตรียมเงินไว้ยามเกษียณ';
+        return (
+          <div className='flex flex-row justify-between items-center gap-5 p-2 bg-[#F2F3FF] rounded-lg w-[233px]'>
+            <div>
+              <p className='text-[#0E2B81] font-bold'>Retirement Plan</p>
+              <p className='text-[#0E2B81] text-[0.78rem]'>แผนการคุ้มครองเรื่องการเกษียณ</p>
+            </div>
+            <div><img src={health} alt="" className='w-7' /></div>
+          </div>)
       default:
         return '';
     }
@@ -146,6 +176,19 @@ const VieweConclusionplan: React.FC = () => {
     <>
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans mt-16">
         <div className=" fixed top-0 z-40"><NavBar /></div>
+        <div className="rounded-lg p-5 shadow-lg mb-5 w-[325px]">
+          <div className="text-[1.4rem] mb-3">
+            <p>ความสำคัญที่คุณเลือกเป็นดังนี้</p>
+          </div>
+          <div className="text-black text-[0.9rem]">
+            {nonZeroOrders.map(({ order, index }, i) => (
+              <div className="flex flex-row justify-between items-center mb-3" key={i}>
+                <p className="text-red-500 font-bold">อันดับ {order}.</p>
+                <p>{getPlanText(index)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="rounded-lg p-5 shadow-lg mb-5 w-[325px]">
           <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
           <div className="text-black w-full">
@@ -193,19 +236,7 @@ const VieweConclusionplan: React.FC = () => {
             })}
           </div>
         </div>
-        <div className="rounded-lg p-5 shadow-lg mb-5">
-          <div className="text-[1.4rem] mb-3">
-            <p>ความสำคัญที่คุณเลือกเป็นดังนี้</p>
-          </div>
-          <div className="text-black text-[0.9rem]">
-            {nonZeroOrders.map(({ order, index }, i) => (
-              <div className="flex flex-row" key={i}>
-                <p className="text-red-500 font-bold">{order}.</p>
-                <p>{getPlanText(index)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+
         <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
           <>{shareLink && linkButton && <ShareOnSocial
             link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
