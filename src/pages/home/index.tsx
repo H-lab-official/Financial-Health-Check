@@ -1,4 +1,4 @@
-import { Row, Button, Flex, Spin } from "antd";
+import { Row, Button, Flex, Spin,Input } from "antd";
 
 import React, { useState, useEffect } from "react";
 import LabelImages from '@/components/LabelImages'
@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      // checkUsers()
+      checkUsers()
 
       setIsLoading(false)
 
@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
         if (prevSelected.includes('5')) {
           updatedSelected = [];
         } else {
-          updatedSelected = ['5'];
+          updatedSelected = ['1','2','3','4'];
         }
       } else {
         if (prevSelected.includes('5')) {
@@ -256,43 +256,30 @@ const HomePage: React.FC = () => {
     content: (
       <div className="flex flex-col tracking-normal leading-tight">
         <div>
-
-
           <p className="text-2xl my-2 text-center font-bold">กรุณากรอกข้อมูลของคุณ</p>
         </div>
         <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
-        <input
+        <Input
           value={formData.nickname || ""}
           name="nickname"
           placeholder="กรุณากรอกชื่อของคุณ"
           onChange={(e) => handleInputChange("nickname")(e)}
-          className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-2"
+          className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-3"
           pattern="[a-zA-Z0-9ก-๙]{1,50}"
           title="ชื่อเล่นต้องประกอบด้วยตัวอักษรภาษาอังกฤษ ตัวเลข หรืออักขระภาษาไทย และมีความยาวไม่เกิน 50 ตัวอักษร"
           required
         />
         <div>
-          <label htmlFor="age" className="pl-5 my-3 text-gray-500 font-bold">อายุ</label>
-
-          <style>
-            {`
-          .no-spinner::-webkit-outer-spin-button,
-          .no-spinner::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 10;
-          }
-          .no-spinner {
-            -moz-appearance: textfield; /* Firefox */
-          }
-        `}
-          </style>
-          <input
+          <label htmlFor="age" className="pl-5 mt-4 text-gray-500 font-bold">อายุ</label>
+          <Input
             type="number"
             value={formData.age || ""}
             name="age"
+            inputMode="numeric" // Ensure the numeric keyboard is displayed
+            pattern="[0-9]*" 
             placeholder="กรุณากรอกอายุของคุณ"
             onChange={(e) => handleInputChange("age")(e)}
-            className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-5 no-spinner peer"
+            className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 mt-2 text-[#0E2B81] text-base mb-5"
             min="0"
             max="3"
             required
@@ -325,8 +312,8 @@ const HomePage: React.FC = () => {
             activeImage={FHCAllPlanActive}
             selectedImage={FHCAllPlanActive}
             value="5"
-            width="320px"
-            height="96px"
+            width="280px"
+            height="80px"
           />
           <LabelImages
             selectedValue={sortedSelected}
@@ -336,8 +323,8 @@ const HomePage: React.FC = () => {
             activeImage={ProtectionPlanActive}
             selectedImage={ProtectionPlanActive}
             value="1"
-            width="320px"
-            height="96px"
+            width="280px"
+            height="80px"
           />
           <LabelImages
             selectedValue={sortedSelected}
@@ -347,8 +334,8 @@ const HomePage: React.FC = () => {
             activeImage={HealthPlanActive}
             selectedImage={HealthPlanActive}
             value="2"
-            width="320px"
-            height="96px"
+            width="280px"
+            height="80px"
           />
           <LabelImages
             selectedValue={sortedSelected}
@@ -358,8 +345,8 @@ const HomePage: React.FC = () => {
             activeImage={RetirementPlanActive}
             selectedImage={RetirementPlanActive}
             value="3"
-            width="320px"
-            height="96px"
+            width="280px"
+            height="80px"
           />
           <LabelImages
             selectedValue={sortedSelected}
@@ -369,8 +356,8 @@ const HomePage: React.FC = () => {
             activeImage={EducationPlanActive}
             selectedImage={EducationPlanActive}
             value="4"
-            width="320px"
-            height="96px"
+            width="280px"
+            height="80px"
           />
         </div>
       </div>
@@ -384,13 +371,13 @@ const HomePage: React.FC = () => {
         <div className=" fixed top-0 z-40 "><NavBar /></div>
 
 
-        <div className="bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-16 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+        <div className={`bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-10 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ${current===0&&"mt-16"}`}>
 
           <Row align={"middle"} justify={"center"}>
-            {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl `} height={150} /> : null}
+            {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl w-56`} height={80} /> : null}
           </Row>
           <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
-            <p className={`text-2xl my-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
+            <p className={`text-2xl mb-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>
             {steps[current].content}
 
             <div className="steps-action h-20 flex flex-row justify-center items-center">

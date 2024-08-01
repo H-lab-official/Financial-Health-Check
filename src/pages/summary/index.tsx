@@ -13,7 +13,8 @@ import pic4 from '@/assets/images/icons/4.png';
 import { useNavigate } from "react-router";
 import { nameState, nameData } from "@/recoil/nameState";
 import { saveQuestionsState } from "@/components/api/saveQuestionsState";
-
+import Up from '@/assets/images/up.png'
+import Down from '@/assets/images/down.png'
 import { questionsData } from '@/recoil/questionsState';
 
 const ItemType = 'ITEM';
@@ -54,8 +55,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, index, moveItem, mo
     <div ref={(node) => ref(drop(node))} className='cursor-move relative w-full flex flex-row items-center justify-start'>
       <img src={image} alt={`icon-${index}`} className='w-full' />
       <div className='absolute flex flex-col scale-150 right-1'>
-        <button onClick={() => moveItemUp(index)} className=''>⬆️</button>
-        <button onClick={() => moveItemDown(index)} className=''>⬇️</button>
+        <button onClick={() => moveItemUp(index)} className=''><img src={Up} alt="" className='w-5 mb-5' /></button>
+        <button onClick={() => moveItemDown(index)} className=''><img src={Down} alt="" className='w-5' /></button>
       </div>
     </div>
   );
@@ -140,14 +141,15 @@ const handleSave = async () => {
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className="fixed top-0 z-40"><NavBar /></div>
+      <div>การจัดลำดับความสำคัญ</div>
       <div className="bg-white rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3">
         <DragDropList items={items} setItems={setItems} />
       </div>
       <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
-        <Button className={`bg-white rounded-full w-[120px]`}>
+        {/* <Button className={`bg-white rounded-full w-[120px]`}>
           ย้อนกลับ
-        </Button>
-        <Button className={`bg-[#003781] text-white rounded-full w-[120px]`} onClick={handleSave}>
+        </Button> */}
+        <Button className={`bg-[#003781] text-white rounded-full w-[280px]`} onClick={handleSave}>
           สรุปผล
         </Button>
       </div>

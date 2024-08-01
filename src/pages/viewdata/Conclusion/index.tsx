@@ -207,7 +207,7 @@ const VieweConclusionplan: React.FC = () => {
           </div>
         </div>
         <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
-          <>{shareLink && <ShareOnSocial
+          <>{shareLink && linkButton && <ShareOnSocial
             link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
             linkFavicon={logo}
             linkTitle={"ข้อมูลสรุป"}

@@ -1,15 +1,16 @@
-import { Form, Input, Typography, Row, Col, Modal, Button } from "antd";
+import { Form, Input, Typography, Row, Modal, Button } from "antd";
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import tooltip from '@/assets/images/icons/tooltip.svg'
+import tooltip from '@/assets/images/icons/tooltip.svg';
 const { Text } = Typography;
-import "@/components/css/InputField.css"
+import "@/components/css/InputField.css";
+
 interface InputFieldProps {
   label: string;
   imgUrl: string;
   value: string;
-  ModalTitle: string
-  ModalBody: string
+  ModalTitle: string;
+  ModalBody: string;
   onChange: (value: string) => void;
   addonAfter?: string;
   placeholder?: string;
@@ -27,7 +28,9 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   addonAfter,
   placeholder,
-  readOnly, ModalTitle, ModalBody
+  readOnly,
+  ModalTitle,
+  ModalBody
 }) => {
   const location = useLocation();
   const isRetirementPlan = location.pathname === '/retirement-plan';
@@ -67,8 +70,8 @@ const InputField: React.FC<InputFieldProps> = ({
         </div>
         <div>
           <div className="flex flex-row gap-2">
-            <Text className={`font-sans  w-[190px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
-            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer " />
+            <Text className={`font-sans w-[190px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
+            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
           </div>
           <div>
             <div className="flex flex-row justify-center items-center gap-5 font-sans">
@@ -79,6 +82,8 @@ const InputField: React.FC<InputFieldProps> = ({
                 onChange={handleChange}
                 placeholder={placeholder}
                 readOnly={readOnly}
+                inputMode="numeric" // Ensure the numeric keyboard is displayed
+                pattern="[0-9]*" // Ensure only numbers are allowed
                 className={`${isRetirementPlan ? 'w-[190px]' : 'w-[190px]'} ${readOnly
                   ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
                   : "none"
