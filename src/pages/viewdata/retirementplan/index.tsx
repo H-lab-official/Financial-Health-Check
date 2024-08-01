@@ -225,7 +225,7 @@ const Vieweretirementplan: React.FC = () => {
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
                   {shareLink && <ShareOnSocial
-                    link={`http://localhost:5173${shareLink}`} // Specify the link using the shareLink state
+                    link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
                     linkFavicon={logo}
                     linkTitle={"Retirement Plan Data"}
                   >
@@ -237,7 +237,7 @@ const Vieweretirementplan: React.FC = () => {
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px]">
                       ย้อนกลับ
                     </Button>
-                    <Button onClick={()=>toone(retirementPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
+                    <Button onClick={() => toone(retirementPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px]`}>
                       ถัดไป
                     </Button>
                   </div>}
