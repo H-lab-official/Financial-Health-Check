@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Select, Typography, Progress } from "antd";
+import { Button, Col, Form, Row, Select, Typography, Progress, Modal } from "antd";
 import InputField from "@/components/InputField";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
@@ -50,6 +50,7 @@ import RetirementPlan24 from "@/assets/images/icons/RetirementPlan/RetirementPla
 import RetirementPlan25 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-5.svg"
 import RetirementPlan26 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-6.svg"
 import RetirementPlan27 from "@/assets/images/icons/RetirementPlan/RetirementPlan2-7.svg"
+import tooltip from '@/assets/images/icons/tooltip.svg'
 const RetirementPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -63,6 +64,7 @@ const RetirementPlan: React.FC = () => {
   const totalPreparationAssets = useRecoilValue(
     totalRetirementPreparationAssetsSelector
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const selectedValue = useRecoilValue(selectedState)
   const dataname = useRecoilValue<nameData>(nameState)
   const totalMissing = useRecoilValue(totalRetirementMissingSelector);
@@ -112,11 +114,21 @@ const RetirementPlan: React.FC = () => {
       handleMultipleSelections(urlMap);
     }
   };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/report');
+      navigator('/showdata');
     } else {
 
       if (value === '5') {
@@ -124,7 +136,7 @@ const RetirementPlan: React.FC = () => {
       } else {
         console.log(value);
 
-        navigateToValue(urlMap, value, '/report');
+        navigateToValue(urlMap, value, '/showdata');
       }
     }
   };
@@ -461,15 +473,32 @@ const RetirementPlan: React.FC = () => {
           ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อให้บรรลุเป้าหมายบางอย่าง เช่น การเกษียณอายุ การซื้อบ้าน การศึกษาต่อ หรือการเริ่มต้นธุรกิจใหม่`}
           ModalTitle="12.จำนวนปีที่ต้องเตรียม"
         />
-        <div className="flex flex-row justify-start items-center gap-4 mb-5">
-          <Col><img src={RetirementPlan114} alt="icons" className="w-10" /></Col>
-          <Col>
-            <Col>
-              <Text className="text-[#243286]">{"13. เงินเฟ้อ"}</Text>
-            </Col>
-            <Col>
+        <div className="flex flex-row justify-start items-center mb-5">
+          <div className="w-[55px] flex justify-start items-center pl-2"><img src={RetirementPlan114} alt="icons" className="w-10" /></div>
+          <div>
+            <div className="flex flex-row justify-between items-center">
+              <Text className="text-[#243286] w-[197px] font-sans">{"13. เงินเฟ้อ"}</Text><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            </div>
+            <div>
+              <Modal
+                title={<div className="custom-modal-title font-sans">13.เงินเฟ้อ</div>}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
+                    ปิด
+                  </Button>
+                ]}
+                closable={false}
+                className="custom-modal"
+              >
+                <div className="custom-modal-body font-sans">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
+
+                </div>
+              </Modal>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
+                  className="font-sans"
                   style={{ width: '190px' }}
                   value={formData.inflationRate || undefined}
                   placeholder="เลือกประเภทโรงพยาบาล"
@@ -486,8 +515,8 @@ const RetirementPlan: React.FC = () => {
                 />
 
               </div>
-            </Col>
-          </Col>
+            </div>
+          </div>
         </div>
 
 
@@ -629,7 +658,8 @@ const RetirementPlan: React.FC = () => {
           </div>
           <div className="flex flex-row justify-between mt-3">
             <p>13.เงินเฟ้อ</p>
-            <p>{parseFloat(formData.inflationRate) * 100} %</p>
+            <p>{(parseFloat(formData.inflationRate) * 100).toFixed(0)} %&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
           </div>
           <div className="flex flex-row justify-between">
             <p>14.รวมค่าใช้จ่ายที่ต้องเตรียม</p>
@@ -679,7 +709,7 @@ const RetirementPlan: React.FC = () => {
       <div className=" fixed top-0 z-40"><NavBar /></div>
 
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-        <div className="flex flex-col justify-center items-center gap-3 mb-5">
+        <div className="flex flex-col justify-center items-center gap-3 ">
           <h1 className=" text-2xl font-bold text-center">{current == 0 ? "Retirement Plan" : "Retirement Plan"}</h1>
           {/* {current === 3 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
           {current === 0 && <img src={retirement} alt="" className="w-[265px] mt-5" />}
@@ -687,7 +717,7 @@ const RetirementPlan: React.FC = () => {
           {/* {current === 3 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title}</p>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" className="w-10" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
@@ -695,19 +725,19 @@ const RetirementPlan: React.FC = () => {
             {current === 0 && (
               <Button
                 onClick={() => letMeback()}
-                className="bg-white rounded-full w-[120px]"
+                className="bg-white rounded-full w-[120px] font-sans"
               >
                 ย้อนกลับ
               </Button>
             )}
 
             {current > 0 && (
-              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px] font-sans`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
-              <><Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
+              <><Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"} font-sans`}>
                 ถัดไป
               </Button>
               </>
@@ -716,11 +746,14 @@ const RetirementPlan: React.FC = () => {
               <Button
                 disabled={handleDisabled()}
                 onClick={() => handleSave()}
-                className="bg-[#003781] rounded-full w-[120px] text-white"
+                className="bg-[#003781] rounded-full w-[120px] text-white font-sans"
               >
                 ถัดไป
               </Button>
             )}
+          </div>
+          <div className="flex flex-row justify-center items-center mb-5">
+            {current > 0 && current < 3 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
           </div>
         </div>
       </div>

@@ -180,7 +180,8 @@ const Vieweducationplan: React.FC = () => {
                   </div>
                   <div className="flex flex-row justify-between">
                     <p>8. อัตราการเฟ้อของค่าเทอมต่อปี</p>
-                    <p>{parseFloat(educationPlan.inflationRate) * 100} %</p>
+                    <p>{(parseFloat(educationPlan.inflationRate) * 100).toFixed(0)} %</p>
+                   
                   </div>
                   <div className="flex flex-row justify-between">
                     <p>9. รวมทุนการศึกษาที่จำเป็น</p>

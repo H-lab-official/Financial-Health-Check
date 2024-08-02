@@ -264,7 +264,7 @@ const HomePage: React.FC = () => {
           name="nickname"
           placeholder="กรุณากรอกชื่อของคุณ"
           onChange={(e) => handleInputChange("nickname")(e)}
-          className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-3"
+          className="bg-slate-200 rounded-full border border-gray-600 h-12 pl-5 text-[#0E2B81] text-base mb-3 font-sans"
           pattern="[a-zA-Z0-9ก-๙]{1,50}"
           title="ชื่อเล่นต้องประกอบด้วยตัวอักษรภาษาอังกฤษ ตัวเลข หรืออักขระภาษาไทย และมีความยาวไม่เกิน 50 ตัวอักษร"
           required
@@ -279,13 +279,13 @@ const HomePage: React.FC = () => {
             pattern="[0-9]*" 
             placeholder="กรุณากรอกอายุของคุณ"
             onChange={(e) => handleInputChange("age")(e)}
-            className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 mt-2 text-[#0E2B81] text-base mb-5"
+            className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 mt-2 text-[#0E2B81] text-base mb-5 font-sans"
             min="0"
             max="3"
             required
           />
         </div>
-        <div className="flex flex-row justify-center items-center gap-5">
+        <div className="flex flex-row justify-center items-center gap-5 font-sans">
           <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Man')}>
             <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} />
             <p className={` py-2 px-5 text-white rounded-full  ${selectedGender === 'Man' ? 'bg-[#050C9C]' : 'bg-[#7e80a1]'}`}>MALE</p>

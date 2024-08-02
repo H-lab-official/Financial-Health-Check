@@ -315,23 +315,24 @@ const ProtectionPlan: React.FC = () => {
                 <p className="text-[#243286] w-[197px] font-sans">{"5. เงินเฟ้อ"}</p> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
               </div>
               <Modal
-                title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
+                title={<div className="custom-modal-title font-sans">5.เงินเฟ้อ</div>}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 footer={[
-                  <Button key="close" className="custom-close-button" onClick={handleCancel}>
+                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
                     ปิด
                   </Button>
                 ]}
                 closable={false}
                 className="custom-modal"
               >
-                <div className="custom-modal-body">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
+                <div className="custom-modal-body font-sans">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
                 </div>
               </Modal>
               <div>
                 <div className="gap-4 ">
                   <Select
+                  className="font-sans"
                     style={{ width: '190px' }}
                     defaultValue={formData.inflationRate}
                     onChange={handleInputChange("inflationRate")}
@@ -596,9 +597,9 @@ const ProtectionPlan: React.FC = () => {
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
           <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan11} alt="" className="w-9" />{steps[current].title}</div> : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" className="w-8" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" className="w-10" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
           {steps[current].content}
-          <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
+          <div className="steps-action h-20 flex flex-row justify-center items-center gap-10 ">
             {current > 0 && (
-              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px] font-sans`}>
                 ย้อนกลับ
               </Button>
             )}
@@ -606,12 +607,12 @@ const ProtectionPlan: React.FC = () => {
               <Button onClick={() => {
                 navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
                 setCurrentIndex((prevIndex) => prevIndex - 1);
-              }} className={` bg-white rounded-full w-[120px]`}>
+              }} className={` bg-white rounded-full w-[120px] font-sans`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
+              <Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"} font-sans`}>
                 ถัดไป
               </Button>
             )}
@@ -619,7 +620,7 @@ const ProtectionPlan: React.FC = () => {
               <Button
                 type="primary"
                 disabled={handleDisabled()}
-                onClick={() => handleSave()} className="bg-[#003781] rounded-full w-[120px]"
+                onClick={() => handleSave()} className="bg-[#003781] rounded-full w-[120px] font-sans"
               >
                 ถัดไป
               </Button>
