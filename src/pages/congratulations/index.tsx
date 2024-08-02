@@ -44,8 +44,8 @@ const Congratulations: React.FC = () => {
   }, [])
   return (
     <>
-      <div className="flex flex-col justify-center items-center  text-[#0E2B81] font-sans  bg-local  bg-cover"
-        style={{ backgroundImage: `url(${congratulationsBG})` }}
+      <div className="flex flex-col justify-center items-center  text-[#0E2B81] font-sans"
+        
       >
         <div className="fixed top-0 z-40"><NavBar /></div>
         <div className="px-5 pt-5 pb-10 my-5 w-[325px] flex flex-col justify-center items-center gap-10 rounded-lg shadow-lg mt-16">
@@ -54,7 +54,7 @@ const Congratulations: React.FC = () => {
             <p className="text-3xl">คุณ {name}</p>
           </div>
           <img src={congratulations} alt="Congratulations" />
-          <div className="flex flex-col justify-center items-center text-white p-5 rounded-lg ">
+          <div className="flex flex-col justify-center items-center text-[#0E2B81] p-5 rounded-lg ">
             <p className="text-xl">คุณได้ทำ</p>
             <p className="text-2xl">Financial Health Check</p>
             <p className="text-xl">เสร็จสิ้นแล้ว</p>
