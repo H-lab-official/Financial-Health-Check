@@ -16,7 +16,8 @@ import { saveQuestionsState } from "@/components/api/saveQuestionsState";
 import Up from '@/assets/images/up.png'
 import Down from '@/assets/images/down.png'
 import { questionsData } from '@/recoil/questionsState';
-
+import axios from 'axios';
+import usePlanNavigation from "@/components/usePlanNavigation";
 const ItemType = 'ITEM';
 const imageMap = {
   '1': pic1,
@@ -24,7 +25,93 @@ const imageMap = {
   '3': pic3,
   '4': pic4,
 };
+const text={
+  '1': pic1,
+  '2': pic2,
+  '3': pic3,
+  '4': pic4,
+}
+const getPlansFromLocalStorage = () => {
+  const plans = [];
+  const questionsState = localStorage.getItem('saveQuestionsState');
+  if (questionsState) {
+    try {
+      const { id } = JSON.parse(questionsState);
+      plans.push(`/view/conclusion/${id}`);
+    } catch (e) {
+      console.error("Error parsing summaryPlan:", e);
+    }
+  } else {
+    console.log("saveQuestionsState not found in localStorage");
+  }
+  const protectionPlan = localStorage.getItem('saveProtectionPlan');
+  if (protectionPlan) {
+    try {
+      const { id } = JSON.parse(protectionPlan);
+      plans.push(`/view/protectionplan/${id}`);
+    } catch (e) {
+      console.error("Error parsing saveProtectionPlan:", e);
+    }
+  } else {
+    console.log("saveProtectionPlan not found in localStorage");
+  }
 
+  const healthPlan = localStorage.getItem('savehealthPlan');
+  if (healthPlan) {
+    try {
+      const { id } = JSON.parse(healthPlan);
+      plans.push(`/view/healthplan/${id}`);
+    } catch (e) {
+      console.error("Error parsing saveHealthPlan:", e);
+    }
+  } else {
+    console.log("saveHealthPlan not found in localStorage");
+  }
+
+  const retirementPlan = localStorage.getItem('saveRetirementPlan');
+  if (retirementPlan) {
+    try {
+      const { id } = JSON.parse(retirementPlan);
+      plans.push(`/view/retirementplan/${id}`);
+    } catch (e) {
+      console.error("Error parsing saveRetirementPlan:", e);
+    }
+  } else {
+    console.log("saveRetirementPlan not found in localStorage");
+  }
+
+  const educationPlan = localStorage.getItem('saveEducationplan');
+  if (educationPlan) {
+    try {
+      const { id } = JSON.parse(educationPlan);
+      plans.push(`/view/educationplan/${id}`);
+    } catch (e) {
+      console.error("Error parsing saveEducationplan:", e);
+    }
+  } else {
+    console.log("saveEducationplan not found in localStorage");
+  }
+
+  console.log("Constructed plans array:", plans);
+  try {
+    localStorage.setItem('addressPlans', JSON.stringify(plans));
+  } catch (e) {
+    console.error("Error saving addressPlans to localStorage:", e);
+  }
+
+  return plans;
+};
+
+const saveAddressPlans = async (plans: string[]) => {
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/addressplan`, { plans });
+    console.log("Plans saved successfully:", response.data);
+    return response.data.id; // Assuming the API returns an 'id'
+  } catch (error) {
+    console.error("Error saving plans:", error);
+    throw error;
+  }
+};
 interface DraggableItemProps {
   item: string;
   index: number;
@@ -53,8 +140,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, index, moveItem, mo
 
   return (
     <div ref={(node) => ref(drop(node))} className='cursor-move relative w-full flex flex-row items-center justify-start'>
-      <img src={image} alt={`icon-${index}`} className='w-full' />
-      <div className='absolute flex flex-col scale-150 right-1'>
+      <img src={image} alt={`icon-${index}`} className='w-[88%]' />
+      <div className='absolute flex flex-col  right-1'>
         <button onClick={() => moveItemUp(index)} className=''><img src={Up} alt="" className='w-5 mb-5' /></button>
         <button onClick={() => moveItemDown(index)} className=''><img src={Down} alt="" className='w-5' /></button>
       </div>
@@ -93,7 +180,7 @@ const DragDropList: React.FC<{ items: string[], setItems: (items: string[]) => v
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div>
+      <div className='flex flex-col justify-center items-center gap-5'>
         {items.map((item, index) => (
           <DraggableItem
             key={index}
@@ -115,34 +202,66 @@ const Summary: React.FC = () => {
   const [items, setItems] = useState<string[]>(sortedSelected);
   const dataname = useRecoilValue<nameData>(nameState);
   const navigator = useNavigate();
-
+  const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  const [, setPlans] = useState(plans);
   useEffect(() => {
     if (items.length === 1 && items[0] === '5') {
       setItems(['1', '2', '3', '4']);
     }
   }, [items]);
-console.log(items);
+  console.log(items);
 
-const handleSave = async () => {
-  setSelectedValue(items);
-  const dataToSave = mapItemsToQuestionsData(items);
+  const fullDetails = async () => {
+    const plansFromLocalStorage = getPlansFromLocalStorage();
+    console.log(plansFromLocalStorage);
 
-  // ดึงค่าจาก localStorage
-  const beforeImport = JSON.parse(localStorage.getItem('beforeImport') || '{}');
+    setPlans(plansFromLocalStorage);
 
-  // รวมค่าใน beforeImport เข้าไปใน dataToSave
-  const finalDataToSave = { ...dataToSave, ...beforeImport };
+    // Save plans to the database and get the id
+    const id = await saveAddressPlans(plansFromLocalStorage);
+    // Save the id to localStorage
+    localStorage.setItem('linkshare', id);
+  };
 
-  console.log(finalDataToSave);
-  
-  await saveQuestionsState({ data: finalDataToSave, nameData: dataname });
-  navigator("/showdata");
-};
+  const toone = () => {
+    return new Promise<void>((resolve) => {
+      const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+      if (storedPlans.length > 0) {
+        const nextPlan = storedPlans[0];
+        window.open(nextPlan, '_self');
+        resolve();
+      } else {
+        console.log('No more plans to navigate to.');
+        resolve();
+      }
+    });
+  };
+  const next = async () => {
+    await fullDetails();
+    // setCurrent((prev) => Math.min(prev + 1, steps.length - 1));
+    toone();
+  };
+  const handleSave = async () => {
+    setSelectedValue(items);
+    const dataToSave = mapItemsToQuestionsData(items);
+
+    // ดึงค่าจาก localStorage
+    const beforeImport = JSON.parse(localStorage.getItem('beforeImport') || '{}');
+
+    // รวมค่าใน beforeImport เข้าไปใน dataToSave
+    const finalDataToSave = { ...dataToSave, ...beforeImport };
+
+    console.log(finalDataToSave);
+
+    await saveQuestionsState({ data: finalDataToSave, nameData: dataname });
+    next()
+  };
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className="fixed top-0 z-40"><NavBar /></div>
-      <div>การจัดลำดับความสำคัญ</div>
+     
       <div className="bg-white rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3">
+      <div className='text-[#0E2B81] text-2xl flex justify-center'>การจัดลำดับความสำคัญ</div>
         <DragDropList items={items} setItems={setItems} />
       </div>
       <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
