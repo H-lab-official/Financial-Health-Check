@@ -190,7 +190,7 @@ const VieweConclusionplan: React.FC = () => {
           </div>
         </div>
         <div className="rounded-lg p-5 shadow-lg mb-5 w-[350px]">
-          <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
+          <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ส่วนที่ขาดเหลือ</p></div>
           <div className="text-black w-full">
             {nonZeroOrders.map(({ order }) => {
               if (order === parseInt(conclusionplan.protectionPlanOrder)) {

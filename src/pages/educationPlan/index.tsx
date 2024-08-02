@@ -502,7 +502,7 @@ const EducationPlan: React.FC = () => {
               />
               <InputField
                 label="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
-                value={yearsOfeducation}
+                value={yearsOfeducation || ""}
                 onChange={handleInputChange('yearsOfeducation2')}
                 addonAfter="ปี"
 
