@@ -288,11 +288,11 @@ const HomePage: React.FC = () => {
         <div className="flex flex-row justify-center items-center gap-5">
           <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Man')}>
             <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} />
-            <p className="bg-[#050C9C] py-2 px-5 text-white rounded-full">MALE</p>
+            <p className={` py-2 px-5 text-white rounded-full  ${selectedGender === 'Man' ? 'bg-[#050C9C]' : 'bg-[#7e80a1]'}`}>MALE</p>
           </div>
           <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Women')}>
             <img src={Women} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Women' ? 'border-[#050C9C] border-4' : ''}`} />
-            <p className="bg-[#050C9C] py-2 px-3 text-white rounded-full">FEMALE</p>
+            <p className={`bg-[#050C9C] py-2 px-5 text-white rounded-full ${selectedGender === 'Women' ? 'bg-[#050C9C]' : 'bg-[#7e80a1]'}`}>FEMALE</p>
           </div>
 
 

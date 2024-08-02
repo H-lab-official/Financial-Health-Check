@@ -176,7 +176,7 @@ const VieweConclusionplan: React.FC = () => {
     <>
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans mt-16">
         <div className=" fixed top-0 z-40"><NavBar /></div>
-        <div className="rounded-lg p-5 shadow-lg mb-5 w-[325px]">
+        <div className="rounded-lg p-5 shadow-lg mb-5 w-[350px]">
           <div className="text-[1.4rem] mb-3">
             <p>ความสำคัญที่คุณเลือกเป็นดังนี้</p>
           </div>
@@ -189,7 +189,7 @@ const VieweConclusionplan: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className="rounded-lg p-5 shadow-lg mb-5 w-[325px]">
+        <div className="rounded-lg p-5 shadow-lg mb-5 w-[350px]">
           <div className="text-[1.4rem] mb-3"><p>ผลลัพธ์ โดยรวม</p></div>
           <div className="text-black w-full">
             {nonZeroOrders.map(({ order }) => {
