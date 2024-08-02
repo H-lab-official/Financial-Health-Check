@@ -154,7 +154,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(healthPlanData.emergencyCosts)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>6.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+                      <p>6.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
                       <p>{convertMoney(healthPlanData.annualTreatment)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-start my-6 text-[1rem] text-[#0E2B81]">
@@ -177,7 +177,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(healthPlanData.emergencyCostsFromCompany)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>10.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+                      <p>10.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
                       <p>{convertMoney(healthPlanData.annualTreatmentFromCompany)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
@@ -200,7 +200,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(calculateEmergencyCosts(healthPlanData))} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>14.งบประมาณค่ารักษาบาท/ปี (เหมาจ่าย)</p>
+                      <p>14.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
                       <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
                     </div>
                     {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">

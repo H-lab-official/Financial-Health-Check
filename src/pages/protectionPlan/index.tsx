@@ -229,6 +229,7 @@ const ProtectionPlan: React.FC = () => {
     }
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current + 1);
+    window.scrollTo(0, 0);
   };
   const prev = () => {
     let newPercent = progress.percent;
@@ -242,6 +243,7 @@ const ProtectionPlan: React.FC = () => {
     }
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
+    window.scrollTo(0, 0);
   };
 
   const steps = [
