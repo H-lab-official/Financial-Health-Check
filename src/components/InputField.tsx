@@ -70,7 +70,7 @@ const InputField: React.FC<InputFieldProps> = ({
         </div>
         <div>
           <div className="flex flex-row gap-2">
-            <Text className={`font-sans w-[190px] ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}</Text>
+            <Text className={`font-sans w-[190px] flex ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}{!readOnly && <p className="text-red-600 ">*</p>}</Text>
             <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
           </div>
           <div>
@@ -84,29 +84,29 @@ const InputField: React.FC<InputFieldProps> = ({
                 readOnly={readOnly}
                 inputMode="numeric" // Ensure the numeric keyboard is displayed
                 pattern="[0-9]*" // Ensure only numbers are allowed
-                className={`${isRetirementPlan ? 'w-[190px]' : 'w-[190px]'} ${readOnly
+                className={`font-sans ${isRetirementPlan ? 'w-[190px]' : 'w-[190px]'} ${readOnly
                   ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
                   : "none"
                   }`}
               />
-              <Text className="text-[#243286] w-8 flex justify-start items-center">{addonAfter}</Text>
+              <Text className="text-[#243286] w-8 flex justify-start items-center font-sans">{addonAfter}</Text>
             </div>
           </div>
         </div>
       </Row>
       <Modal
-        title={<div className="custom-modal-title">{ModalTitle}</div>}
+        title={<div className="custom-modal-title font-sans">{ModalTitle}</div>}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button key="close" className="custom-close-button" onClick={handleCancel}>
+          <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
             ปิด
           </Button>
         ]}
         closable={false}
-        className="custom-modal"
+        className="custom-modal font-sans"
       >
-        <div className="custom-modal-body" dangerouslySetInnerHTML={{ __html: ModalBody }} />
+        <div className="custom-modal-body font-sans" dangerouslySetInnerHTML={{ __html: ModalBody }} />
       </Modal>
     </Form.Item>
   );

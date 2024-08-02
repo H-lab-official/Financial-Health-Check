@@ -61,6 +61,8 @@ const EducationPlan: React.FC = () => {
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [isModalOpen3, setIsModalOpen3] = useState(false);
   const [levelOfeducation2, setLevelOfeducation2] = useState(formData.levelOfeducation);
 
   const [typeOfeducation2, setTypeOfeducation2] = useState(formData.typeOfeducation);
@@ -88,12 +90,28 @@ const EducationPlan: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+  const showModal2 = () => {
+    setIsModalOpen2(true);
+  };
+
+
+
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
+  };
+  const showModal3 = () => {
+    setIsModalOpen3(true);
+  };
+
+
+
+  const handleCancel3 = () => {
+    setIsModalOpen3(false);
   };
   const toFloat = (num: any) => {
     const floatValue = parseFloat(num.toString().replace(/,/g, ''));
@@ -181,12 +199,12 @@ const EducationPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== "5") {
-      navigator("/report");
+      navigator("/showdata");
     } else {
       if (value === "5") {
         navigateThroughSequence(urlMap);
       } else {
-        navigateToValue(urlMap, value, "/report");
+        navigateToValue(urlMap, value, "/showdata");
       }
     }
   };
@@ -431,14 +449,14 @@ const EducationPlan: React.FC = () => {
                 ModalTitle="1.อายุของบุตร"
               />
             </Row>
-            <div className="flex flex-row justify-start items-center">
+            <div className="flex flex-row justify-start items-center font-sans">
               <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan13} alt="icons" className="w-10" /></div>
               <div>
-                <div>
-                  <p className="text-[#243286]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</p><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+                <div className="flex flex-row justify-between items-center">
+                  <p className="text-[#243286] w-[197px] text-[0.83rem]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</p><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
                 </div>
                 <Modal
-                  title={<div className="custom-modal-title">5.เงินเฟ้อ</div>}
+                  title={<div className="custom-modal-title">2.ระดับการศึกษาที่คาดหวังจะส่งลูก</div>}
                   open={isModalOpen}
                   onCancel={handleCancel}
                   footer={[
@@ -449,7 +467,7 @@ const EducationPlan: React.FC = () => {
                   closable={false}
                   className="custom-modal"
                 >
-                  <div className="custom-modal-body">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
+                  <div className="custom-modal-body">ระดับการศึกษาสูงสุดที่ผู้ปกครองตั้งเป้าหมายให้บุตรหลานของตนศึกษาถึง เช่น มัธยมศึกษาตอนปลาย ปริญญาตรี โท หรือเอก เป็นการกำหนดเป้าหมายทางการศึกษาที่ผู้ปกครองอยากให้ลูกบรรลุ
                   </div>
                 </Modal>
                 <div className="gap-4">
@@ -466,7 +484,7 @@ const EducationPlan: React.FC = () => {
                       ]}
                     />
                   </div>
-                 
+
                 </div>
               </div>
             </div>
@@ -497,11 +515,26 @@ const EducationPlan: React.FC = () => {
 
             <div className="flex flex-row justify-start items-center">
               <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan16} alt="icons" className="w-10" /></div>
-              <Col>
-                <Col>
-                  <Text className="text-[#243286]">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text>
-                </Col>
-                <Col>
+              <div>
+                <div className="flex flex-row justify-between items-center">
+                  <Text className="text-[#243286] w-[197px] font-sans">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text><img src={tooltip} alt="tooltip" onClick={showModal2} className="cursor-pointer" />
+                </div>
+                <Modal
+                  title={<div className="custom-modal-title">5.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</div>}
+                  open={isModalOpen2}
+                  onCancel={handleCancel2}
+                  footer={[
+                    <Button key="close" className="custom-close-button" onClick={handleCancel2}>
+                      ปิด
+                    </Button>
+                  ]}
+                  closable={false}
+                  className="custom-modal"
+                >
+                  <div className="custom-modal-body">คุณสมบัติหรือสิ่งที่ผู้ปกครองหรือผู้เรียนต้องการให้โรงเรียนหรือหลักสูตรมี เป็นการระบุคุณลักษณะที่สำคัญที่ผู้เกี่ยวข้องต้องการ เพื่อให้การศึกษาของบุตรหลานเป็นไปอย่างมีประสิทธิภาพและตรงตามความต้องการ
+                  </div>
+                </Modal>
+                <div>
                   <div className="flex flex-row justify-start items-center">
                     <Select
                       style={{ width: "190px" }}
@@ -516,8 +549,8 @@ const EducationPlan: React.FC = () => {
                       ]}
                     />
                   </div>
-                </Col>
-              </Col>
+                </div>
+              </div>
             </div>
           </Form.Item>
 
@@ -547,13 +580,29 @@ const EducationPlan: React.FC = () => {
 
           <div className="flex flex-row justify-start items-center mb-2">
             <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan110} alt="icons" className="w-10" /></div>
-            <Col>
-              <Col>
-                <Text className="text-[#243286]">{"8. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text>
-              </Col>
-              <Col>
+            <div>
+              <div className="flex flex-row justify-between items-center">
+                <Text className="text-[#243286] w-[197px] font-sans">{"8. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text><img src={tooltip} alt="tooltip" onClick={showModal3} className="cursor-pointer" />
+              </div>
+              <div>
+                <Modal
+                  title={<div className="custom-modal-title font-sans">8.อัตราการเฟ้อของค่าเทอมต่อปี</div>}
+                  open={isModalOpen3}
+                  onCancel={handleCancel3}
+                  footer={[
+                    <Button key="close" className="custom-close-button font-sans" onClick={handleCancel3}>
+                      ปิด
+                    </Button>
+                  ]}
+                  closable={false}
+                  className="custom-modal"
+                >
+                  <div className="custom-modal-body font-sans">อัตราที่ค่าเทอมของสถาบันการศึกษาต่างๆ เพิ่มขึ้นเฉลี่ยในแต่ละปี คล้ายๆ กับอัตราเงินเฟ้อทั่วไปที่ราคาสินค้าและบริการต่างๆ เพิ่มขึ้นนั่นเอง
+                  </div>
+                </Modal>
                 <div className="flex flex-row justify-start items-center gap-5 ">
                   <Select
+                    className="font-sans"
                     style={{ width: "190px" }}
                     value={formData.inflationRate}
                     placeholder="กรุณาเลือก"
@@ -568,8 +617,8 @@ const EducationPlan: React.FC = () => {
                     ]}
                   />
                 </div>
-              </Col>
-            </Col>
+              </div>
+            </div>
           </div>
           <InputField
             label="9. รวมทุนการศึกษาที่จำเป็น"
@@ -704,7 +753,8 @@ const EducationPlan: React.FC = () => {
             </div>
             <div className="flex flex-row justify-between">
               <p>8. อัตราการเฟ้อของค่าเทอมต่อปี</p>
-              <p>{parseFloat(formData.inflationRate) * 100} %</p>
+              <p>{(parseFloat(formData.inflationRate) * 100).toFixed(0)} %&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
             </div>
             <div className="flex flex-row justify-between">
               <p>9. รวมทุนการศึกษาที่จำเป็น</p>
@@ -750,7 +800,7 @@ const EducationPlan: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-        <div className="flex flex-col justify-center items-center gap-3 mb-5">
+        <div className="flex flex-col justify-center items-center gap-3 ">
           <h1 className=" text-2xl font-bold text-center">
             {current == 0 ? "Education Plan" : "Education Plan"}{" "}
           </h1>
@@ -762,17 +812,17 @@ const EducationPlan: React.FC = () => {
           className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"
             }`}
         >
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "วางแผนเพื่อการศึกษาบุตร" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan21} alt="" />{steps[current].title}</div> : steps[current].title}</p>
+          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "วางแผนเพื่อการศึกษาบุตร" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan21} alt="" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current === 0 && (
-              <Button onClick={() => letMeback()} className="bg-white rounded-full w-[120px]">
+              <Button onClick={() => letMeback()} className="bg-white rounded-full w-[120px] font-sans">
                 ย้อนกลับ
               </Button>
             )}
             {current > 0 && (
-              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px] font-sans`}>
                 ย้อนกลับ
               </Button>
             )}
@@ -782,7 +832,7 @@ const EducationPlan: React.FC = () => {
                   type="primary"
                   onClick={() => next()}
                   disabled={handleDisabled()}
-                  className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}
+                  className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"} font-sans`}
                 >
                   ถัดไป
                 </Button>
@@ -793,11 +843,14 @@ const EducationPlan: React.FC = () => {
               <Button
                 disabled={handleDisabled()}
                 onClick={nextlast}
-                className="bg-[#003781] rounded-full w-[120px] text-white"
+                className="bg-[#003781] rounded-full w-[120px] text-white font-sans"
               >
                 ถัดไป
               </Button>
             )}
+          </div>
+          <div className="flex flex-row justify-center items-center mb-5">
+            {current > 0 && current < 3 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
           </div>
         </div>
       </div>

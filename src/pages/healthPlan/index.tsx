@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Select, Typography, Progress } from "antd";
+import { Button, Col, Form, Row, Select, Typography, Progress, Modal } from "antd";
 import InputField from "@/components/InputField";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
@@ -17,6 +17,7 @@ import {
   healthPlanState,
 } from "@/recoil/healthPlanState";
 import { savehealthPlan } from '@/components/api/savehealthPlan';
+import tooltip from '@/assets/images/icons/tooltip.svg'
 import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import DotsComponent from "@/components/DotsComponent";
 import ProgressBar from "@/components/progressBar";
@@ -68,7 +69,7 @@ const HealthPlan: React.FC = () => {
   const [current, setCurrent] = useState(currentStep);
   const sortedSelected = useRecoilValue(sortedSelectedState);
   const [currentIndex, setCurrentIndex] = useRecoilState(currentIndexState);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleInputChange =
     (field: keyof typeof formData) => (value: string) => {
       const formattedValue = value.replace(/[^\d\.]/g, "");
@@ -84,6 +85,17 @@ const HealthPlan: React.FC = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+  };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
   useEffect(() => {
     if (formData.hospitals !== hospitals2) {
@@ -131,12 +143,12 @@ const HealthPlan: React.FC = () => {
   const handleSingleSelection = (urlMap: { [key: string]: string }) => {
     const value = sortedSelected[0];
     if (sortedSelected.length === 1 && value !== '5') {
-      navigator('/report');
+      navigator('/showdata');
     } else {
       if (value === '5') {
         navigateThroughSequence(urlMap);
       } else {
-        navigateToValue(urlMap, value, '/report');
+        navigateToValue(urlMap, value, '/showdata');
       }
     }
   };
@@ -209,7 +221,7 @@ const HealthPlan: React.FC = () => {
 
   const letMeback = async () => {
     if (selectedValue.includes('2')) {
-      navigator(`/Financial-Health-Check?user_params=${dataname.user_params}`, { state: { current: 2 } })
+      navigator(`/?user_params=${dataname.user_params}`, { state: { current: 2 } })
     } else if (selectedValue.includes('5')) {
       navigator("/protection-plan", { state: { current: 3 } })
     }
@@ -348,15 +360,32 @@ const HealthPlan: React.FC = () => {
     title: "วางแผนเพื่อสุขภาพ",
     content: (
       <div>
-        <div className="flex flex-row justify-start items-center gap-5 mb-5">
-          <Col><img src={HealthPlan12} alt="icons" /></Col>
-          <Col>
-            <Col>
-              <Text className="text-[#243286]">{"1. กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text>
-            </Col>
-            <Col>
+        <div className="flex flex-row justify-start items-center  mb-5">
+          <div className="w-[55px] flex justify-start items-center pl-2"><img src={HealthPlan12} alt="icons" className="w-10" /></div>
+          <div>
+            <div className="flex flex-row justify-between items-center">
+              <Text className="text-[#243286] w-[197px] font-sans">{"1. กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            </div>
+            <Modal
+              title={<div className="custom-modal-title font-sans">1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</div>}
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={[
+                <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
+                  ปิด
+                </Button>
+              ]}
+              closable={false}
+              className="custom-modal"
+            >
+              <div className="custom-modal-body font-sans">โรงพยาบาลที่ได้ทำสัญญากับบริษัทประกันภัย เพื่อให้บริการแก่ลูกค้าที่ถือกรมธรรม์ ประกันสุขภาพของบริษัทนั้นๆ โดยตรง
+
+              </div>
+            </Modal>
+            <div>
               <div className="flex flex-row justify-start items-center gap-5 ">
                 <Select
+                  className="font-sans"
                   style={{ width: '190px' }}
                   value={formData.hospitals}
                   onChange={handleInputChange("hospitals")}
@@ -369,8 +398,8 @@ const HealthPlan: React.FC = () => {
                   ]}
                 />
               </div>
-            </Col>
-          </Col>
+            </div>
+          </div>
         </div>
 
         <InputField
@@ -525,7 +554,7 @@ const HealthPlan: React.FC = () => {
       </div>
     )
   }, {
-    title: "",
+    title: "สรุปผล",
     content: (
 
       <div className="  rounded-lg p-5 shadow-lg mb-5">
@@ -634,10 +663,10 @@ const HealthPlan: React.FC = () => {
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className=" fixed top-0 z-40"><NavBar /></div>
       <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
-        <div className="flex flex-col justify-center items-center gap-3 mb-5">
+        <div className="flex flex-col justify-center items-center gap-3 mb-1">
           <h1 className=" text-2xl font-bold text-center">{current === 0 ? "Health Plan" : "Health Plan"}</h1>
           {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
-          {current === 0 && <img src={health} alt="" className=" w-[265px] mt-5" />}
+          {current === 0 && <img src={allImages} alt="" className=" w-[265px] mt-5" />}
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : "shadow-xl"}`}>
@@ -647,27 +676,27 @@ const HealthPlan: React.FC = () => {
               steps[current].title === "สวัสดิการปัจจุบันจากบริษัทหรือจากประกันที่มี" ?
                 <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan21} alt="" />{steps[current].title}</div> :
                 steps[current].title === "สวัสดิการที่ต้องเพิ่มเติม" ?
-                  <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan31} alt="" />{steps[current].title}</div> : steps[current].title}
+                  <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan31} alt="" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}
           </p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
             {current === 0 && (
               <Button
                 onClick={() => toGoBack()}
-                className="bg-white rounded-full w-[120px]"
+                className="bg-white rounded-full w-[120px] font-sans"
               >
                 ย้อนกลับ
               </Button>
             )}
 
             {current > 0 && (
-              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px]`}>
+              <Button onClick={() => prev()} className={` bg-white rounded-full w-[120px] font-sans`}>
                 ย้อนกลับ
               </Button>
             )}
             {current < steps.length - 1 && (
               <>
-                <Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={`bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
+                <Button type="primary" onClick={() => next()} disabled={handleDisabled()} className={` font-sans bg-[#003781] rounded-full ${current === 0 ? "w-[120px]" : "w-[120px]"}`}>
                   ถัดไป
                 </Button>
               </>
@@ -677,11 +706,14 @@ const HealthPlan: React.FC = () => {
               <Button
                 disabled={handleDisabled()}
                 onClick={() => handleSave()}
-                className="bg-[#003781] rounded-full w-[120px] text-white"
+                className="bg-[#003781] rounded-full w-[120px] text-white font-sans"
               >
                 ถัดไป
               </Button>
             )}
+          </div>
+          <div className="flex flex-row justify-center items-center mb-5">
+            {current > 0 && current < 4 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
           </div>
         </div>
       </div>

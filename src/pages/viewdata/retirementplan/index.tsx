@@ -178,7 +178,8 @@ const Vieweretirementplan: React.FC = () => {
                     </div>
                     <div className="flex flex-row justify-between mt-3">
                       <p>13.เงินเฟ้อ</p>
-                      <p>{parseFloat(retirementPlanData.inflationRate) * 100} %</p>
+                      <p>{(parseFloat(retirementPlanData.inflationRate) * 100).toFixed(0)} %</p>
+                      {/* <p>{parseFloat(retirementPlanData.inflationRate) * 100} %</p> */}
                     </div>
                     <div className="flex flex-row justify-between">
                       <p>14.รวมค่าใช้จ่ายที่ต้องเตรียม</p>
