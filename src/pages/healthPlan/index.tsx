@@ -204,6 +204,7 @@ const HealthPlan: React.FC = () => {
 
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current + 1);
+    window.scrollTo(0, 0);
   };
 
   const prev = () => {
@@ -217,6 +218,7 @@ const HealthPlan: React.FC = () => {
 
     setProgress({ percent: newPercent, steps: progress.steps });
     setCurrent(current - 1);
+    window.scrollTo(0, 0);
   };
 
   const letMeback = async () => {
