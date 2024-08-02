@@ -243,14 +243,14 @@ const VieweConclusionplan: React.FC = () => {
             linkFavicon={logo}
             linkTitle={"ข้อมูลสรุป"}
           >
-            <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8]">
-              <img src={exportlink} alt="exportlink" /><p>แชร์ผลสรุป</p>
+            <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8] font-sans">
+              <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
             </button>
           </ShareOnSocial>}
 
             {!linkButton && (
               <div className='flex flex-row justify-center items-center gap-5'>
-                <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[260px]`}>
+                <Button onClick={toone} type="primary" className={`bg-[#003781] rounded-full w-[260px] font-sans`}>
                   ถัดไป
                 </Button>
               </div>
