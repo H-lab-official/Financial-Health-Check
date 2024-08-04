@@ -157,10 +157,10 @@ const Vieweducationplan: React.FC = () => {
                   <div className="flex flex-row justify-between">
                     <p>5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
                     <p>{[
-                      { value: "30000.00", label: "รัฐบาล" },
-                      { value: "90000.00", label: "เอกชน" },
-                      { value: "700000.00", label: "อินเตอร์" },
-                      { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
+                      { value: "30000", label: "รัฐบาล" },
+                      { value: "90000", label: "เอกชน" },
+                      { value: "700000", label: "อินเตอร์" },
+                      { value: "1200000", label: "เรียนต่อต่างประเทศ" },
                     ]
                       .filter(
                         (obj) => obj.value === educationPlan.typeOfeducation

@@ -24,6 +24,7 @@ import Education from "@/assets/images/Education.png";
 import Education1 from "@/assets/images/Education1.png";
 import Education2 from "@/assets/images/Education2.png";
 import DotsComponent from "@/components/DotsComponent";
+import InflationComponent from '@/components/SelectOptions'
 const { Text } = Typography;
 import { nameState, nameData } from "@/recoil/nameState";
 import { NavBar } from "@/components/navbar";
@@ -148,11 +149,12 @@ const EducationPlan: React.FC = () => {
 
   useEffect(() => {
 
-    const expensesDuringStudy = (parseFloat(formData.typeOfeducation2) * 0.25).toFixed(2);
+    const expensesDuringStudy = Math.floor(parseFloat(formData.typeOfeducation2) * 0.25).toString();
     setFormData((prevFormData) => ({
       ...prevFormData,
       expensesDuringStudy,
     }));
+
 
   }, [formData.typeOfeducation]);
   console.log(formData);
@@ -438,139 +440,85 @@ const EducationPlan: React.FC = () => {
       title: "วางแผนเพื่อการศึกษาบุตร",
       content: (
         <div>
-          <Form.Item>
-            <Row>
-              <InputField
-                label="1. อายุของบุตร"
-                value={formData.child}
-                onChange={handleInputChange("child")}
-                addonAfter="ปี"
-                placeholder="กรุณาใส่อายุบุตร"
-                imgUrl={EducationPlan12}
-                ModalBody="ระยะเวลาที่บุคคลหนึ่งมีชีวิตอยู่ นับตั้งแต่วันที่เกิดจนถึงปัจจุบัน หรือวันที่เราต้องการทราบอายุของบุตรคนนั้น"
-                ModalTitle="1.อายุของบุตร"
-              />
-            </Row>
-            <div className="flex flex-row justify-start items-center font-sans">
-              <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan13} alt="icons" className="w-10" /></div>
-              <div>
-                <div className="flex flex-row justify-between items-center">
-                  <p className="text-[#243286] w-[197px] text-[0.83rem]">{"2. ระดับการศึกษาที่คาดหวังจะส่งลูก"}</p><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-                </div>
-                <Modal
-                  title={<div className="custom-modal-title">2.ระดับการศึกษาที่คาดหวังจะส่งลูก</div>}
-                  open={isModalOpen}
-                  onCancel={handleCancel}
-                  footer={[
-                    <Button key="close" className="custom-close-button" onClick={handleCancel}>
-                      ปิด
-                    </Button>
-                  ]}
-                  closable={false}
-                  className="custom-modal"
-                >
-                  <div className="custom-modal-body">ระดับการศึกษาสูงสุดที่ผู้ปกครองตั้งเป้าหมายให้บุตรหลานของตนศึกษาถึง เช่น มัธยมศึกษาตอนปลาย ปริญญาตรี โท หรือเอก เป็นการกำหนดเป้าหมายทางการศึกษาที่ผู้ปกครองอยากให้ลูกบรรลุ
-                  </div>
-                </Modal>
-                <div className="gap-4">
-                  <div className="flex flex-row justify-start items-center">
-                    <Select
-                      style={{ width: "190px" }}
-                      value={formData.levelOfeducation}
-                      placeholder="กรุณาเลือก"
-                      onChange={handleSelectChange('levelOfeducation')}
-                      options={[
-                        { value: "19", label: "ปริญญาตรี" },
-                        { value: "21", label: "ปริญญาโท" },
-                        { value: "25", label: "ปริญญาเอก" },
-                      ]}
-                    />
-                  </div>
 
-                </div>
-              </div>
-            </div>
-            <Row className="mt-4">
-              <InputField
-                label="3. จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
-                value={formData.levelOfeducation2}
-                onChange={handleInputChange('levelOfeducation2')}
-                addonAfter="ปี"
-                placeholder=""
-                readOnly
-                imgUrl={EducationPlan14}
-                ModalBody=""
-                ModalTitle="3.จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
-              />
-              <InputField
-                label="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
-                value={yearsOfeducation || ""}
-                onChange={handleInputChange('yearsOfeducation2')}
-                addonAfter="ปี"
 
-                placeholder=""
-                imgUrl={EducationPlan15}
-                ModalBody="ระยะเวลาทั้งหมดที่ผู้ปกครองตั้งใจจะส่งลูกเรียน ตั้งแต่เข้าเรียนระดับแรกจนถึงระดับสูงสุดที่วางแผนไว้"
-                ModalTitle="4. จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
-              />
-            </Row>
+          <InputField
+            label="1.อายุปัจจุบันของบุตรหลาน "
+            value={formData.child}
+            onChange={handleInputChange("child")}
+            addonAfter="ปี"
+            placeholder="กรุณาใส่อายุบุตร"
+            imgUrl={EducationPlan12}
+            ModalBody="-"
+            ModalTitle="-"
+          />
 
-            <div className="flex flex-row justify-start items-center">
-              <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan16} alt="icons" className="w-10" /></div>
-              <div>
-                <div className="flex flex-row justify-between items-center">
-                  <Text className="text-[#243286] w-[197px] font-sans">{"5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"}</Text><img src={tooltip} alt="tooltip" onClick={showModal2} className="cursor-pointer" />
-                </div>
-                <Modal
-                  title={<div className="custom-modal-title">5.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</div>}
-                  open={isModalOpen2}
-                  onCancel={handleCancel2}
-                  footer={[
-                    <Button key="close" className="custom-close-button" onClick={handleCancel2}>
-                      ปิด
-                    </Button>
-                  ]}
-                  closable={false}
-                  className="custom-modal"
-                >
-                  <div className="custom-modal-body">คุณสมบัติหรือสิ่งที่ผู้ปกครองหรือผู้เรียนต้องการให้โรงเรียนหรือหลักสูตรมี เป็นการระบุคุณลักษณะที่สำคัญที่ผู้เกี่ยวข้องต้องการ เพื่อให้การศึกษาของบุตรหลานเป็นไปอย่างมีประสิทธิภาพและตรงตามความต้องการ
-                  </div>
-                </Modal>
-                <div>
-                  <div className="flex flex-row justify-start items-center">
-                    <Select
-                      style={{ width: "190px" }}
-                      value={formData.typeOfeducation}
-                      placeholder="กรุณาเลือก"
-                      onChange={handleTypeOfEducationChange}
-                      options={[
-                        { value: "30000.00", label: "รัฐบาล" },
-                        { value: "90000.00", label: "เอกชน" },
-                        { value: "700000.00", label: "อินเตอร์" },
-                        { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
-                      ]}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Form.Item>
+          <InflationComponent
+            iconsImg={EducationPlan13}
+            title="2.ระดับการศึกษาสูงสุด"
+            textModal="ระดับการศึกษาสูงสุดที่ผู้ปกครองตั้งเป้าหมายให้บุตรหลานของตนศึกษาถึง เช่น มัธยมศึกษาตอนปลาย ปริญญาตรี โท หรือเอก"
+            defaultValue={formData.levelOfeducation}
+            onChange={handleInputChange("levelOfeducation")}
+            options={[
+              { value: "19", label: "ปริญญาตรี" },
+              { value: "21", label: "ปริญญาโท" },
+              { value: "25", label: "ปริญญาเอก" },
+            ]}
+          />
+
+          <InputField
+            label="3.จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
+            value={formData.levelOfeducation2}
+            onChange={handleInputChange('levelOfeducation2')}
+            addonAfter="ปี"
+            placeholder=""
+            readOnly
+            imgUrl={EducationPlan14}
+            ModalBody="-"
+            ModalTitle="-"
+          />
+          <InputField
+            label="4.จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
+            value={yearsOfeducation || ""}
+            onChange={handleInputChange('yearsOfeducation2')}
+            addonAfter="ปี"
+            placeholder=""
+            imgUrl={EducationPlan15}
+            ModalBody="ระยะเวลาทั้งหมดที่ผู้ปกครองตั้งใจจะส่งลูกเรียน ตั้งแต่เข้าเรียนระดับแรกจนถึงระดับสูงสุดที่วางแผนไว้"
+            ModalTitle="4.จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
+          />
+
+          <InflationComponent
+            iconsImg={EducationPlan16}
+            title="5.ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง"
+            textModal="-"
+            defaultValue={formData.typeOfeducation}
+            onChange={handleTypeOfEducationChange}
+            options={[
+              { value: "30000", label: "รัฐบาล" },
+              { value: "90000", label: "เอกชน" },
+              { value: "700000", label: "อินเตอร์" },
+              { value: "1200000", label: "เรียนต่อต่างประเทศ" },
+            ]}
+          />
+
+
 
           <Row className="my-2 gap-5">
             <img src={EducationPlan17} alt="" /> <Text className="text-xl font-bold text-[#243286]">ทุนการศึกษาที่จำเป็น</Text>
           </Row>
           <InputField
-            label="6. ค่าเล่าเรียน"
+            label="6.ค่าเล่าเรียน"
             value={formData.typeOfeducation2}
             onChange={handleInputChange("typeOfeducation2")}
             addonAfter="บาท/ปี"
             placeholder=""
             imgUrl={EducationPlan18}
-            ModalBody="เงินที่ต้องชำระให้กับสถาบันการศึกษาเพื่อแลกกับการได้รับความรู้และการศึกษาในระดับต่างๆ ไม่ว่าจะเป็นโรงเรียน มหาวิทยาลัย หรือสถาบันอื่นๆ"
+            ModalBody="เงินที่ต้องชำระให้กับสถาบันการศึกษาเพื่อแลกกับการได้รับความรู้และการศึกษาในระดับต่างๆ"
             ModalTitle="6.ค่าเล่าเรียน"
           />
           <InputField
-            label="7. ค่าใช้จ่ายระหว่างศึกษา"
+            label="7.ค่าใช้จ่ายระหว่างศึกษา"
             value={formData.expensesDuringStudy}
             onChange={handleInputChange("expensesDuringStudy")}
             addonAfter="บาท/ปี"
@@ -579,51 +527,24 @@ const EducationPlan: React.FC = () => {
             ModalBody="เงินที่ต้องใช้จ่ายนอกเหนือจากค่าเล่าเรียนที่สถาบันการศึกษาเรียกเก็บ ซึ่งรวมถึงค่าใช้จ่ายที่จำเป็นสำหรับการศึกษาและการดำรงชีวิตในระหว่างที่กำลังศึกษาอยู่"
             ModalTitle="7.ค่าใช้จ่ายระหว่างการศึกษา"
           />
+          <InflationComponent
+            iconsImg={EducationPlan110}
+            title="8.อัตราการเฟ้อของค่าเทอมต่อปี"
+            textModal="อัตราที่ค่าเทอมของสถาบันการศึกษาต่างๆ เพิ่มขึ้นเฉลี่ยในแต่ละปี คล้ายๆ กับอัตราเงินเฟ้อทั่วไปที่ราคาสินค้าและบริการต่างๆ เพิ่มขึ้น"
+            defaultValue={formData.inflationRate}
+            onChange={handleSelectChange("inflationRate")}
+            options={[
+              { value: "0.02", label: "2 %" },
+              { value: "0.03", label: "3 %" },
+              { value: "0.04", label: "4 %" },
+              { value: "0.05", label: "5 %" },
+              { value: "0.06", label: "6 %" },
+              { value: "0.07", label: "7 %" },
+            ]}
+          />
 
-          <div className="flex flex-row justify-start items-center mb-2">
-            <div className="w-[55px] flex justify-start items-center pl-2"><img src={EducationPlan110} alt="icons" className="w-10" /></div>
-            <div>
-              <div className="flex flex-row justify-between items-center">
-                <Text className="text-[#243286] w-[197px] font-sans">{"8. อัตราการเฟ้อของค่าเทอมต่อปี"}</Text><img src={tooltip} alt="tooltip" onClick={showModal3} className="cursor-pointer" />
-              </div>
-              <div>
-                <Modal
-                  title={<div className="custom-modal-title font-sans">8.อัตราการเฟ้อของค่าเทอมต่อปี</div>}
-                  open={isModalOpen3}
-                  onCancel={handleCancel3}
-                  footer={[
-                    <Button key="close" className="custom-close-button font-sans" onClick={handleCancel3}>
-                      ปิด
-                    </Button>
-                  ]}
-                  closable={false}
-                  className="custom-modal"
-                >
-                  <div className="custom-modal-body font-sans">อัตราที่ค่าเทอมของสถาบันการศึกษาต่างๆ เพิ่มขึ้นเฉลี่ยในแต่ละปี คล้ายๆ กับอัตราเงินเฟ้อทั่วไปที่ราคาสินค้าและบริการต่างๆ เพิ่มขึ้นนั่นเอง
-                  </div>
-                </Modal>
-                <div className="flex flex-row justify-start items-center gap-5 ">
-                  <Select
-                    className="font-sans"
-                    style={{ width: "190px" }}
-                    value={formData.inflationRate}
-                    placeholder="กรุณาเลือก"
-                    onChange={handleSelectChange("inflationRate")}
-                    options={[
-                      { value: "0.02", label: "2 %" },
-                      { value: "0.03", label: "3 %" },
-                      { value: "0.04", label: "4 %" },
-                      { value: "0.05", label: "5 %" },
-                      { value: "0.06", label: "6 %" },
-                      { value: "0.07", label: "7 %" },
-                    ]}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
           <InputField
-            label="9. รวมทุนการศึกษาที่จำเป็น"
+            label="9.รวมทุนการศึกษาที่จำเป็น"
             value={requiredScholarships}
             onChange={() => { }}
             readOnly
@@ -631,7 +552,7 @@ const EducationPlan: React.FC = () => {
             addonAfter="บาท"
             imgUrl={EducationPlan111}
             ModalBody="การรวมเอาค่าใช้จ่ายทั้งหมดที่เกี่ยวข้องกับการศึกษา ไม่ว่าจะเป็นค่าเล่าเรียน ค่าอุปกรณ์การเรียน ค่าที่พัก ค่าอาหาร และค่าใช้จ่ายส่วนตัวอื่นๆ เข้าด้วยกัน เพื่อให้ได้ภาพรวมของจำนวนเงินทั้งหมดที่จำเป็นสำหรับการศึกษาในช่วงเวลาหนึ่งๆ"
-            ModalTitle="9. รวมทุนการศึกษาที่จำเป็น"
+            ModalTitle="9.รวมทุนการศึกษาที่จำเป็น"
           />
         </div>
       ),
@@ -641,18 +562,18 @@ const EducationPlan: React.FC = () => {
       content: (
         <div>
           <InputField
-            label="10. เงินฝากให้ลูกเรียนหนังสือ"
+            label="10.เงินฝากให้ลูกเรียนหนังสือ"
             value={formData.deposit}
             onChange={handleInputChange("deposit")}
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
             imgUrl={EducationPlan22}
-            ModalBody="การออมเงินหรือลงทุนเงินก้อนหนึ่งไว้ เพื่อเตรียมไว้สำหรับค่าใช้จ่ายในการศึกษาของบุตรหลานในอนาคต ไม่ว่าจะเป็นค่าเล่าเรียน ค่าใช้จ่ายในการดำรงชีวิตขณะศึกษา หรือค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการศึกษา"
-            ModalTitle="10. เงินฝากให้ลูกเรียนหนังสือ"
+            ModalBody="การออมเงินหรือลงทุนเงินก้อนหนึ่งไว้ เพื่อเตรียมไว้สำหรับค่าใช้จ่ายในการศึกษาของบุตรหลานในอนาคต"
+            ModalTitle="10.เงินฝากให้ลูกเรียนหนังสือ"
           />
 
           <InputField
-            label="11. กรมธรรม์ที่ครบกำหนด"
+            label="11.กรมธรรม์ที่ครบกำหนด"
             value={formData.insuranceFund}
             onChange={handleInputChange("insuranceFund")}
             placeholder="กรุณากรอกจำนวนเงิน"
@@ -662,36 +583,36 @@ const EducationPlan: React.FC = () => {
             ModalTitle="11.กรมธรรม์ที่ครบกำหนด"
           />
           <InputField
-            label="12. อื่นๆ"
+            label="12.อื่นๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
             placeholder="กรุณากรอกจำนวนเงิน"
             addonAfter="บาท"
             imgUrl={EducationPlan24}
-            ModalBody="การบริหารจัดการเงิน การทำบัญชีรายรับรายจ่าย"
-            ModalTitle="12. อื่นๆ"
+            ModalBody="สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์"
+            ModalTitle="12.อื่นๆ"
           />
           <InputField
-            label="13. รวมทุนการศึกษาที่เตรียมไว้แล้ว"
+            label="13.รวมทุนการศึกษาที่เตรียมไว้แล้ว"
             value={totalPreparationAssets}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="บาท"
             imgUrl={EducationPlan25}
-            ModalBody="การคำนวณและวางแผนค่าใช้จ่ายในการศึกษาทั้งหมด รวมถึงแหล่งเงินทุนต่างๆ ที่จะนำมาใช้ในการศึกษา ไม่ว่าจะเป็นทุนการศึกษาที่ได้รับ เงินออมส่วนตัว หรือเงินสนับสนุนจากครอบครัว"
+            ModalBody="การคำนวณและวางแผนค่าใช้จ่ายในการศึกษาทั้งหมด รวมถึงแหล่งเงินทุนต่างๆ ที่จะนำมาใช้ในการศึกษา"
             ModalTitle="13.รวมทุนการศึกษาที่เตรียมไว้แล้ว"
           />
 
           <InputField
-            label="14. รวมที่ขาดอยู่"
+            label="14.รวมที่ขาดอยู่"
             value={renderTotalMissingMessage()}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="บาท"
             imgUrl={EducationPlan26}
-            ModalBody="การนำข้อมูลทางการเงินทั้งหมดที่เกี่ยวข้องมารวมกัน เพื่อให้ได้ภาพรวมทางการเงินที่สมบูรณ์และถูกต้องที่สุด"
+            ModalBody="การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราขาดอยู่ เพื่อให้เห็นภาพรวมของสิ่งที่เราขาดอยูทั้งหมด"
             ModalTitle="14.รวมที่ขาดอยู่"
           />
         </div>
@@ -728,13 +649,13 @@ const EducationPlan: React.FC = () => {
               <p>4. จำนวนปีการศึกษาที่เหลือที่ต้องส่ง</p>
               <p>{yearsOfeducationFrontCount} ปี</p>
             </div>
-            <div className="flex flex-row justify-between">
-              <p>5. ลักษณะโรงเรียน หรือ หลักสูตรที่คาดหวัง</p>
+            <div className="flex flex-row justify-between items-center">
+              <p>5. ลักษณะโรงเรียน หรือ <br /> หลักสูตรที่คาดหวัง</p>
               <p>{[
-                { value: "30000.00", label: "รัฐบาล" },
-                { value: "90000.00", label: "เอกชน" },
-                { value: "700000.00", label: "อินเตอร์" },
-                { value: "1200000.00", label: "เรียนต่อต่างประเทศ" },
+                { value: "30000", label: "รัฐบาล" },
+                { value: "90000", label: "เอกชน" },
+                { value: "700000", label: "อินเตอร์" },
+                { value: "1200000", label: "เรียนต่อต่างประเทศ" },
               ]
                 .filter(
                   (obj) => obj.value === formData.typeOfeducation

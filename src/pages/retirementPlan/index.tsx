@@ -20,6 +20,7 @@ import {
 } from "@/recoil/retirementPlanState";
 import DotsComponent from "@/components/DotsComponent";
 import { useRecoilState, useRecoilValue } from "recoil";
+import InflationComponent from '@/components/SelectOptions'
 import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
 import retirement from "@/assets/images/retirement.png"
 import retirement1 from "@/assets/images/retirement1.png"
@@ -341,17 +342,17 @@ const RetirementPlan: React.FC = () => {
     content: (
       <div>
         <InputField
-          label="1. กินอยู่"
+          label="1.ค่าใช้จ่ายประจำวัน"
           value={formData.livingCosts}
           onChange={handleInputChange("livingCosts")}
           addonAfter="บาท/เดือน"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={RetirementPlan12}
-          ModalBody={`เงินที่เราต้องใช้จ่ายไปกับการดำรงชีวิตประจำวัน โดยเฉพาะอย่างยิ่งค่าอาหารและค่าที่อยู่อาศัย ซึ่งเป็นปัจจัยพื้นฐานที่จำเป็นต่อการยังชีพของมนุษย์`}
-          ModalTitle="1.กินอยู่"
+          ModalBody={`เงินที่ต้องใช้จ่ายไปกับการดำรงชีวิตประจำวัน โดยเฉพาะอย่างยิ่งค่าอาหารและค่าที่อยู่อาศัย`}
+          ModalTitle="1.ค่าใช้จ่ายประจำวัน"
         />
         <InputField
-          label="2. ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
+          label="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
           value={formData.houseCosts}
           onChange={handleInputChange("houseCosts")}
           addonAfter="บาท/เดือน"
@@ -361,88 +362,79 @@ const RetirementPlan: React.FC = () => {
           ModalTitle="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
         />
         <InputField
-          label="3. ค่ามือถือ อินเตอร์เน็ต"
+          label="3.ค่ามือถือ อินเตอร์เน็ต"
           value={formData.internetCosts}
           onChange={handleInputChange("internetCosts")}
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan14}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการโทรศัพท์มือถือและบริการอินเทอร์เน็ตผ่านโทรศัพท์มือถือ ซึ่งรวมถึง
-ค่าแพ็กเกจรายเดือน ค่าโทร ค่าส่งข้อความ และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการใช้งานโทรศัพท์มือถือ
-`}
+          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการโทรศัพท์มือถือและบริการอินเทอร์เน็ต`}
           ModalTitle="3.ค่ามือถือ อินเตอร์เน็ต"
         />
-
-        <div className="">
-          <InputField
-            label="4. ค่าเสื้อผ้า"
-            value={formData.clothingCosts}
-            onChange={handleInputChange("clothingCosts")}
-            placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-            addonAfter="บาท/เดือน"
-            imgUrl={RetirementPlan15}
-            ModalBody={`เงินที่เราใช้จ่ายไปกับการซื้อเสื้อผ้า เครื่องแต่งกาย และอุปกรณ์ที่เกี่ยวข้อง เช่น รองเท้า กระเป๋า หมวก เป็นต้น ซึ่งเป็นค่าใช้จ่ายที่จำเป็นสำหรับการดำรงชีวิตประจำวัน และการแสดงออกถึงบุคลิกภาพของแต่ละคน`}
-            ModalTitle="4.ค่าเสื้อผ้า"
-          />
-        </div>
         <InputField
-          label="5. ค่ารักษาพยาบาล"
+          label="4.ค่าเสื้อผ้า"
+          value={formData.clothingCosts}
+          onChange={handleInputChange("clothingCosts")}
+          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          addonAfter="บาท/เดือน"
+          imgUrl={RetirementPlan15}
+          ModalBody={`เงินที่เราใช้จ่ายไปกับการซื้อเสื้อผ้าและเครื่องแต่งกาย`}
+          ModalTitle="4.ค่าเสื้อผ้า"
+        />
+        <InputField
+          label="5.ค่ารักษาพยาบาล"
           value={formData.medicalCosts}
           onChange={handleInputChange("medicalCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan16}
-          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการทางการแพทย์ในการรักษาโรคภัยไข้เจ็บ หรือเพื่อป้องกันโรค เช่น ค่าตรวจสุขภาพ ค่าพบแพทย์ ค่ายา ค่าผ่าตัด ค่าโรงพยาบาล และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการดูแลสุขภาพ`}
+          ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการทางการแพทย์ในการรักษาโรคภัยไข้เจ็บ หรือเพื่อป้องกันโรค`}
           ModalTitle="5.ค่ารักษาพยาบาล"
         />
         <InputField
-          label="6. ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)"
+          label="6.ค่าใช้จ่ายอื่นๆ(ขาดได้ ไม่ใช่ปัจจัย 4)"
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan17}
-          ModalBody={`ที่นอกเหนือไปจากปัจจัย 4 (อาหาร, ที่อยู่อาศัย, เสื้อผ้า, และยารักษาโรค) คือ เงินที่เราต้องใช้จ่ายไปกับสิ่งของหรือบริการต่างๆ ที่ช่วยให้ชีวิตมีความสะดวกสบายมากขึ้น หรือเป็นค่าใช้จ่ายที่จำเป็นต่อการดำรงชีวิตในสังคมปัจจุบัน แม้จะไม่ใช่ปัจจัยพื้นฐานที่สุดก็ตาม`}
-          ModalTitle="6.ค่าใช้จ่ายอื่นๆ (ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
+          ModalBody={`เงินที่เราต้องใช้จ่ายไปกับสิ่งของหรือบริการต่างๆ ที่ช่วยให้ชีวิตมีความสะดวกสบายมากขึ้น หรือเป็นค่าใช้จ่ายที่จำเป็นต่อการดำรงชีวิตในสังคมปัจจุบัน แม้จะไม่ใช่ปัจจัยพื้นฐานที่สุดก็ตาม ที่นอกเหนือไปจากปัจจัย 4 (อาหาร, ที่อยู่อาศัย, เสื้อผ้า, และยารักษาโรค)`}
+          ModalTitle="6.ค่าใช้จ่ายอื่นๆ(ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
+        />
+        <InputField
+          label="7.รวมค่าใช้จ่ายต่อปี"
+          value={totalCosts}
+          onChange={() => { }}
+          readOnly
+          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          addonAfter="บาท"
+          imgUrl={RetirementPlan18}
+          ModalBody={`-`}
+          ModalTitle="7.รวมค่าใช้จ่ายต่อปี"
         />
 
-        <div className="">
-          <InputField
-            label="7. รวมค่าใช้จ่ายต่อปี"
-            value={totalCosts}
-            onChange={() => { }}
-            readOnly
-            placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-            addonAfter="บาท"
-            imgUrl={RetirementPlan18}
-            ModalBody={`การนำเอาค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในรอบ 1 ปี มาบวกกัน เพื่อหาผลรวมว่าเราใช้เงินไปกับอะไรบ้างในระยะเวลา 1 ปี โดยรวมค่าใช้จ่ายทั้งหมด ไม่ว่าจะเป็นค่าใช้จ่ายประจำวัน ประจำเดือน หรือประจำปี ก็ตาม`}
-            ModalTitle="7.รวมค่าใช้จ่ายต่อปี"
-          />
-        </div>
-
         <InputField
-          label="8. อายุตอนนี้&nbsp;&nbsp;&nbsp;"
+          label="8.อายุปัจจุบัน"
           value={formData.age}
           onChange={handleInputChange("age")}
           placeholder="กรุณากรอกอายุของคุณ"
           addonAfter="ปี"
           imgUrl={RetirementPlan19}
-          ModalBody={`จำนวนปีที่ผ่านไปนับตั้งแต่เราเกิดจนถึงปัจจุบัน หรืออีกนัยหนึ่งคือช่วงเวลาที่เราใช้ชีวิตอยู่บนโลกใบนี้`}
-          ModalTitle="8.อายุตอนนี้"
+          ModalBody={`-`}
+          ModalTitle="-"
         />
-
         <InputField
-          label="9. อายุเกษียณ"
+          label="9.อายุที่คาดว่าเกษียณ "
           value={formData.retireAge}
           onChange={handleInputChange("retireAge")}
           placeholder="กรุณากรอกอายุประเมิน"
           addonAfter="ปี"
           imgUrl={RetirementPlan110}
-          ModalBody={`อายุที่บุคคลหนึ่งมีสิทธิ์เลิกทำงานประจำและได้รับสิทธิประโยชน์ต่างๆ เช่น บำนาญ หรือเงินชดเชย ตามที่กฎหมายหรือข้อตกลงกับนายจ้างกำหนด โดยทั่วไป อายุเกษียณจะแตกต่างกันไปตามแต่ละประเทศ องค์กร หรืออาชีพ`}
-          ModalTitle="9.อายุเกษียณ"
+          ModalBody={`-`}
+          ModalTitle="-"
         />
         <InputField
-          label="10. คาดการณ์อายุขัย"
+          label="10.คาดการณ์อายุขัย"
           value={formData.lifExpectancy}
           onChange={handleInputChange("lifExpectancy")}
           placeholder="กรุณากรอกอายุประเมิน"
@@ -451,83 +443,51 @@ const RetirementPlan: React.FC = () => {
           ModalBody={`การประมาณการว่าบุคคลหนึ่งๆ จะมีชีวิตอยู่ได้นานเท่าไร โดยพิจารณาจากปัจจัยต่างๆ เช่น เพศ อายุ สุขภาพ สภาพแวดล้อม และปัจจัยทางพันธุกรรม`}
           ModalTitle="10.คาดการณ์อายุขัย"
         />
-        <div className="">
-          <InputField
-            label="11. จำนวนปีที่ทำงานได้"
-            value={workingYears}
-            onChange={() => { }}
-            readOnly
-            placeholder="34"
-            addonAfter="ปี"
-            imgUrl={RetirementPlan112}
-            ModalBody={`ระยะเวลาที่บุคคลหนึ่งสามารถทำงานได้อย่างมีประสิทธิภาพและมีสุขภาพที่ดี โดยทั่วไปจะหมายถึงช่วงอายุตั้งแต่เริ่มทำงานจนถึงอายุเกษียณ`}
-            ModalTitle="11.จำนวนปีที่ทำงานได้"
-          />
-        </div>
+
         <InputField
-          label="12. จำนวนปีที่ต้องเตรียม"
+          label="11.จำนวนปีที่ทำงานได้"
+          value={workingYears}
+          onChange={() => { }}
+          readOnly
+          placeholder="34"
+          addonAfter="ปี"
+          imgUrl={RetirementPlan112}
+          ModalBody={`ช่วงอายุตั้งแต่เริ่มทำงานจนถึงอายุเกษียณ`}
+          ModalTitle="11.จำนวนปีที่ทำงานได้"
+        />
+
+        <InputField
+          label="12.จำนวนปีที่ต้องเตรียม"
           value={preparationYears}
           onChange={() => { }}
           readOnly
           placeholder="34"
           addonAfter="ปี"
           imgUrl={RetirementPlan113}
-          ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อให้บรรลุเป้าหมายบางอย่าง เช่น การเกษียณอายุ การซื้อบ้าน การศึกษาต่อ หรือการเริ่มต้นธุรกิจใหม่`}
+          ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อการเกษียณอายุ`}
           ModalTitle="12.จำนวนปีที่ต้องเตรียม"
         />
-        <div className="flex flex-row justify-start items-center mb-5">
-          <div className="w-[55px] flex justify-start items-center pl-2"><img src={RetirementPlan114} alt="icons" className="w-10" /></div>
-          <div>
-            <div className="flex flex-row justify-between items-center">
-              <Text className="text-[#243286] w-[197px] font-sans">{"13. เงินเฟ้อ"}</Text><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-            </div>
-            <div>
-              <Modal
-                title={<div className="custom-modal-title font-sans">13.เงินเฟ้อ</div>}
-                open={isModalOpen}
-                onCancel={handleCancel}
-                footer={[
-                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
-                    ปิด
-                  </Button>
-                ]}
-                closable={false}
-                className="custom-modal"
-              >
-                <div className="custom-modal-body font-sans">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
-
-                </div>
-              </Modal>
-              <div className="flex flex-row justify-start items-center gap-5 ">
-                <Select
-                  className="font-sans"
-                  style={{ width: '190px' }}
-                  value={formData.inflationRate || undefined}
-                  placeholder="เลือกประเภทโรงพยาบาล"
-                  onChange={handleInputChange("inflationRate")}
-                  options={[
-                    { label: "กรุณาเลือก", value: undefined, disabled: !!formData.inflationRate },
-                    { value: "0.02", label: "2 %" },
-                    { value: "0.03", label: "3 %" },
-                    { value: "0.04", label: "4 %" },
-                    { value: "0.05", label: "5 %" },
-                    { value: "0.06", label: "6 %" },
-                    { value: "0.07", label: "7 %" },
-                  ]}
-                />
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-
+        <InflationComponent
+          iconsImg={RetirementPlan114}
+          title="13.เงินเฟ้อ"
+          textModal=" ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ 'ของแพงขึ้น'"
+          defaultValue={formData.inflationRate}
+          onChange={handleInputChange("inflationRate")}
+          options={[
+            { value: "0.02", label: "2 %" },
+            { value: "0.03", label: "3 %" },
+            { value: "0.04", label: "4 %" },
+            { value: "0.05", label: "5 %" },
+            { value: "0.06", label: "6 %" },
+            { value: "0.07", label: "7 %" },
+          ]}
+        />
         <InputField
-          label="14. รวมค่าใช้จ่ายที่ต้องเตรียม"
+          label="14.รวมค่าใช้จ่ายที่ต้องเตรียม"
           value={totalPreparation}
           onChange={() => { }}
           readOnly
-          placeholder="30,626,766.28"
+          placeholder="30,626,766"
           addonAfter="บาท"
           imgUrl={RetirementPlan115}
           ModalBody={`การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ`}
@@ -540,17 +500,17 @@ const RetirementPlan: React.FC = () => {
     title: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
     content: (
       <div><InputField
-        label="15. เงินฝาก"
+        label="15.เงินฝาก"
         value={formData.deposit}
         onChange={handleInputChange("deposit")}
         addonAfter="บาท"
         placeholder="2,000.00"
         imgUrl={RetirementPlan22}
-        ModalBody={`เงินที่เราฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
+        ModalBody={`เงินที่ฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
         ModalTitle="15.เงินฝาก"
       />
         <InputField
-          label="16. ทุนประกัน"
+          label="16.ทุนประกัน"
           value={formData.insuranceFund}
           onChange={handleInputChange("insuranceFund")}
           addonAfter="บาท"
@@ -560,41 +520,41 @@ const RetirementPlan: React.FC = () => {
           ModalTitle="16.ทุนประกัน"
         />
         <InputField
-          label="17. ทรัพย์สินอื่น ๆ"
+          label="17.ทรัพย์สินอื่นๆ"
           value={formData.otherAssets}
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan24}
-          ModalBody={`เป็นคำที่ค่อนข้างกว้างและอาจมีความหมายแตกต่างกันไปขึ้นอยู่กับบริบทที่ใช้ แต่โดยทั่วไปแล้ว หมายถึง <b>ทรัพย์สินที่ไม่ได้ระบุเจาะจงเป็นรายการ</b> ในเอกสารหรือสัญญาฉบับนั้น ๆ`}
-          ModalTitle="17.ทรัพย์สินอื่น ๆ"
+          ModalBody={`สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์ `}
+          ModalTitle="17.ทรัพย์สินอื่นๆ"
         />
         <InputField
-          label="18. รวมสิ่งที่เตรียมไว้แล้ว"
+          label="18.รวมสิ่งที่เตรียมไว้แล้ว"
           value={totalPreparationAssets}
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
           placeholder="2,000.00"
           imgUrl={RetirementPlan25}
-          ModalBody={`การรวบรวมรายการสิ่งของหรือทรัพย์สินทั้งหมดที่เราได้เตรียมเอาไว้แล้ว เพื่อให้เห็นภาพรวมของสิ่งที่เรามีอยู่ทั้งหมด`}
+          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราได้เตรียมเอาไว้แล้ว เพื่อให้เห็นภาพรวมของสิ่งที่เรามีอยู่ทั้งหมด`}
           ModalTitle="18.รวมสิ่งที่เตรียมไว้แล้ว"
         />
-        <div className="pt-4">
-          <InputField
-            label="19. รวมที่ขาดอยู่"
-            value={totalMissing}
-            onChange={() => { }}
-            readOnly
-            placeholder="34"
-            addonAfter="บาท"
-            imgUrl={RetirementPlan26}
-            ModalBody={`การรวบรวมรายการสิ่งของหรือข้อมูลที่ขาดหายไปจากชุดข้อมูลที่มีอยู่ทั้งหมด เพื่อให้ได้ภาพรวมที่สมบูรณ์และครบถ้วน`}
-            ModalTitle="19.รวมที่ขาดอยู่"
-          />
-        </div>
+
         <InputField
-          label="20. ต่อปีที่ต้องเก็บได้"
+          label="19.รวมที่ขาดอยู่"
+          value={totalMissing}
+          onChange={() => { }}
+          readOnly
+          placeholder="34"
+          addonAfter="บาท"
+          imgUrl={RetirementPlan26}
+          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราขาดอยู่ เพื่อให้เห็นภาพรวมของสิ่งที่เราขาดอยูทั้งหมด`}
+          ModalTitle="19.รวมที่ขาดอยู่"
+        />
+
+        <InputField
+          label="20.ต่อปีที่ต้องเก็บได้"
           value={mustBeSaved}
           onChange={() => { }}
           readOnly

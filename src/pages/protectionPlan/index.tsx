@@ -49,7 +49,7 @@ const { Text } = Typography;
 import ProgressBar from "@/components/progressBar";
 import { saveProtectionPlan } from "@/components/api/saveProtectionPlan";
 import { NavBar } from "@/components/navbar";
-
+import InflationComponent from '@/components/SelectOptions'
 const ProtectionPlan: React.FC = () => {
   const navigator = useNavigate();
   const location = useLocation();
@@ -262,112 +262,74 @@ const ProtectionPlan: React.FC = () => {
       content: (
         <>
           <InputField
-            label="1. ค่าใช้จ่ายภายในครอบครัว"
+            label="1.ค่าใช้จ่ายภายในครอบครัว"
             value={formData.initialMonthlyExpense}
             onChange={handleInputChange("initialMonthlyExpense")}
             addonAfter="ต่อเดือน"
             placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
             imgUrl={ProtectionPlan12}
-            ModalBody="เงินที่สมาชิกทุกคนในบ้านต้องใช้ร่วมกันเช่น ค่าอาหาร ค่าน้ำค่าไฟ ค่าเช่าบ้าน ค่าเดินทาง และอื่น ๆ ที่จำเป็นต่อการใช้ชีวิตประจำวัน"
-            ModalTitle="1. ค่าใช้จ่ายภายในครอบครัว"
+            ModalBody="จำนวนเงินที่ได้ใช้จ่าย เพื่อซื้อสินค้าและบริการต่าง ๆ ที่ใช้ในการดำรงชีพ สำหรับครอบครัว"
+            ModalTitle="1.ค่าใช้จ่ายภายในครอบครัว"
           />
           <InputField
-            label="2. ค่าใช้จ่ายภายในครอบครัวต่อปี"
+            label="2.ค่าใช้จ่ายภายในครอบครัวต่อปี"
             value={initialYearlyExpense}
             onChange={() => { }}
             readOnly
             placeholder=""
             addonAfter="ต่อปี"
             imgUrl={ProtectionPlan13}
-            ModalBody="เป็นตัวเลขที่สะท้อนให้เห็นถึงภาพรวมการ ใช้จ่ายของครอบครัวตลอดทั้งปีช่วยให้เรา สามารถวางแผนการเงินได้อย่างมีประสิทธิภาพมากขึ้น"
+            ModalBody="จำนวนเงินที่แสดงให้เห็นถึงภาพรวม ของค่าใช้จ่ายในครอบครัวตลอดทั้งปี"
             ModalTitle="2.ค่าใช้จ่ายภายในครอบครัวต่อปี"
 
           />
+
           <InputField
-            label="3. จำนวนปีที่ต้องการดูแลครอบครัว"
+            label="3.จำนวนปีที่ต้องดูแลครอบครัว"
             value={formData.numberOfYears}
             onChange={handleInputChange("numberOfYears")}
             addonAfter="ปี"
             placeholder="กรุณากรอกจำนวนปี"
             imgUrl={ProtectionPlan14}
-            ModalBody={`
-              <p>วางแผนเพื่ออนาคตที่มั่นคง สามารถแบ่งช่วงเวลาในการดูแลออกเป็นช่วงๆ ได้ดังนี้</p>
-              <ul>
-                <li>• ช่วงวัยเด็ก</li>
-                <li>• ช่วงวัยทำงาน</li>
-                <li>• ช่วงวัยเกษียณ</li>
-              </ul>
-            `}
+            ModalBody={`จำนวนปีที่คาดว่าจะต้องดูแลครอบครัว เช่น จำนวนปีในการดูแลบุตร ดูแลบิดามารดา`}
             ModalTitle="3.จำนวนปีที่ต้องดูแลครอบครัว"
           />
           <InputField
-            label="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
+            label="4.เงินสำรองฉุกเฉิน (ต่อปี)"
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
             placeholder="กรุณากรอกข้อมูลเงินสำรองฉุกเฉิน"
             imgUrl={ProtectionPlan15}
             ModalBody="การเก็บเงินสำรองไว้ใช้ในยามฉุกเฉิน โดยคิดเป็นครึ่งหนึ่งของเงินที่คุณได้รับทั้ง หมดในแต่ละเดือน"
-            ModalTitle="4.เงินสำรองฉุกเฉิน (เผื่อต่อรายปี)"
+            ModalTitle="4.เงินสำรองฉุกเฉิน (ต่อปี)"
           />
-          <div className="flex flex-row justify-start items-center mb-5">
-            <div className="w-[55px] flex justify-start items-center pl-2"><img src={ProtectionPlan16} alt="icons" className="w-10" /></div>
-            <div>
-              <div className="flex flex-row justify-between items-center">
-                <p className="text-[#243286] w-[197px] font-sans">{"5. เงินเฟ้อ"}</p> <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-              </div>
-              <Modal
-                title={<div className="custom-modal-title font-sans">5.เงินเฟ้อ</div>}
-                open={isModalOpen}
-                onCancel={handleCancel}
-                footer={[
-                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
-                    ปิด
-                  </Button>
-                ]}
-                closable={false}
-                className="custom-modal"
-              >
-                <div className="custom-modal-body font-sans">ภาวะที่ราคาสินค้าและบริการต่างๆ โดยทั่วไป มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ "ของแพงขึ้น"
-                </div>
-              </Modal>
-              <div>
-                <div className="gap-4 ">
-                  <Select
-                  className="font-sans"
-                    style={{ width: '190px' }}
-                    defaultValue={formData.inflationRate}
-                    onChange={handleInputChange("inflationRate")}
-                    options={[
-                      { value: "0.02", label: "2 %" },
-                      { value: "0.03", label: "3 %" },
-                      { value: "0.04", label: "4 %" },
-                      { value: "0.05", label: "5 %" },
-                      { value: "0.06", label: "6 %" },
-                      { value: "0.07", label: "7 %" },
-                    ]}
-                  />
+          <InflationComponent
+            iconsImg={ProtectionPlan16}
+            title="5. เงินเฟ้อ"
+            textModal=" ภาวะที่ราคาสินค้าและบริการต่างๆ มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ 'ของแพงขึ้น'"
+            defaultValue={formData.inflationRate}
+            onChange={handleInputChange("inflationRate")}
+            options={[
+              { value: "0.02", label: "2 %" },
+              { value: "0.03", label: "3 %" },
+              { value: "0.04", label: "4 %" },
+              { value: "0.05", label: "5 %" },
+              { value: "0.06", label: "6 %" },
+              { value: "0.07", label: "7 %" },
+            ]}
+          />
+          <InputField
+            label="6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
+            value={totalAmount}
+            onChange={() => { }}
+            readOnly
+            addonAfter="บาท"
+            imgUrl={ProtectionPlan17}
+            ModalBody={`-`}
+            ModalTitle="6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
+          />
 
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="">
-            <InputField
-              label="6. เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
-              value={totalAmount}
-              onChange={() => { }}
-              readOnly
-              addonAfter="บาท"
-              imgUrl={ProtectionPlan17}
-              ModalBody={`เงินเก็บฉุกเฉินที่เราเตรียมไว้เผื่อเหตุการณ์ไม่คาดฝัน หรือใช้จ่ายในสิ่งที่จำเป็นอย่างเร่งด่วน เช่น
-<br>เหตุฉุกเฉินทางการแพทย์: เจ็บป่วยกะทันหัน ต้องเข้าโรงพยาบาล
-ค่าใช้จ่ายที่ไม่คาดคิด: รถเสีย ซ่อมบ้าน
-<br>เหตุสุดวิสัย: ภัยธรรมชาติ ตกงาน
-`}
-              ModalTitle="6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
-            />
-          </div>
         </>
       )
     }, {
@@ -375,43 +337,43 @@ const ProtectionPlan: React.FC = () => {
       content: (
         <>
           <InputField
-            label="7. ค่าผ่อนบ้านคงค้างทั้งหมด"
+            label="7.ค่าผ่อนบ้านคงค้างทั้งหมด"
             value={formData.homePayments}
             onChange={handleInputChange("homePayments")}
             addonAfter="บาท"
             placeholder=""
             imgUrl={ProtectionPlan22}
-            ModalBody={`เงินที่เราต้องจ่ายให้กับธนาคารเป็นงวดๆ เพื่อชำระคืนเงินที่เราได้กู้มาซื้อบ้านมา`}
+            ModalBody={`จำนวนเงินทั้งหมดที่ยังค้างชำระสำหรับที่อยู่อาศัย นับตั้งแต่วันที่กู้เงินมาจนถึงปัจจุบัน`}
             ModalTitle="7.ค่าผ่อนบ้านคงค้างทั้งหมด"
           />
           <InputField
-            label="8. ค่าผ่อนรถคงค้างทั้งหมด"
+            label="8.ค่าผ่อนรถคงค้างทั้งหมด"
             value={formData.carPayments}
             onChange={handleInputChange("carPayments")}
             addonAfter="บาท"
             placeholder=""
             imgUrl={ProtectionPlan23}
-            ModalBody={`จำนวนเงินทั้งหมดที่เรายังค้างชำระอยู่สำหรับรถคันนั้น นับตั้งแต่วันที่กู้เงินมาซื้อรถจนถึงปัจจุบัน`}
+            ModalBody={`จำนวนเงินทั้งหมดที่ยังค้างชำระสำหรับรถ (ยานพาหนะทุกชนิด) นับตั้งแต่วันที่กู้เงินมาจนถึงปัจจุบัน`}
             ModalTitle="8.ค่าผ่อนรถคงค้างทั้งหมด"
           />
           <InputField
-            label="9 .หนี้สินอื่นๆ"
+            label="9.หนี้สินอื่นๆ"
             value={formData.otherDebts}
             onChange={handleInputChange("otherDebts")}
             addonAfter="บาท"
             placeholder=""
             imgUrl={ProtectionPlan24}
-            ModalBody={`หนี้สินที่เกิดขึ้นจากการใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้สินหลักๆ เช่น หนี้บ้าน หนี้รถ หรือหนี้บัตรเครดิต`}
+            ModalBody={`หนี้สินที่เกิดขึ้นจากค่าใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้บ้าน หนี้รถ `}
             ModalTitle="9.หนี้สินอื่นๆ"
           />
           <InputField
-            label="10. รวมหนี้สิน"
+            label="10.รวมหนี้สิน"
             value={totalDebts}
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan25}
-            ModalBody={`การนำหนี้สินทั้งหมด ที่มีอยู่ไม่ว่าจะเป็นหนี้บัตรเครดิตหนี้สินเชื่อส่วนบุคคลหรือหนี้สินอื่นๆ มารวมไว้เป็นหนี้ก้อนเดียวโดยการกู้เงินก้อนใหม่จากสถาบันการเงิน เพื่อนำไปชำระหนี้เดิมทั้งหมด`}
+            ModalBody={`-`}
             ModalTitle="10.รวมหนี้สิน"
           />
           <div className="">
@@ -423,7 +385,7 @@ const ProtectionPlan: React.FC = () => {
               readOnly
 
               imgUrl={ProtectionPlan26}
-              ModalBody={`เงินที่เราต้องการจะมี หรือต้องการใช้ นั่นเองค่ะ เป็นตัวเลขที่บอกว่าเราต้องการเงินเท่าไหร่ เพื่อนำไปใช้ในสิ่งต่างๆ`}
+              ModalBody={`-`}
               ModalTitle="11.จำนวนเงินที่ต้องการ"
             />
           </div>
@@ -434,54 +396,54 @@ const ProtectionPlan: React.FC = () => {
       title: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
       content: (<>
         <InputField
-          label="12. เงินฝากธนาคาร"
+          label="12.เงินฝากธนาคาร"
           value={formData.bankDeposit}
           onChange={handleInputChange("bankDeposit")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan32}
-          ModalBody={`การฝากเงินของเราไว้กับธนาคารนั่นเอง คิดง่ายๆ เหมือนกับการเก็บเงินใส่กระปุก แต่แทนที่จะเก็บที่บ้านเราก็เอาไปฝากไว้ที่ธนาคาร เพื่อความปลอดภัยและสะดวกในการใช้งาน`}
+          ModalBody={`เงินที่ฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
           ModalTitle="12.เงินฝากธนาคาร"
         />
         <InputField
-          label="13. ทุนประกันชีวิต"
+          label="13.ทุนประกันชีวิต"
           value={formData.lifeInsuranceFund}
           onChange={handleInputChange("lifeInsuranceFund")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan33}
-          ModalBody={`เหมือนกับเงินก้อนหนึ่งที่บริษัทประกันภัยจะจ่ายให้กับคนที่เราเลือกไว้ (ผู้รับผลประโยชน์) เมื่อเราเสียชีวิตไปนั่นเอง`}
+          ModalBody={`จำนวนเงินสูงสุดที่บริษัทประกันภัยจะจ่ายให้กับผู้เอาประกัน หรือผู้รับผลประโยชน์ ในกรณีที่เกิดเหตุการณ์ตามที่ระบุไว้ในกรมธรรม์ประกันภัย เช่น การเสียชีวิต การเจ็บป่วย การสูญเสียทรัพย์สิน เป็นต้น`}
           ModalTitle="13.ทุนประกันชีวิต"
         />
         <InputField
-          label="14. ทรัพย์สินอื่น ๆ"
+          label="14.ทรัพย์สินอื่น ๆ"
           value={formData.otherAssets}
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={ProtectionPlan34}
-          ModalBody={`สิ่งของหรือทรัพย์สินที่มีค่าทางเศรษฐกิจ ทั้งที่มีตัวตนและไม่มีตัวตน ที่ไม่ได้ถูกจัดอยู่ในหมวดหมู่ของทรัพย์สินหลักๆ เช่น ที่ดิน อาคาร รถยนต์ หรือเงินฝากธนาคาร`}
+          ModalBody={`สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์ `}
           ModalTitle="14.ทรัพย์สินอื่น ๆ"
         />
         <InputField
-          label="15. รวมสิ่งที่เตรียมไว้แล้ว"
+          label="15.รวมสิ่งที่เตรียมไว้แล้ว"
           value={totalAssets}
           onChange={() => { }}
           addonAfter="บาท"
           readOnly
           imgUrl={ProtectionPlan35}
-          ModalBody={`การรวบรวมข้อมูลทั้งหมดที่เกี่ยวกับทรัพย์สินที่เรามีอยู่ ไม่ว่าจะเป็นที่ดิน บ้าน รถยนต์ เงินฝาก หรือทรัพย์สินอื่นๆ ที่มีค่าทางเศรษฐกิจ เพื่อให้เราทราบว่าเรามีทรัพย์สินอะไรบ้าง มีมูลค่าเท่าไหร่ และอยู่ที่ไหน`}
+          ModalBody={`-`}
           ModalTitle="15.รวมสิ่งที่เตรียมไว้แล้ว"
         />
         <div className=" ">
           <InputField
-            label="16. ความคุ้มครองที่จำเป็น"
+            label="16.ความคุ้มครองที่จำเป็น"
             value={coverage}
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan36}
-            ModalBody={`การรวบรวมข้อมูลทั้งหมดที่เกี่ยวกับทรัพย์สินที่เรามีอยู่ ไม่ว่าจะเป็นที่ดิน บ้าน รถยนต์ เงินฝาก หรือทรัพย์สินอื่นๆ ที่มีค่าทางเศรษฐกิจ เพื่อให้เราทราบว่าเรามีทรัพย์สินอะไรบ้าง มีมูลค่าเท่าไหร่ และอยู่ที่ไหน`}
+            ModalBody={`-`}
             ModalTitle="16.ความคุ้มครองที่จำเป็น"
           />
         </div>
@@ -597,7 +559,11 @@ const ProtectionPlan: React.FC = () => {
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan11} alt="" className="w-9" />{steps[current].title}</div> : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" className="w-8" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" className="w-10" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
+          <p className="text-xl mb-3">{current == 0 ? ""
+            : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start pl-3 gap-[126px]"><div className="flex flex-row items-center justify-start gap-2"><img src={ProtectionPlan11} alt="" className="w-9" />{steps[current].title}</div><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" /></div>
+              : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" className="w-8" />{steps[current].title}</div>
+                : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" className="w-10" />{steps[current].title}</div>
+                  : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10 ">
             {current > 0 && (

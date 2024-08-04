@@ -33,7 +33,7 @@ const Vieweretirementplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   // const totalMissing = useRecoilValue(totalRetirementMissingSelector);
   // const mustBeSaved = useRecoilValue(mustBeSavedSelector);
-  const { plans, toone, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  const {  toone, goBack} = usePlanNavigation();
   const [linkButton, setLinkButton] = useState(false)
   const [shareLink, setShareLink] = useState<string>("");
   const checkLocalStorageLengths = () => {
@@ -52,6 +52,9 @@ const Vieweretirementplan: React.FC = () => {
       }
     }
   };
+  const localStoreDelete=()=>{
+    
+  }
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
       minimumFractionDigits: 0,
@@ -81,16 +84,7 @@ const Vieweretirementplan: React.FC = () => {
 
     fetchRetirementPlan();
     checkLocalStorageLengths()
-    // const address = JSON.parse(localStorage.getItem('addressPlans') || "[]")
-    // if (address.length === 1) {
-    //   setShareLink(location.pathname);
-    // } else {
-
-    //   const linkshare = localStorage.getItem('linkshare');
-    //   if (linkshare) {
-    //     setShareLink(`/share/${linkshare}`);
-    //   }
-    // }
+   
   }, [id]);
 
   if (loading) {

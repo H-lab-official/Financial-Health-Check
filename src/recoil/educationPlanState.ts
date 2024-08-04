@@ -25,19 +25,19 @@ export const educationPlanState = atom<EducationPlanData>({
   default: {
     levelOfeducation: "19",
     levelOfeducation2: "19",
-    typeOfeducation: "30000.00",
-    typeOfeducation2: "30000.00",
+    typeOfeducation: "30000",
+    typeOfeducation2: "30000",
     inflationRate: "0.03",
     yearsOfeducation: "",
     yearsOfeducation2: "",
     requiredScholarships: "",
-    deposit: "0",
-    insuranceFund: "0",
-    otherAssets: "0",
+    deposit: "",
+    insuranceFund: "",
+    otherAssets: "",
     totalPreparationAssets: "",
     totalMissing: "",
     child: "",
-    expensesDuringStudy: (parseFloat("30000.00") * 0.25).toFixed(2),
+    expensesDuringStudy: ""
   },
 });
 
@@ -70,7 +70,7 @@ export const calculateRequiredScholarships = (state: EducationPlanData) => {
         )) /
         (1 - (1 + parseFloat(state.inflationRate))));
 
-    return requiredScholarships.toFixed(2);
+    return Math.floor(requiredScholarships).toString();
   }
   return "";
 };
@@ -83,7 +83,7 @@ export const calculateTotalPreparationAssets = (state: EducationPlanData) => {
       parseFloat(state.insuranceFund) +
       parseFloat(state.otherAssets);
 
-    return totalPreparationAssets.toFixed(2);
+    return Math.floor(totalPreparationAssets).toString();
   }
   return "";
 };
@@ -122,9 +122,9 @@ export const totalMissingSelector = selector({
       const totalPreparationAssetsNumber = parseFloat(totalPreparationAssets);
       const requiredScholarshipsNumber = parseFloat(requiredScholarships);
 
-      return (
-        requiredScholarshipsNumber - totalPreparationAssetsNumber
-      ).toFixed(2);
+      return Math.floor(requiredScholarshipsNumber - totalPreparationAssetsNumber).toString();
+
+
     }
 
     return "";

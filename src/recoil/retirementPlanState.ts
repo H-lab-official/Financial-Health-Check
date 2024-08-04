@@ -67,7 +67,7 @@ export const calculateTotalCosts = (state: RetirementPlanData) => {
         parseFloat(state.otherCosts)) *
       12;
 
-    return totalCosts.toFixed(2);
+    return Math.floor(totalCosts).toString();
   }
   return "";
 };
@@ -75,7 +75,7 @@ export const calculateTotalCosts = (state: RetirementPlanData) => {
 export const calculateWorkingYears = (state: RetirementPlanData) => {
   if (state.age && state.retireAge) {
     const workingYears = parseInt(state.retireAge) - parseInt(state.age);
-    return workingYears.toString();
+    return Math.floor(workingYears).toString();
   }
   return "";
 };
@@ -84,7 +84,7 @@ export const calculatePreparationYears = (state: RetirementPlanData) => {
   if (state.retireAge && state.lifExpectancy) {
     const preparationYears =
       parseFloat(state.lifExpectancy) - parseFloat(state.retireAge);
-    return preparationYears.toString();
+    return Math.floor(preparationYears).toString();
   }
   return "";
 };
@@ -105,7 +105,7 @@ export const calculateTotalRetirementPreparation = (
           parseFloat(preparationYears)
         )) /
         (1 - parseFloat(state.inflationRate)));
-    return totalPreparation.toFixed(2);
+    return Math.floor(totalPreparation).toString();
   }
   return "";
 };
@@ -125,7 +125,7 @@ export const calculateTotalPreparation = (state: RetirementPlanData) => {
         )) /
         (1 - (1 + parseFloat(state.inflationRate))));
 
-    return totalPreparation.toFixed(2);
+    return Math.floor(totalPreparation).toString();
   }
   return "";
 };
@@ -139,10 +139,11 @@ export const calculateisTotalPreparationAssets = (
       parseFloat(state.insuranceFund) +
       parseFloat(state.otherAssets);
 
-    return totalPreparationAssets.toFixed(2);
+    return Math.floor(totalPreparationAssets).toString();
   }
   return "";
 };
+
 
 export const totalCostsSelector = selector({
   key: "totalCostsSelector",
