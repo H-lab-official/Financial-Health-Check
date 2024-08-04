@@ -71,7 +71,7 @@ const InputField: React.FC<InputFieldProps> = ({
         <div>
           <div className="flex flex-row justify-start items-center gap-2">
             <Text className={`font-sans w-[190px] flex ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}{!readOnly && <span className="text-red-600 ">*</span>}</Text>
-            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            <img src={tooltip} alt="tooltip" onClick={showModal} className={`cursor-pointer ${ModalTitle === "-" ? "hidden" : ""}`} />
           </div>
           <div>
             <div className="flex flex-row justify-center items-center gap-5 font-sans">

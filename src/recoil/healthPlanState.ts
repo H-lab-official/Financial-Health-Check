@@ -26,8 +26,8 @@ export const healthPlanState = atom<HealthPlanData>({
   default: {
     hospitals: "",
     hospitals2:"",
-    roomFee: "1500.00",
-    roomFeeFromWelfare: "1500.00",
+    roomFee: "1500",
+    roomFeeFromWelfare: "1500",
     dailyCompensationFromWelfare: "",
     treatingSeriousIllness: "",
     emergencyCosts: "",
@@ -48,8 +48,8 @@ export const healthPlanState = atom<HealthPlanData>({
 export const calculateAdditionalRoomFee = (state: HealthPlanData) => {
   if (state.hospitals2 && state.roomFeeFromCompany) {
     const additionalRoomFee =
-      parseFloat(state.hospitals2) - parseFloat(state.roomFeeFromCompany);
-    return additionalRoomFee.toFixed(2);
+      parseFloat(state.hospitals2) - parseFloat(state.roomFeeFromCompany);      
+    return Math.floor(additionalRoomFee).toString();
   } else {
     return "";
   }
@@ -62,7 +62,7 @@ export const calculateDailyCompensation = (state: HealthPlanData) => {
     const dailyCompensation =
       parseFloat(state.dailyCompensationFromWelfare) -
       parseFloat(state.dailyCompensationFromCompany);
-    return dailyCompensation.toFixed(2);
+    return Math.floor(dailyCompensation).toString();
   } else {
     return "";
   }
@@ -72,7 +72,7 @@ export const calculateEmergencyCosts = (state: HealthPlanData) => {
     const emergencyCosts =
       parseFloat(state.emergencyCosts) -
       parseFloat(state.emergencyCostsFromCompany);
-    return emergencyCosts.toFixed(2);
+    return Math.floor(emergencyCosts).toString();
   } else {
     return "";
   }
@@ -82,7 +82,7 @@ export const calculateAnnualTreatments = (state: HealthPlanData) => {
     const annualTreatment =
       parseFloat(state.annualTreatment) -
       parseFloat(state.annualTreatmentFromCompany);
-    return annualTreatment.toFixed(2);
+    return Math.floor(annualTreatment).toString();
   } else {
     return "";
   }
@@ -92,7 +92,7 @@ export const calculateTreatingSeriousIllness = (state: HealthPlanData) => {
     const treatingSeriousIllness =
       parseFloat(state.treatingSeriousIllness) -
       parseFloat(state.treatingSeriousIllnessFromCompany);
-    return treatingSeriousIllness.toFixed(2);
+    return Math.floor(treatingSeriousIllness).toString(); 
   } else {
     return "";
   }

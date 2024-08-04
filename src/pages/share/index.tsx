@@ -33,7 +33,7 @@ const Share: React.FC = () => {
   const [educationPlanData] = useRecoilState(educationPlanState);
   const educationMissing = useRecoilValue(totalMissingSelector);
   const [linkButton, setLinkButton] = useState(false);
-  const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
+  // const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
 
   const [questionsData] = useRecoilState(questionsState);
   const [protectionPlanData] = useRecoilState(protectionPlanState);

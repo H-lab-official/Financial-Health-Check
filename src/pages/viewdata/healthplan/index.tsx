@@ -124,10 +124,10 @@ const Viewehealthplan: React.FC = () => {
                     <div className="flex flex-row justify-between ">
                       <p>1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</p>
                       <p>{[
-                        { label: "โรงพยาบาลรัฐ", value: "1500.00" },
-                        { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
-                        { label: "โรงพยาบาลเอกชน", value: "4000.00" },
-                        { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
+                        { label: "โรงพยาบาลรัฐ", value: "1500" },
+                        { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500" },
+                        { label: "โรงพยาบาลเอกชน", value: "4000" },
+                        { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000" },
                       ].filter((obj) => obj.value === healthPlanData.hospitals)
                         .map((obj) => obj.label)
                         .join(",")}</p>

@@ -16,6 +16,7 @@ import {
   calculateTreatingSeriousIllness,
   healthPlanState,
 } from "@/recoil/healthPlanState";
+import InflationComponent from '@/components/SelectOptions'
 import { savehealthPlan } from '@/components/api/savehealthPlan';
 import tooltip from '@/assets/images/icons/tooltip.svg'
 import { selectedState, sortedSelectedState, currentIndexState, progressState } from '@/recoil/progressState';
@@ -324,6 +325,7 @@ const HealthPlan: React.FC = () => {
     await savehealthPlan({ data: formData, nameData: dataname });
     toGoNext();
   };
+  console.log(formData);
 
 
   const handleDisabled = () => {
@@ -362,101 +364,73 @@ const HealthPlan: React.FC = () => {
     title: "วางแผนเพื่อสุขภาพ",
     content: (
       <div>
-        <div className="flex flex-row justify-start items-center  mb-5">
-          <div className="w-[55px] flex justify-start items-center pl-2"><img src={HealthPlan12} alt="icons" className="w-10" /></div>
-          <div>
-            <div className="flex flex-row justify-between items-center">
-              <Text className="text-[#243286] w-[197px] font-sans">{"1. กลุ่มโรงพยาบาลที่ใช้บริการประจำ"}</Text><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-            </div>
-            <Modal
-              title={<div className="custom-modal-title font-sans">1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</div>}
-              open={isModalOpen}
-              onCancel={handleCancel}
-              footer={[
-                <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
-                  ปิด
-                </Button>
-              ]}
-              closable={false}
-              className="custom-modal"
-            >
-              <div className="custom-modal-body font-sans">โรงพยาบาลที่ได้ทำสัญญากับบริษัทประกันภัย เพื่อให้บริการแก่ลูกค้าที่ถือกรมธรรม์ ประกันสุขภาพของบริษัทนั้นๆ โดยตรง
-
-              </div>
-            </Modal>
-            <div>
-              <div className="flex flex-row justify-start items-center gap-5 ">
-                <Select
-                  className="font-sans"
-                  style={{ width: '190px' }}
-                  value={formData.hospitals}
-                  onChange={handleInputChange("hospitals")}
-                  placeholder="เลือกประเภทโรงพยาบาล"
-                  options={[
-                    { label: "โรงพยาบาลรัฐ", value: "1500.00" },
-                    { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
-                    { label: "โรงพยาบาลเอกชน", value: "4000.00" },
-                    { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
-                  ]}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <InflationComponent
+          iconsImg={HealthPlan12}
+          title="1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ"
+          textModal="ประเภทของโรงพยาบาลที่ใช้บริการประจำ"
+          defaultValue={formData.hospitals}
+          onChange={handleInputChange("hospitals")}
+          options={[
+            { label: "โรงพยาบาลรัฐ", value: "1500" },
+            { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500" },
+            { label: "โรงพยาบาลเอกชน", value: "4000" },
+            { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000" },
+          ]}
+        />
         <InputField
-          label="2. ค่าห้องต่อวันประมาณ (ค่าประมาณการ)"
+          label="2.ค่าห้องต่อวัน"
           value={formData.hospitals}
           onChange={handleInputChange("hospitals")}
           addonAfter="บาท"
           placeholder=""
           readOnly
           imgUrl={HealthPlan13}
-          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
+          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน`}
           ModalTitle="2.ค่าห้องต่อวันประมาณ"
         />
         <div>
-          <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
+          <div className="flex flex-row justify-start items-center pl-2"><img src={HealthPlan14} alt="" /><h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1></div>
+          
           <div>
             <InputField
-              label="3. ค่าห้องวันละ"
+              label="3.ค่าห้องวันละ"
               value={formData.hospitals2}
               onChange={handleInputChange("hospitals2")}
               placeholder=""
               addonAfter="บาท"
-              imgUrl={HealthPlan14}
-              ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาล เป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+              imgUrl={HealthPlan15}
+              ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล`}
               ModalTitle="3.ค่าห้องวันละ"
             />
             <InputField
-              label="4 .ค่ารักษาโรคร้ายแรง"
+              label="4.ค่ารักษาโรคร้ายแรง"
               value={formData.treatingSeriousIllness}
               onChange={handleInputChange("treatingSeriousIllness")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-              imgUrl={HealthPlan15}
-              ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+              imgUrl={HealthPlan17}
+              ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
               ModalTitle="4.ค่ารักษาโรคร้ายแรง"
             />
             <InputField
-              label="5. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+              label="5.ค่ารักษาอุบัติเหตุฉุกเฉิน"
               value={formData.emergencyCosts}
               onChange={handleInputChange("emergencyCosts")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-              imgUrl={HealthPlan16}
-              ModalBody={`เป็นค่าใช้จ่ายที่อาจเกิดขึ้นได้อย่างไม่คาดคิด และมักจะมีจำนวนสูง ซึ่งอาจส่งผลกระทบต่อสภาพคล่องทางการเงินของเราได้อย่างมาก ดังนั้น การมีประกันสุขภาพที่คุ้มครองค่าใช้จ่ายเหล่านี้จึงเป็นสิ่งสำคัญอย่างยิ่ง`}
-              ModalTitle="5. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+              imgUrl={HealthPlan18}
+              ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
+              ModalTitle="5.ค่ารักษาอุบัติเหตุฉุกเฉิน"
             />
             <InputField
-              label="6. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+              label="6.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
               value={formData.annualTreatment}
               onChange={handleInputChange("annualTreatment")}
               addonAfter="บาท"
               placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-              imgUrl={HealthPlan17}
-              ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
-              ModalTitle="6.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+              imgUrl={HealthPlan19}
+              ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด`}
+              ModalTitle="6.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
             />
           </div>
         </div>
@@ -467,44 +441,44 @@ const HealthPlan: React.FC = () => {
     content: (
       <div>
         <InputField
-          label="7. ค่าห้องวันละ"
+          label="7.ค่าห้องวันละ"
           value={formData.roomFeeFromCompany}
           onChange={handleInputChange("roomFeeFromCompany")}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           addonAfter="บาท"
           imgUrl={HealthPlan22}
-          ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาล เป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+          ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล`}
           ModalTitle="7.ค่าห้องวันละ"
         />
         <InputField
-          label="8. ค่ารักษาโรคร้ายแรง"
+          label="8.ค่ารักษาโรคร้ายแรง"
           value={formData.treatingSeriousIllnessFromCompany}
           onChange={handleInputChange("treatingSeriousIllnessFromCompany")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={HealthPlan24}
-          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
           ModalTitle="8.ค่ารักษาโรคร้ายแรง"
         />
         <InputField
-          label="9. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+          label="9.ค่ารักษาอุบัติเหตุฉุกเฉิน"
           value={formData.emergencyCostsFromCompany}
           onChange={handleInputChange("emergencyCostsFromCompany")}
           addonAfter="บาท"
           imgUrl={HealthPlan25}
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
-          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
-          ModalTitle="9. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+          ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
+          ModalTitle="9.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label="10. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+          label="10.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
           value={formData.annualTreatmentFromCompany}
           onChange={handleInputChange("annualTreatmentFromCompany")}
           addonAfter="บาท"
           placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
           imgUrl={HealthPlan26}
-          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
-          ModalTitle="10.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด`}
+          ModalTitle="10.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
         />
       </div>
     )
@@ -513,45 +487,45 @@ const HealthPlan: React.FC = () => {
     content: (
       <div>
         <InputField
-          label="11. ค่าห้องวันละ"
+          label="11.ค่าห้องวันละ"
           value={additionalRoomFee}
           onChange={() => { }}
           placeholder="6,000.00"
           addonAfter="บาท"
           readOnly
           imgUrl={HealthPlan32}
-          ModalBody={`ค่าใช้จ่ายในการเข้าพักในห้องพักของโรงพยาบาลเป็นเวลา 1 วัน คิดเป็นรายวัน โดยปกติจะรวมค่าใช้จ่ายพื้นฐาน เช่น ค่าห้อง ค่าอาหารและบางครั้งอาจรวมถึงค่าบริการอื่นๆ ที่เกี่ยวข้องกับการพักรักษาตัวในโรงพยาบาลด้วย`}
+          ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล`}
           ModalTitle="11.ค่าห้องวันละ"
         />
         <InputField
-          label="12. ค่ารักษาโรคร้ายแรง"
+          label="12.ค่ารักษาโรคร้ายแรง"
           value={additionalTreatingSeriousIllness}
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan34}
-          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ เช่น ค่าผ่าตัด ค่ายา เคมีบำบัด รังสีบำบัด ค่าตรวจวินิจฉัย ค่าพักฟื้น และค่าใช้จ่ายอื่นๆ ที่เกี่ยวข้องกับการรักษาโรคนั้นๆ`}
+          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
           ModalTitle="12.ค่ารักษาโรคร้ายแรง"
         />
         <InputField
-          label="13. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+          label="13.ค่ารักษาอุบัติเหตุฉุกเฉิน"
           value={additionalEmergencyCosts}
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan35}
-          ModalBody={`ค่าใช้จ่ายโดยประมาณที่ต้องชำระสำหรับการพักรักษาตัวในโรงพยาบาลหนึ่งคืน โดยค่าใช้จ่ายนี้จะแตกต่างกันไปขึ้นอยู่กับหลายปัจจัย`}
-          ModalTitle="13. ค่ารักษาอุบัติเหตุฉุกเฉิน"
+          ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
+          ModalTitle="13.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label="14. งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+          label="14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
           value={additionalAnnualTreatment}
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan36}
-          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด ไม่ว่าจะเป็นค่ารักษาพยาบาล ค่าผ่าตัด ค่ายา หรือค่าบริการอื่นๆ ที่เกี่ยวข้องกับการรักษาพยาบาล`}
-          ModalTitle="14.งบประมาณค่ารักษาต่อปี (เหมาจ่าย)"
+          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด `}
+          ModalTitle="14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
         />
       </div>
     )
@@ -568,10 +542,10 @@ const HealthPlan: React.FC = () => {
           <div className="flex flex-row justify-between text-[0.7rem]">
             <p>1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</p>
             <p>{[
-              { label: "โรงพยาบาลรัฐ", value: "1500.00" },
-              { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500.00" },
-              { label: "โรงพยาบาลเอกชน", value: "4000.00" },
-              { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000.00" },
+              { label: "โรงพยาบาลรัฐ", value: "1500" },
+              { label: "โรงพยาบาลรัฐนอกเวลา", value: "2500" },
+              { label: "โรงพยาบาลเอกชน", value: "4000" },
+              { label: "โรงพยาบาลเอกชนพรีเมียม", value: "6000" },
             ].filter((obj) => obj.value === formData.hospitals)
               .map((obj) => obj.label)
               .join(",")}</p>
