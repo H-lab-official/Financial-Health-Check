@@ -22,8 +22,8 @@ const StepTitle: React.FC<StepTitleProps> = ({ title, ModalTitle, imageUrl, Moda
 
     if (title !== "สรุปผล") {
         return (
-            <div className="flex flex-row items-center justify-start pl-3 gap-5 ">
-                <div className="flex flex-row items-center justify-start gap-2 w-[200px]">
+            <div className="flex flex-row items-center justify-start -ml-3 gap-5 ">
+                <div className="flex flex-row items-center justify-start gap-5 w-[260px]">
                     <img src={imageUrl} alt="" className="w-8" />
                     <span className='text-lg'>{title}</span>
                 </div>

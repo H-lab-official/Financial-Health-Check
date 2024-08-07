@@ -393,9 +393,12 @@ const HealthPlan: React.FC = () => {
           ModalTitle="2.ค่าห้องต่อวันประมาณ"
         />
         <div>
-          <div className="flex flex-row justify-start items-center pl-2 gap-2">
-            <img src={HealthPlan14} alt="" className="w-8" />
-            <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
+          <div className="flex flex-row justify-start items-center -ml-3 mb-2 gap-8">
+            <div className="flex flex-row justify-center items-center gap-5">
+              <img src={HealthPlan14} alt="" className="w-8" />
+              <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
+            </div>
+
             <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
             <Modal
               title={<div className="custom-modal-title font-sans">สวัสดิการที่คาดหวังจะได้</div>}
@@ -497,7 +500,7 @@ const HealthPlan: React.FC = () => {
           ModalTitle="9.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label={<>14.งบประมาณค่ารักษาต่อปี<br />(เหมาจ่าย)</>}
+          label={<>14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)</>}
           value={formData.annualTreatmentFromCompany}
           onChange={handleInputChange("annualTreatmentFromCompany")}
           addonAfter="บาท"

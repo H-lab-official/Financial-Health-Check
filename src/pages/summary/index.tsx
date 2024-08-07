@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import { Button } from 'antd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -7,26 +7,13 @@ import update from 'immutability-helper';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { sortedSelectedState, selectedState } from '@/recoil/progressState';
 import { NavBar } from '@/components/navbar';
-import pic1 from '@/assets/images/icons/1.png';
-import pic2 from '@/assets/images/icons/2.png';
-import pic3 from '@/assets/images/icons/3.png';
-import pic4 from '@/assets/images/icons/4.png';
 import { useNavigate } from "react-router";
 import { nameState, nameData } from "@/recoil/nameState";
 import { saveQuestionsState } from "@/components/api/saveQuestionsState";
-import Up from '@/assets/images/up.png';
-import Down from '@/assets/images/down.png';
 import { questionsData } from '@/recoil/questionsState';
 import axios from 'axios';
 import usePlanNavigation from "@/components/usePlanNavigation";
-
-const ItemType = 'ITEM';
-const imageMap = {
-  '1': pic1,
-  '2': pic2,
-  '3': pic3,
-  '4': pic4,
-};
+import DraggableItem from '@/components/DraggableItem';
 
 const getPlansFromLocalStorage = () => {
   const plans = [];
@@ -110,43 +97,6 @@ const saveAddressPlans = async (plans: string[]) => {
   }
 };
 
-interface DraggableItemProps {
-  item: string;
-  index: number;
-  moveItem: (fromIndex: number, toIndex: number) => void;
-  moveItemUp: (index: number) => void;
-  moveItemDown: (index: number) => void;
-}
-
-const DraggableItem: React.FC<DraggableItemProps> = ({ item, index, moveItem, moveItemUp, moveItemDown }) => {
-  const [, ref] = useDrag({
-    type: ItemType,
-    item: { index },
-  });
-
-  const [, drop] = useDrop({
-    accept: ItemType,
-    hover: (draggedItem: { index: number }) => {
-      if (draggedItem.index !== index) {
-        moveItem(draggedItem.index, index);
-        draggedItem.index = index;
-      }
-    },
-  });
-
-  const image = imageMap[item as keyof typeof imageMap];
-
-  return (
-    <div ref={(node) => ref(drop(node))} className='cursor-move relative w-full flex flex-row items-center justify-start'>
-      <img src={image} alt={`icon-${index}`} className='w-full' />
-      {/* <div className='absolute flex flex-col  right-1'>
-        <button onClick={() => moveItemUp(index)} className=''><img src={Up} alt="" className='w-5 mb-5' /></button>
-        <button onClick={() => moveItemDown(index)} className=''><img src={Down} alt="" className='w-5' /></button>
-      </div> */}
-    </div>
-  );
-};
-
 const DragDropList: React.FC<{ items: string[], setItems: (items: string[]) => void }> = ({ items, setItems }) => {
   useEffect(() => {
     if (items.length === 1 && items[0] === '5') {
@@ -178,7 +128,7 @@ const DragDropList: React.FC<{ items: string[], setItems: (items: string[]) => v
 
   return (
     <DndProvider backend={window.innerWidth < 768 ? TouchBackend : HTML5Backend}>
-      <div className='flex flex-col justify-center items-center gap-5'>
+      <div className='flex flex-col justify-center items-center gap-3'>
         {items.map((item, index) => (
           <DraggableItem
             key={index}
