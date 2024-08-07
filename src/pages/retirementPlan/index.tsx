@@ -396,7 +396,7 @@ const RetirementPlan: React.FC = () => {
           ModalTitle="5.ค่ารักษาพยาบาล"
         />
         <InputField
-          label="6.ค่าใช้จ่ายอื่นๆ (ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
+          label={<>6.ค่าใช้จ่ายอื่นๆ<br />(ขาดไม่ได้ ไม่ใช่ปัจจัย4)</>}
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
           placeholder="กรุณากรอกข้อมูล"

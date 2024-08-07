@@ -300,7 +300,7 @@ const ProtectionPlan: React.FC = () => {
             ModalTitle="3.จำนวนปีที่ต้องดูแลครอบครัว"
           />
           <InputField
-            label={<>4.จำนวนเงินสำรองฉุกเฉิน<br />(ต่อปี)</>}
+            label={<>4.จำนวนเงินสำรองฉุกเฉิน(ต่อปี)</>}
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
