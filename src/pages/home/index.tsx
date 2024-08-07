@@ -256,9 +256,9 @@ const HomePage: React.FC = () => {
     content: (
       <div className="flex flex-col tracking-normal leading-tight">
         <div>
-          <p className="text-2xl my-2 text-center font-bold">กรุณากรอกข้อมูลของคุณ</p>
+          <p className="text-2xl my-4 text-center font-bold">กรุณากรอกข้อมูลของคุณ</p>
         </div>
-        <label htmlFor="nickname" className="pl-5 mb-3 text-gray-500 font-bold">ชื่อเล่น</label>
+        <label htmlFor="nickname" className="pl-5 my-3 text-gray-500 font-bold">ชื่อเล่น</label>
         <Input
           value={formData.nickname || ""}
           name="nickname"
@@ -270,7 +270,7 @@ const HomePage: React.FC = () => {
           required
         />
         <div>
-          <label htmlFor="age" className="pl-5 mt-4 text-gray-500 font-bold">อายุ</label>
+          <label htmlFor="age" className="pl-5 my-4 text-gray-500 font-bold">อายุ</label>
           <Input
             type="number"
             value={formData.age || ""}
@@ -285,7 +285,7 @@ const HomePage: React.FC = () => {
             required
           />
         </div>
-        <div className="flex flex-row justify-center items-center gap-5 font-sans">
+        <div className="flex flex-row justify-center items-center gap-5 font-sans mt-5">
           <div className="flex flex-col justify-center items-center gap-2" onClick={() => handleClickChange('gender')('Man')}>
             <img src={Man} alt="manOrWomen" className={`cursor-pointer rounded-full w-20 ${selectedGender === 'Man' ? 'border-[#050C9C] border-4' : ''}`} />
             <p className={` py-2 px-5 text-white rounded-full  ${selectedGender === 'Man' ? 'bg-[#050C9C]' : 'bg-[#7e80a1]'}`}>MALE</p>
