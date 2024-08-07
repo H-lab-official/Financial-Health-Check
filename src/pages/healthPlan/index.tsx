@@ -430,7 +430,7 @@ const HealthPlan: React.FC = () => {
               value={formData.treatingSeriousIllness}
               onChange={handleInputChange("treatingSeriousIllness")}
               addonAfter="บาท"
-              placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              placeholder="กรุณากรอกข้อมูล"
               imgUrl={HealthPlan17}
               ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
               ModalTitle="4.ค่ารักษาโรคร้ายแรง"
@@ -440,7 +440,7 @@ const HealthPlan: React.FC = () => {
               value={formData.emergencyCosts}
               onChange={handleInputChange("emergencyCosts")}
               addonAfter="บาท"
-              placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              placeholder="กรุณากรอกข้อมูล"
               imgUrl={HealthPlan18}
               ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
               ModalTitle="5.ค่ารักษาอุบัติเหตุฉุกเฉิน"
@@ -450,7 +450,7 @@ const HealthPlan: React.FC = () => {
               value={formData.annualTreatment}
               onChange={handleInputChange("annualTreatment")}
               addonAfter="บาท"
-              placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+              placeholder="กรุณากรอกข้อมูล"
               imgUrl={HealthPlan19}
               ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด`}
               ModalTitle="6.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"

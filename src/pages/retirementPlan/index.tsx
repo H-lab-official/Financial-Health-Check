@@ -578,7 +578,7 @@ const RetirementPlan: React.FC = () => {
     title: "สรุปผล",
     content: (
 
-      <div className="  rounded-lg p-5 shadow-lg mb-5">
+      <div className="  rounded-lg p-5  mb-5">
         <div className="text-[1rem] mb-3 flex flex-row justify-between items-center "><p>ค่าใช้จ่ายหลังเกษียณ</p><button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
         <div className=" text-black text-[0.8rem]">
           <div className="flex flex-row justify-between">
