@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import InputField from "@/components/InputField";
 import { useNavigate, useLocation } from "react-router";
+import StepTitle from '@/components/StepTitle';
 import {
 
   requiredScholarshipsSelector,
@@ -424,10 +425,10 @@ const EducationPlan: React.FC = () => {
 
   const steps = [
     {
-      title: "แผนที่ 4",
+      title: "",
       content: (
         <div className="flex flex-col justify-center items-center text-[2rem] mb-10">
-          <h1 className=" font-bold">Education Plan</h1>
+          {/* <h1 className=" font-bold">Education Plan</h1> */}
           <h1 className=" text-center">
             แผนการเก็บออม <br />
             เพื่อค่าเล่าเรียนบุตร
@@ -438,16 +439,19 @@ const EducationPlan: React.FC = () => {
     },
     {
       title: "วางแผนเพื่อการศึกษาบุตร",
+      ModalTitle: "วางแผนเพื่อการศึกษาบุตร",
+      imageUrl: EducationPlan11,
+      ModalBody: "การเตรียมตัวและวางแผนทางการเงินล่วงหน้า เพื่อให้บุตรหลานได้รับการศึกษาที่ดีที่สุด ไม่ว่าจะเป็นการศึกษาในระดับใดก็ตาม ",
       content: (
         <div>
 
 
           <InputField
-            label="1.อายุปัจจุบันของบุตรหลาน "
+            label="1.อายุปัจจุบันของบุตร"
             value={formData.child}
             onChange={handleInputChange("child")}
             addonAfter="ปี"
-            placeholder="กรุณาใส่อายุบุตร"
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={EducationPlan12}
             ModalBody="-"
             ModalTitle="-"
@@ -467,7 +471,7 @@ const EducationPlan: React.FC = () => {
           />
 
           <InputField
-            label="3.จำนวนปีสำหรับการศึกษาลูกทั้งหมด (นับจาก 3 ปีเริ่มเข้าอนุบาล)"
+            label="3.จำนวนปีสำหรับการศึกษาบุตรทั้งหมด (นับจากเริ่มเข้าอนุบาล)"
             value={formData.levelOfeducation2}
             onChange={handleInputChange('levelOfeducation2')}
             addonAfter="ปี"
@@ -478,14 +482,14 @@ const EducationPlan: React.FC = () => {
             ModalTitle="-"
           />
           <InputField
-            label="4.จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
+            label="4.จำนวนปีการศึกษาที่จะต้องส่งบุตรเรียน"
             value={yearsOfeducation || ""}
             onChange={handleInputChange('yearsOfeducation2')}
             addonAfter="ปี"
             placeholder=""
             imgUrl={EducationPlan15}
             ModalBody="ระยะเวลาทั้งหมดที่ผู้ปกครองตั้งใจจะส่งลูกเรียน ตั้งแต่เข้าเรียนระดับแรกจนถึงระดับสูงสุดที่วางแผนไว้"
-            ModalTitle="4.จำนวนปีการศึกษาของลูกที่จะต้องส่ง"
+            ModalTitle="4.จำนวนปีการศึกษาที่จะต้องส่งบุตรเรียน"
           />
 
           <InflationComponent
@@ -501,11 +505,30 @@ const EducationPlan: React.FC = () => {
               { value: "1200000", label: "เรียนต่อต่างประเทศ" },
             ]}
           />
-
-
-
           <Row className="my-2 gap-5">
-            <img src={EducationPlan17} alt="" /> <Text className="text-xl font-bold text-[#243286]">ทุนการศึกษาที่จำเป็น</Text>
+            <div className="flex flex-row justify-start items-center pl-2 gap-2">
+              <img src={EducationPlan17} alt="" className="w-8" />
+              <div className="flex flex-row items-center justify-center gap-4">
+                <h1 className="text-xl mb-3">ทุนการศึกษาที่จำเป็น</h1>
+                <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+              </div>
+
+              <Modal
+                title={<div className="custom-modal-title font-sans">ทุนการศึกษาที่จำเป็น</div>}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
+                    ปิด
+                  </Button>
+                ]}
+                closable={false}
+                className="custom-modal font-sans"
+              >
+                <div className="custom-modal-body font-sans">เงินทุนที่จำเป็นต่อการศึกษาของบุคคลหนึ่ง เพื่อให้สามารถเรียนต่อได้จนจบตามเป้าหมายที่ตั้งไว้</div>
+              </Modal>
+
+            </div>
           </Row>
           <InputField
             label="6.ค่าเล่าเรียน"
@@ -559,38 +582,41 @@ const EducationPlan: React.FC = () => {
     },
     {
       title: "สิ่งที่เตรียมไว้แล้ว",
+      ModalTitle: "สิ่งที่เตรียมไว้แล้ว",
+      imageUrl: EducationPlan21,
+      ModalBody: "ทรัพย์สิน หรืออะไรก็ตามที่เราได้จัดเตรียมหรือเตรียมการไว้ล่วงหน้า ",
       content: (
         <div>
           <InputField
-            label="10.เงินฝากให้ลูกเรียนหนังสือ"
+            label="10.เงินฝาก"
             value={formData.deposit}
             onChange={handleInputChange("deposit")}
-            placeholder="กรุณากรอกจำนวนเงิน"
+            placeholder="กรุณากรอกข้อมูล"
             addonAfter="บาท"
             imgUrl={EducationPlan22}
             ModalBody="การออมเงินหรือลงทุนเงินก้อนหนึ่งไว้ เพื่อเตรียมไว้สำหรับค่าใช้จ่ายในการศึกษาของบุตรหลานในอนาคต"
-            ModalTitle="10.เงินฝากให้ลูกเรียนหนังสือ"
+            ModalTitle="10.เงินฝาก"
           />
 
           <InputField
-            label="11.กรมธรรม์ที่ครบกำหนด"
+            label="11.ทุนประกันชีวิต"
             value={formData.insuranceFund}
             onChange={handleInputChange("insuranceFund")}
-            placeholder="กรุณากรอกจำนวนเงิน"
+            placeholder="กรุณากรอกข้อมูล"
             addonAfter="บาท"
             imgUrl={EducationPlan23}
             ModalBody="สัญญาประกันชีวิตหรือประกันอื่นๆ ที่ถึงระยะเวลาสิ้นสุดตามที่ระบุไว้ในกรมธรรม์ฉบับนั้นๆ กล่าวคือ เมื่อถึงวันที่กำหนดไว้ในกรมธรรม์ สัญญานั้นจะสิ้นสุดลง และบริษัทประกันจะดำเนินการตามเงื่อนไขที่ระบุไว้ในกรมธรรม์"
-            ModalTitle="11.กรมธรรม์ที่ครบกำหนด"
+            ModalTitle="11.ทุนประกันชีวิต"
           />
           <InputField
-            label="12.อื่นๆ"
+            label="12.ทรัพย์สินอื่นๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
-            placeholder="กรุณากรอกจำนวนเงิน"
+             placeholder="กรุณากรอกข้อมูล"
             addonAfter="บาท"
             imgUrl={EducationPlan24}
             ModalBody="สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์"
-            ModalTitle="12.อื่นๆ"
+            ModalTitle="12.ทรัพย์สินอื่นๆ"
           />
           <InputField
             label="13.รวมทุนการศึกษาที่เตรียมไว้แล้ว"
@@ -621,7 +647,7 @@ const EducationPlan: React.FC = () => {
     {
       title: "สรุปผล",
       content: (
-        <div className="  rounded-lg p-5 shadow-lg mb-5">
+        <div className="  rounded-lg p-5  mb-5">
           <div className="text-[1rem] mb-3 flex flex-row justify-between items-center"><p>วางแผนเพื่อการศึกษาบุตร</p> <button className="bg-[#243286] py-1 px-3 text-white rounded-xl h-8" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
           <div className=" text-black text-[0.8rem]">
             <div className="flex flex-row justify-between">
@@ -732,10 +758,17 @@ const EducationPlan: React.FC = () => {
           {/* {current === 3 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
         <div
-          className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"
+          className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : ""
             }`}
         >
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "วางแผนเพื่อการศึกษาบุตร" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan11} alt="" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={EducationPlan21} alt="" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
+          <p className="text-xl mb-3"> {steps[current].title && (
+            <StepTitle
+              title={steps[current].title}
+              ModalTitle={steps[current].ModalTitle}
+              imageUrl={steps[current].imageUrl || ""}
+              ModalBody={steps[current].ModalBody || ""}
+            />
+          )}</p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
@@ -772,9 +805,9 @@ const EducationPlan: React.FC = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-row justify-center items-center mb-5">
+          {/* <div className="flex flex-row justify-center items-center mb-5">
             {current > 0 && current < 3 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
