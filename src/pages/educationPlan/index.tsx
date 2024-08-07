@@ -471,7 +471,7 @@ const EducationPlan: React.FC = () => {
           />
 
           <InputField
-            label="3.จำนวนปีสำหรับการศึกษาบุตรทั้งหมด (นับจากเริ่มเข้าอนุบาล)"
+            label={<>3.จำนวนปีสำหรับการศึกษาบุตรทั้งหมด<br />(นับจากเริ่มเข้าอนุบาล)</>}
             value={formData.levelOfeducation2}
             onChange={handleInputChange('levelOfeducation2')}
             addonAfter="ปี"
@@ -505,31 +505,30 @@ const EducationPlan: React.FC = () => {
               { value: "1200000", label: "เรียนต่อต่างประเทศ" },
             ]}
           />
-          <Row className="my-2 gap-5">
-            <div className="flex flex-row justify-start items-center pl-2 gap-2">
+
+          <div className="flex flex-row justify-start items-center -ml-3 mb-2 gap-8">
+            <div className="flex flex-row justify-center items-center gap-5">
               <img src={EducationPlan17} alt="" className="w-8" />
-              <div className="flex flex-row items-center justify-center gap-4">
-                <h1 className="text-xl mb-3">ทุนการศึกษาที่จำเป็น</h1>
-                <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
-              </div>
-
-              <Modal
-                title={<div className="custom-modal-title font-sans">ทุนการศึกษาที่จำเป็น</div>}
-                open={isModalOpen}
-                onCancel={handleCancel}
-                footer={[
-                  <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
-                    ปิด
-                  </Button>
-                ]}
-                closable={false}
-                className="custom-modal font-sans"
-              >
-                <div className="custom-modal-body font-sans">เงินทุนที่จำเป็นต่อการศึกษาของบุคคลหนึ่ง เพื่อให้สามารถเรียนต่อได้จนจบตามเป้าหมายที่ตั้งไว้</div>
-              </Modal>
-
+              <h1 className="text-xl mb-3">ทุนการศึกษาที่จำเป็น&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
             </div>
-          </Row>
+            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            <Modal
+              title={<div className="custom-modal-title font-sans">ทุนการศึกษาที่จำเป็น</div>}
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={[
+                <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
+                  ปิด
+                </Button>
+              ]}
+              closable={false}
+              className="custom-modal font-sans"
+            >
+              <div className="custom-modal-body font-sans">เงินทุนที่จำเป็นต่อการศึกษาของบุคคลหนึ่ง เพื่อให้สามารถเรียนต่อได้จนจบตามเป้าหมายที่ตั้งไว้</div>
+            </Modal>
+
+          </div>         
+
           <InputField
             label="6.ค่าเล่าเรียน"
             value={formData.typeOfeducation2}
@@ -612,7 +611,7 @@ const EducationPlan: React.FC = () => {
             label="12.ทรัพย์สินอื่นๆ"
             value={formData.otherAssets}
             onChange={handleInputChange("otherAssets")}
-             placeholder="กรุณากรอกข้อมูล"
+            placeholder="กรุณากรอกข้อมูล"
             addonAfter="บาท"
             imgUrl={EducationPlan24}
             ModalBody="สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์"

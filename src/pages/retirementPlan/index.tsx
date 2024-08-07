@@ -346,7 +346,7 @@ const RetirementPlan: React.FC = () => {
     content: (
       <div>
         <InputField
-          label={<>1.ค่าใช้จ่ายประจำวัน<br />(ค่าอาหาร ค่าที่อยู่อาศัย)</>}
+          label={<>1.ค่าใช้จ่ายประจำวัน(ค่าอาหาร ค่าที่อยู่อาศัย)</>}
           value={formData.livingCosts}
           onChange={handleInputChange("livingCosts")}
           addonAfter="บาท/เดือน"
@@ -396,7 +396,7 @@ const RetirementPlan: React.FC = () => {
           ModalTitle="5.ค่ารักษาพยาบาล"
         />
         <InputField
-          label={<>6.ค่าใช้จ่ายอื่นๆ<br />(ขาดไม่ได้ ไม่ใช่ปัจจัย4)</>}
+          label={<>6.ค่าใช้จ่ายอื่นๆ(ขาดไม่ได้ ไม่ใช่ปัจจัย4)</>}
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
           placeholder="กรุณากรอกข้อมูล"

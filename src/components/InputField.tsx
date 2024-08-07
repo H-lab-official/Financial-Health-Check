@@ -70,7 +70,7 @@ const InputField: React.FC<InputFieldProps> = ({
         </div>
         <div>
           <div className="flex flex-row justify-start items-center">
-            <div className={`font-sans w-[220px] flex-wrap text-[#243286]`}>
+            <div className={`font-sans w-[280px] flex-wrap text-[#243286]`}>
               <Text className="whitespace-pre-line font-sans text-[#243286]">{label}</Text>
               {!readOnly && <span className="text-red-600 ml-1">*</span>}
             </div>
@@ -87,7 +87,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 readOnly={readOnly}
                 inputMode="numeric" // Ensure the numeric keyboard is displayed
                 pattern="[0-9]*" // Ensure only numbers are allowed
-                className={`font-sans ${isRetirementPlan ? 'w-[250px]' : 'w-[250px]'} ${readOnly
+                className={`font-sans ${isRetirementPlan ? 'w-[300px]' : 'w-[300px]'} ${readOnly
                   ? "bg-[#4B90E254] hover:bg-[#4B90E254] active:bg-[#4B90E254] focus:bg-[#4B90E254]"
                   : "none"
                   }`}
