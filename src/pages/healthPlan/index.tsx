@@ -446,7 +446,7 @@ const HealthPlan: React.FC = () => {
               ModalTitle="5.ค่ารักษาอุบัติเหตุฉุกเฉิน"
             />
             <InputField
-              label={<>6.งบประมาณค่ารักษาต่อปี <br />(เหมาจ่าย)</>}
+              label={<>6.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)</>}
               value={formData.annualTreatment}
               onChange={handleInputChange("annualTreatment")}
               addonAfter="บาท"
@@ -547,7 +547,7 @@ const HealthPlan: React.FC = () => {
           ModalTitle="13.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label={<>14.งบประมาณค่ารักษาต่อปี<br />(เหมาจ่าย)</>}
+          label={<>14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)</>}
           value={additionalAnnualTreatment}
           onChange={() => { }}
           readOnly

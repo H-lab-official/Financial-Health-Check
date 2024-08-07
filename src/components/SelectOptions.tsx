@@ -31,13 +31,11 @@ const InflationComponent: React.FC<SelectOptions> = ({
     };
 
     return (
-        <div className="flex flex-row justify-start items-center mb-5">
-            <div className="w-[55px] flex justify-start items-center pl-2">
-                {/* <img src={iconsImg} alt="icons" className="w-10" /> */}
-            </div>
+        <div className="flex flex-row justify-start items-center mb-5 mx-3">
+
             <div>
-                <div className="flex flex-row justify-between items-center">
-                    <Text className="text-[#243286] w-[180px] font-sans">{title}</Text>
+                <div className="flex flex-row justify-start items-center">
+                    <Text className="text-[#243286] w-[220px] font-sans">{title}</Text>
                     <img src={tooltip} alt="tooltip" onClick={showModal} className={`cursor-pointer ${textModal === "-" ? "hidden" : ""}`} />
                 </div>
                 <Modal
@@ -58,7 +56,7 @@ const InflationComponent: React.FC<SelectOptions> = ({
                 <Select
 
                     className="font-sans custom-select"
-                    style={{ width: '190px', fontSize: '16px' }}
+                    style={{ width: '250px', fontSize: '16px' }}
                     defaultValue={defaultValue}
                     onChange={onChange}
                     options={options}
