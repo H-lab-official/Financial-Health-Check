@@ -77,15 +77,13 @@ export const calculateRequiredScholarships = (state: EducationPlanData) => {
 
 
 export const calculateTotalPreparationAssets = (state: EducationPlanData) => {
-  if (state.deposit || state.insuranceFund || state.otherAssets) {
-    const totalPreparationAssets =
-      parseFloat(state.deposit) +
-      parseFloat(state.insuranceFund) +
-      parseFloat(state.otherAssets);
+  const deposit = parseFloat(state.deposit) || 0;
+  const insuranceFund = parseFloat(state.insuranceFund) || 0;
+  const otherAssets = parseFloat(state.otherAssets) || 0;
 
-    return Math.floor(totalPreparationAssets).toString();
-  }
-  return "";
+  const totalPreparationAssets = deposit + insuranceFund + otherAssets;
+
+  return Math.floor(totalPreparationAssets).toString();
 };
 export const yearsOfeducationSelector = selector({
   key: "yearsOfeducationSelector",

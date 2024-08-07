@@ -371,7 +371,7 @@ const HomePage: React.FC = () => {
         <div className=" fixed top-0 z-40 "><NavBar /></div>
 
 
-        <div className={`bg-white shadow-md rounded-lg px-6  mx-6 mb-2 mt-10 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ${current===0&&"mt-16"}`}>
+        <div className={`bg-white   px-6  mx-6 mb-2 mt-10 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ${current===0&&"mt-16"}`}>
 
           <Row align={"middle"} justify={"center"}>
             {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl w-56`} height={80} /> : null}

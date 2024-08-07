@@ -3,6 +3,7 @@ import InputField from "@/components/InputField";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
+import StepTitle from '@/components/StepTitle';
 import {
   additionalRoomFeeSelector,
   annualTreatmentSelector,
@@ -354,7 +355,7 @@ const HealthPlan: React.FC = () => {
   };
 
   const steps = [{
-    title: "แผนที่ 1",
+    title: "",
     content: (
       <div className="flex flex-col justify-center items-center text-[2rem] mb-10">
         <h1 className=" text-center">แผนการคุ้มครอง <br />เรื่องสุขภาพ<br /></h1>
@@ -362,6 +363,9 @@ const HealthPlan: React.FC = () => {
     )
   }, {
     title: "วางแผนเพื่อสุขภาพ",
+    ModalTitle: "วางแผนเพื่อสุขภาพ",
+    imageUrl: HealthPlan11,
+    ModalBody: "การวางแผนและกำหนดแนวทางในการดูแลสุขภาพของตนเองอย่างเป็นระบบ",
     content: (
       <div>
         <InflationComponent
@@ -389,8 +393,27 @@ const HealthPlan: React.FC = () => {
           ModalTitle="2.ค่าห้องต่อวันประมาณ"
         />
         <div>
-          <div className="flex flex-row justify-start items-center pl-2"><img src={HealthPlan14} alt="" /><h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1></div>
-          
+          <div className="flex flex-row justify-start items-center pl-2 gap-2">
+            <img src={HealthPlan14} alt="" className="w-8" />
+            <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
+            <img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" />
+            <Modal
+              title={<div className="custom-modal-title font-sans">สวัสดิการที่คาดหวังจะได้</div>}
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={[
+                <Button key="close" className="custom-close-button font-sans" onClick={handleCancel}>
+                  ปิด
+                </Button>
+              ]}
+              closable={false}
+              className="custom-modal font-sans"
+            >
+              <div className="custom-modal-body font-sans" >สิทธิประโยชน์ต่างๆ ที่บุคคลหนึ่งคาดว่าจะได้รับจากองค์กรหรือหน่วยงานที่ตนสังกัดอยู่ หรือจากสัญญาประกัน</div>
+            </Modal>
+
+          </div>
+
           <div>
             <InputField
               label="3.ค่าห้องวันละ"
@@ -423,7 +446,7 @@ const HealthPlan: React.FC = () => {
               ModalTitle="5.ค่ารักษาอุบัติเหตุฉุกเฉิน"
             />
             <InputField
-              label="6.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
+              label={<>6.งบประมาณค่ารักษาต่อปี <br />(เหมาจ่าย)</>}
               value={formData.annualTreatment}
               onChange={handleInputChange("annualTreatment")}
               addonAfter="บาท"
@@ -438,13 +461,16 @@ const HealthPlan: React.FC = () => {
     )
   }, {
     title: `สวัสดิการปัจจุบันจากบริษัทหรือจากประกันที่มี`,
+    ModalTitle: "สวัสดิการปัจจุบันจากบริษัทหรือจากประกันที่มี",
+    imageUrl: HealthPlan21,
+    ModalBody: "สิทธิประโยชน์ต่างๆ ที่บุคคลหนึ่งได้รับจากองค์กรหรือหน่วยงานที่ตนสังกัดอยู่ หรือจากสัญญาประกัน",
     content: (
       <div>
         <InputField
           label="7.ค่าห้องวันละ"
           value={formData.roomFeeFromCompany}
           onChange={handleInputChange("roomFeeFromCompany")}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="บาท"
           imgUrl={HealthPlan22}
           ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล`}
@@ -455,7 +481,7 @@ const HealthPlan: React.FC = () => {
           value={formData.treatingSeriousIllnessFromCompany}
           onChange={handleInputChange("treatingSeriousIllnessFromCompany")}
           addonAfter="บาท"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={HealthPlan24}
           ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
           ModalTitle="8.ค่ารักษาโรคร้ายแรง"
@@ -466,16 +492,16 @@ const HealthPlan: React.FC = () => {
           onChange={handleInputChange("emergencyCostsFromCompany")}
           addonAfter="บาท"
           imgUrl={HealthPlan25}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
           ModalTitle="9.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label="10.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
+          label={<>14.งบประมาณค่ารักษาต่อปี<br />(เหมาจ่าย)</>}
           value={formData.annualTreatmentFromCompany}
           onChange={handleInputChange("annualTreatmentFromCompany")}
           addonAfter="บาท"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={HealthPlan26}
           ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด`}
           ModalTitle="10.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
@@ -484,6 +510,9 @@ const HealthPlan: React.FC = () => {
     )
   }, {
     title: "สวัสดิการที่ต้องเพิ่มเติม",
+    ModalTitle: "สวัสดิการที่ต้องเพิ่มเติม",
+    imageUrl: HealthPlan31,
+    ModalBody: "สิทธิประโยชน์หรือผลประโยชน์ที่พนักงานต้องการให้บริษัทเพิ่มเข้ามาในโครงสร้างสวัสดิการที่มีอยู่เดิม",
     content: (
       <div>
         <InputField
@@ -494,7 +523,7 @@ const HealthPlan: React.FC = () => {
           addonAfter="บาท"
           readOnly
           imgUrl={HealthPlan32}
-          ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล`}
+          ModalBody={`ค่าใช้จ่ายที่ได้จากสวัสดิการ สำหรับค่าห้องนอนโรงพยาบาล  คำนวณจาก (ข้อ 3. - ข้อ 7.)`}
           ModalTitle="11.ค่าห้องวันละ"
         />
         <InputField
@@ -504,7 +533,7 @@ const HealthPlan: React.FC = () => {
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan34}
-          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ`}
+          ModalBody={`ค่าใช้จ่ายทั้งหมดที่เกิดขึ้นในการรักษาโรคที่จัดว่า เป็นโรคร้ายแรงตามที่ระบุไว้ในกรมธรรม์ประกันสุขภาพ คำนวณจาก (ข้อ 4. - ข้อ 8.)`}
           ModalTitle="12.ค่ารักษาโรคร้ายแรง"
         />
         <InputField
@@ -514,17 +543,17 @@ const HealthPlan: React.FC = () => {
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan35}
-          ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด`}
+          ModalBody={`ค่าใช้จ่ายที่เกิดขึ้นจากการเข้ารับการรักษาพยาบาลในกรณีฉุกเฉิน เนื่องจากอุบัติเหตุที่เกิดขึ้นกะทันหัน และจำเป็นต้องได้รับการรักษาพยาบาลโดยเร็วที่สุด คำนวณจาก (ข้อ 5. - ข้อ 9.)`}
           ModalTitle="13.ค่ารักษาอุบัติเหตุฉุกเฉิน"
         />
         <InputField
-          label="14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
+          label={<>14.งบประมาณค่ารักษาต่อปี<br />(เหมาจ่าย)</>}
           value={additionalAnnualTreatment}
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
           imgUrl={HealthPlan36}
-          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด `}
+          ModalBody={`วงเงินสูงสุดที่บริษัทประกันจะจ่ายให้คุณ ในหนึ่งปีสำหรับค่าใช้จ่ายด้านสุขภาพทั้งหมด คำนวณจาก (ข้อ 6. - ข้อ 10.)`}
           ModalTitle="14.งบประมาณค่ารักษาต่อปี(เหมาจ่าย)"
         />
       </div>
@@ -533,13 +562,13 @@ const HealthPlan: React.FC = () => {
     title: "สรุปผล",
     content: (
 
-      <div className="  rounded-lg p-5 shadow-lg mb-5">
+      <div className="  rounded-lg p-5 mb-5">
         <div className="text-[1rem] mb-3 flex flex-row items-center justify-between"><p>วางแผนเพื่อสุขภาพ</p>
           <button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 3)}>แก้ไข</button>
         </div>
         <div className=" text-black text-[0.8rem]">
 
-          <div className="flex flex-row justify-between text-[0.7rem]">
+          <div className="flex flex-row justify-between ">
             <p>1.กลุ่มโรงพยาบาลที่ใช้บริการประจำ</p>
             <p>{[
               { label: "โรงพยาบาลรัฐ", value: "1500" },
@@ -645,14 +674,16 @@ const HealthPlan: React.FC = () => {
           {current === 0 && <img src={allImages} alt="" className=" w-[265px] mt-5" />}
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : "shadow-xl"}`}>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : ""}`}>
           <p className={`text-xl mb-3`}>
-            {current === 0 ? "" : steps[current].title === "วางแผนเพื่อสุขภาพ" ?
-              <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan11} alt="" />{steps[current].title}</div> :
-              steps[current].title === "สวัสดิการปัจจุบันจากบริษัทหรือจากประกันที่มี" ?
-                <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan21} alt="" />{steps[current].title}</div> :
-                steps[current].title === "สวัสดิการที่ต้องเพิ่มเติม" ?
-                  <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={HealthPlan31} alt="" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}
+            {steps[current].title && (
+              <StepTitle
+                title={steps[current].title}
+                ModalTitle={steps[current].ModalTitle}
+                imageUrl={steps[current].imageUrl || ""}
+                ModalBody={steps[current].ModalBody || ""}
+              />
+            )}
           </p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
@@ -688,9 +719,9 @@ const HealthPlan: React.FC = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-row justify-center items-center mb-5">
+          {/* <div className="flex flex-row justify-center items-center mb-5">
             {current > 0 && current < 4 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

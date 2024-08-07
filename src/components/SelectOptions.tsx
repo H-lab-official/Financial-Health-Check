@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Select,Typography } from 'antd';
+import { Modal, Button, Select, Typography } from 'antd';
 import tooltip from '@/assets/images/icons/tooltip.svg';
 import '@/components/css/noZoom.css'
 const { Text } = Typography;
@@ -33,11 +33,11 @@ const InflationComponent: React.FC<SelectOptions> = ({
     return (
         <div className="flex flex-row justify-start items-center mb-5">
             <div className="w-[55px] flex justify-start items-center pl-2">
-                <img src={iconsImg} alt="icons" className="w-10" />
+                {/* <img src={iconsImg} alt="icons" className="w-10" /> */}
             </div>
             <div>
                 <div className="flex flex-row justify-between items-center">
-                    <Text className="text-[#243286] w-[197px] font-sans">{title}</Text>
+                    <Text className="text-[#243286] w-[180px] font-sans">{title}</Text>
                     <img src={tooltip} alt="tooltip" onClick={showModal} className={`cursor-pointer ${textModal === "-" ? "hidden" : ""}`} />
                 </div>
                 <Modal
@@ -54,16 +54,16 @@ const InflationComponent: React.FC<SelectOptions> = ({
                 >
                     <div className="custom-modal-body font-sans">{textModal}</div>
                 </Modal>
-               
-                    <Select
 
-                        className="font-sans custom-select"
-                        style={{ width: '190px', fontSize: '16px' }}
-                        defaultValue={defaultValue}
-                        onChange={onChange}
-                        options={options}
-                    />
-                
+                <Select
+
+                    className="font-sans custom-select"
+                    style={{ width: '190px', fontSize: '16px' }}
+                    defaultValue={defaultValue}
+                    onChange={onChange}
+                    options={options}
+                />
+
             </div>
         </div>
     );

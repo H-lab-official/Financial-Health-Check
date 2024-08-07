@@ -3,6 +3,7 @@ import InputField from "@/components/InputField";
 import ProgressBar from "@/components/progressBar";
 import { useNavigate, useLocation } from "react-router";
 import React, { useState } from "react";
+import StepTitle from '@/components/StepTitle';
 import {
   preparationYearsSelector,
   retirementPlanState,
@@ -328,7 +329,7 @@ const RetirementPlan: React.FC = () => {
     }
   }
   const steps = [{
-    title: "แผนที่ 3",
+    title: "",
     content: (
       <div className="flex flex-col justify-center items-center text-[2rem] mb-10">
         {/* <h1 className=" font-bold">Retirement Plan</h1> */}
@@ -338,28 +339,31 @@ const RetirementPlan: React.FC = () => {
     )
   },
   {
+    ModalTitle: "ค่าใช้จ่ายหลังเกษียณ",
+    imageUrl: RetirementPlan11,
+    ModalBody: "ค่าใช้จ่ายในชีวิตประจำวันหลังจากที่เราหยุดทำงานแล้ว ไม่ว่าจะเป็นค่าอาหาร ค่าที่อยู่อาศัย ค่ารักษาพยาบาล ค่าเดินทาง หรือค่าใช้จ่ายอื่นๆ ที่จำเป็นต่อการดำรงชีวิต",
     title: "ค่าใช้จ่ายหลังเกษียณ",
     content: (
       <div>
         <InputField
-          label="1.ค่าใช้จ่ายประจำวัน"
+          label={<>1.ค่าใช้จ่ายประจำวัน<br />(ค่าอาหาร ค่าที่อยู่อาศัย)</>}
           value={formData.livingCosts}
           onChange={handleInputChange("livingCosts")}
           addonAfter="บาท/เดือน"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={RetirementPlan12}
           ModalBody={`เงินที่ต้องใช้จ่ายไปกับการดำรงชีวิตประจำวัน โดยเฉพาะอย่างยิ่งค่าอาหารและค่าที่อยู่อาศัย`}
-          ModalTitle="1.ค่าใช้จ่ายประจำวัน"
+          ModalTitle="1.ค่าใช้จ่ายประจำวัน (ค่าอาหาร ค่าที่อยู่อาศัย)"
         />
         <InputField
-          label="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
+          label="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้านอื่นๆ"
           value={formData.houseCosts}
           onChange={handleInputChange("houseCosts")}
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan13}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           ModalBody={`เงินที่เราต้องใช้จ่ายสำหรับการดำรงชีวิตภายในบ้าน`}
-          ModalTitle="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้าน"
+          ModalTitle="2.ค่าน้ำค่าไฟ ค่าใช้จ่ายภายในบ้านอื่นๆ"
         />
         <InputField
           label="3.ค่ามือถือ อินเตอร์เน็ต"
@@ -367,7 +371,7 @@ const RetirementPlan: React.FC = () => {
           onChange={handleInputChange("internetCosts")}
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan14}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการโทรศัพท์มือถือและบริการอินเทอร์เน็ต`}
           ModalTitle="3.ค่ามือถือ อินเตอร์เน็ต"
         />
@@ -375,7 +379,7 @@ const RetirementPlan: React.FC = () => {
           label="4.ค่าเสื้อผ้า"
           value={formData.clothingCosts}
           onChange={handleInputChange("clothingCosts")}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan15}
           ModalBody={`เงินที่เราใช้จ่ายไปกับการซื้อเสื้อผ้าและเครื่องแต่งกาย`}
@@ -385,31 +389,31 @@ const RetirementPlan: React.FC = () => {
           label="5.ค่ารักษาพยาบาล"
           value={formData.medicalCosts}
           onChange={handleInputChange("medicalCosts")}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan16}
           ModalBody={`เงินที่เราต้องจ่ายเพื่อใช้บริการทางการแพทย์ในการรักษาโรคภัยไข้เจ็บ หรือเพื่อป้องกันโรค`}
           ModalTitle="5.ค่ารักษาพยาบาล"
         />
         <InputField
-          label="6.ค่าใช้จ่ายอื่นๆ(ขาดได้ ไม่ใช่ปัจจัย 4)"
+          label="6.ค่าใช้จ่ายอื่นๆ (ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
           value={formData.otherCosts}
           onChange={handleInputChange("otherCosts")}
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="บาท/เดือน"
           imgUrl={RetirementPlan17}
           ModalBody={`เงินที่เราต้องใช้จ่ายไปกับสิ่งของหรือบริการต่างๆ ที่ช่วยให้ชีวิตมีความสะดวกสบายมากขึ้น หรือเป็นค่าใช้จ่ายที่จำเป็นต่อการดำรงชีวิตในสังคมปัจจุบัน แม้จะไม่ใช่ปัจจัยพื้นฐานที่สุดก็ตาม ที่นอกเหนือไปจากปัจจัย 4 (อาหาร, ที่อยู่อาศัย, เสื้อผ้า, และยารักษาโรค)`}
-          ModalTitle="6.ค่าใช้จ่ายอื่นๆ(ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
+          ModalTitle="6.ค่าใช้จ่ายอื่นๆ (ขาดไม่ได้ ไม่ใช่ปัจจัย 4)"
         />
         <InputField
           label="7.รวมค่าใช้จ่ายต่อปี"
           value={totalCosts}
           onChange={() => { }}
           readOnly
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder=""
           addonAfter="บาท"
           imgUrl={RetirementPlan18}
-          ModalBody={`-`}
+          ModalBody={`จำนวนเงินที่คำนวนมาจาก  (ข้อ 1. + ข้อ 2. + ข้อ 3. + ข้อ 4. + ข้อ 5. + ข้อ 6.) x 12 เดือน`}
           ModalTitle="7.รวมค่าใช้จ่ายต่อปี"
         />
 
@@ -417,7 +421,7 @@ const RetirementPlan: React.FC = () => {
           label="8.อายุปัจจุบัน"
           value={formData.age}
           onChange={handleInputChange("age")}
-          placeholder="กรุณากรอกอายุของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="ปี"
           imgUrl={RetirementPlan19}
           ModalBody={`-`}
@@ -427,7 +431,7 @@ const RetirementPlan: React.FC = () => {
           label="9.อายุที่คาดว่าเกษียณ "
           value={formData.retireAge}
           onChange={handleInputChange("retireAge")}
-          placeholder="กรุณากรอกอายุประเมิน"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="ปี"
           imgUrl={RetirementPlan110}
           ModalBody={`-`}
@@ -437,7 +441,7 @@ const RetirementPlan: React.FC = () => {
           label="10.คาดการณ์อายุขัย"
           value={formData.lifExpectancy}
           onChange={handleInputChange("lifExpectancy")}
-          placeholder="กรุณากรอกอายุประเมิน"
+          placeholder="กรุณากรอกข้อมูล"
           addonAfter="ปี"
           imgUrl={RetirementPlan111}
           ModalBody={`การประมาณการว่าบุคคลหนึ่งๆ จะมีชีวิตอยู่ได้นานเท่าไร โดยพิจารณาจากปัจจัยต่างๆ เช่น เพศ อายุ สุขภาพ สภาพแวดล้อม และปัจจัยทางพันธุกรรม`}
@@ -449,23 +453,23 @@ const RetirementPlan: React.FC = () => {
           value={workingYears}
           onChange={() => { }}
           readOnly
-          placeholder="34"
+          placeholder=""
           addonAfter="ปี"
           imgUrl={RetirementPlan112}
-          ModalBody={`ช่วงอายุตั้งแต่เริ่มทำงานจนถึงอายุเกษียณ`}
+          ModalBody={`ช่วงอายุตั้งแต่เริ่มทำงานจนถึงอายุเกษียณ คำนวณจาก (ข้อ 9. - ข้อ 8.)`}
           ModalTitle="11.จำนวนปีที่ทำงานได้"
         />
 
         <InputField
-          label="12.จำนวนปีที่ต้องเตรียม"
+          label="12.จำนวนปีเกษียณที่ต้องเตรียมค่าใช้จ่ายไว้"
           value={preparationYears}
           onChange={() => { }}
           readOnly
-          placeholder="34"
+          placeholder=""
           addonAfter="ปี"
           imgUrl={RetirementPlan113}
-          ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อการเกษียณอายุ`}
-          ModalTitle="12.จำนวนปีที่ต้องเตรียม"
+          ModalBody={`ระยะเวลาที่เราต้องใช้ในการเตรียมตัวเพื่อการเกษียณอายุ คำนวณจาก (ข้อ 10. - ข้อ 9.)`}
+          ModalTitle="12.จำนวนปีเกษียณที่ต้องเตรียมค่าใช้จ่ายไว้"
         />
         <InflationComponent
           iconsImg={RetirementPlan114}
@@ -487,46 +491,51 @@ const RetirementPlan: React.FC = () => {
           value={totalPreparation}
           onChange={() => { }}
           readOnly
-          placeholder="30,626,766"
+          placeholder=""
           addonAfter="บาท"
           imgUrl={RetirementPlan115}
-          ModalBody={`การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ`}
+          ModalBody={<>การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ<br />คำนวณจาก (ข้อ 7.) x ((1 – ข้อ 11. ^ ข้อ.12) / (1 – ข้อ 11.))
+            หรือ คำนวณจาก (ข้อ 7.) และคิดผลอัตราเงินเฟ้อ และจำนวนปีเกษียณที่ต้องเตรียมค่าใช้จ่ายไว้
+          </>}
           ModalTitle="14.รวมค่าใช้จ่ายที่ต้องเตรียม"
         />
       </div>
     )
   },
   {
-    title: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
+    title: <>สิ่งที่เตรียมไว้แล้ว <br />(มีสภาพคล่อง)</>,
+    ModalTitle: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
+    imageUrl: RetirementPlan21,
+    ModalBody: "สิ่งของหรือทรัพย์สินที่เราสามารถนำมาใช้จ่ายหรือเปลี่ยนเป็นเงินสดได้อย่างรวดเร็วและง่ายดายในยามจำเป็น โดยไม่สูญเสียมูลค่ามากนัก",
     content: (
       <div><InputField
         label="15.เงินฝาก"
         value={formData.deposit}
         onChange={handleInputChange("deposit")}
         addonAfter="บาท"
-        placeholder="2,000.00"
+        placeholder="กรุณากรอกข้อมูล"
         imgUrl={RetirementPlan22}
         ModalBody={`เงินที่ฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
         ModalTitle="15.เงินฝาก"
       />
         <InputField
-          label="16.ทุนประกัน"
+          label="16.ทุนประกันชีวิต"
           value={formData.insuranceFund}
           onChange={handleInputChange("insuranceFund")}
           addonAfter="บาท"
-          placeholder="2,000.00"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={RetirementPlan23}
           ModalBody={`จำนวนเงินสูงสุดที่บริษัทประกันภัยจะจ่ายให้กับผู้เอาประกัน หรือผู้รับผลประโยชน์ ในกรณีที่เกิดเหตุการณ์ตามที่ระบุไว้ในกรมธรรม์ประกันภัย เช่น การเสียชีวิต การเจ็บป่วย การสูญเสียทรัพย์สิน เป็นต้น`}
-          ModalTitle="16.ทุนประกัน"
+          ModalTitle="16.ทุนประกันชีวิต"
         />
         <InputField
           label="17.ทรัพย์สินอื่นๆ"
           value={formData.otherAssets}
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
-          placeholder="2,000.00"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={RetirementPlan24}
-          ModalBody={`สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์ `}
+          ModalBody={`สิ่งของหรือวัตถุที่มีมูลค่าทางเศรษฐกิจและสามารถนำมาเปลี่ยนเป็นเงินสดได้ไม่ยากนัก เช่น ทอง เครื่องประดับ ที่ดิน`}
           ModalTitle="17.ทรัพย์สินอื่นๆ"
         />
         <InputField
@@ -535,9 +544,9 @@ const RetirementPlan: React.FC = () => {
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
-          placeholder="2,000.00"
+          placeholder=""
           imgUrl={RetirementPlan25}
-          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราได้เตรียมเอาไว้แล้ว เพื่อให้เห็นภาพรวมของสิ่งที่เรามีอยู่ทั้งหมด`}
+          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราได้เตรียมเอาไว้แล้ว เพื่อให้เห็นภาพรวมของสิ่งที่เรามีอยู่ทั้งหมด คำนวณจาก (ข้อ 15. + ข้อ 16. + ข้อ 17.)`}
           ModalTitle="18.รวมสิ่งที่เตรียมไว้แล้ว"
         />
 
@@ -546,10 +555,10 @@ const RetirementPlan: React.FC = () => {
           value={totalMissing}
           onChange={() => { }}
           readOnly
-          placeholder="34"
+          placeholder=""
           addonAfter="บาท"
           imgUrl={RetirementPlan26}
-          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราขาดอยู่ เพื่อให้เห็นภาพรวมของสิ่งที่เราขาดอยูทั้งหมด`}
+          ModalBody={`การรวมสิ่งของหรือทรัพย์สินทั้งหมดที่เราขาดอยู่ เพื่อให้เห็นภาพรวมของสิ่งที่เราขาดอยูทั้งหมด คำนวณจาก (ข้อ 14. - ข้อ 18.)`}
           ModalTitle="19.รวมที่ขาดอยู่"
         />
 
@@ -559,9 +568,9 @@ const RetirementPlan: React.FC = () => {
           onChange={() => { }}
           readOnly
           addonAfter="บาท"
-          placeholder="2,000.00"
+          placeholder=""
           imgUrl={RetirementPlan27}
-          ModalBody={`จำนวนเงินที่เราตั้งเป้าหมายว่าจะสามารถออมหรือเก็บสะสมได้ภายในหนึ่งปี เป็นตัวเลขที่แสดงถึงเป้าหมายทางการเงินของเราในระยะเวลาหนึ่งปี`}
+          ModalBody={<>จำนวนเงินที่เราตั้งเป้าหมายว่าจะสามารถออมหรือเก็บสะสมได้ภายในหนึ่งปี เป็นตัวเลขที่แสดงถึงเป้าหมายทางการเงินของเราในระยะเวลาหนึ่งปี <br />คำนวณจาก (ข้อ 19. / ข้อ 11.)</>}
           ModalTitle="20.ต่อปีที่ต้องเก็บได้"
         /></div>
     )
@@ -582,7 +591,7 @@ const RetirementPlan: React.FC = () => {
           <div className="flex flex-row justify-between">
             <p>3.ค่ามือถือ อินเตอร์เน็ต</p>
             <p>{convertMoney(formData.internetCosts)} บาท/เดือน</p></div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between">
             <p>4.ค่าเสื้อผ้า</p>
             <p>{convertMoney(formData.clothingCosts)} บาท</p>
           </div>
@@ -594,11 +603,11 @@ const RetirementPlan: React.FC = () => {
             <p>6.ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)</p>
             <p>{convertMoney(formData.otherCosts)} บาท</p>
           </div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between">
             <p>7.รวมค่าใช้จ่ายต่อปี</p>
             <p>{convertMoney(calculateTotalCosts(formData))} บาท</p>
           </div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between ">
             <p>8.อายุตอนนี้</p>
             <p>{formData.age} ปี</p>
           </div>
@@ -610,7 +619,7 @@ const RetirementPlan: React.FC = () => {
             <p>10.คาดการณ์อายุขัย</p>
             <p>{formData.lifExpectancy} ปี</p>
           </div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between">
             <p>11.จำนวนปีที่ทำงานได้</p>
             <p>{calculateWorkingYears(formData)} ปี</p>
           </div>
@@ -618,7 +627,7 @@ const RetirementPlan: React.FC = () => {
             <p>12.จำนวนปีที่ต้องเตรียม</p>
             <p>{calculatePreparationYears(formData)} ปี</p>
           </div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between">
             <p>13.เงินเฟ้อ</p>
             <p>{(parseFloat(formData.inflationRate) * 100).toFixed(0)} %&nbsp;&nbsp;&nbsp;&nbsp;</p>
 
@@ -636,7 +645,7 @@ const RetirementPlan: React.FC = () => {
             <p>{convertMoney(formData.deposit)} บาท</p>
           </div>
           <div className="flex flex-row justify-between">
-            <p>16.ทุนประกัน</p>
+            <p>16.ทุนประกันชีวิต</p>
             <p>{convertMoney(formData.insuranceFund)} บาท</p>
           </div>
           <div className="flex flex-row justify-between">
@@ -647,7 +656,7 @@ const RetirementPlan: React.FC = () => {
             <p>18.รวมสิ่งที่เตรียมไว้แล้ว</p>
             <p>{convertMoney(calculateisTotalPreparationAssets(formData))} บาท</p>
           </div>
-          <div className="flex flex-row justify-between mt-3">
+          <div className="flex flex-row justify-between">
             <p>19.รวมที่ขาดอยู่</p>
             <p>{convertMoney(totalMissing)} บาท</p>
           </div>
@@ -678,8 +687,17 @@ const RetirementPlan: React.FC = () => {
 
           {/* {current === 3 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? "" : steps[current].title === "ค่าใช้จ่ายหลังเกษียณ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan11} alt="" className="w-10" />{steps[current].title}</div> : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={RetirementPlan21} alt="" className="w-10" />{steps[current].title}</div> : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : ""}`}>
+          <p className="text-xl mb-3">
+            {steps[current].title && (
+              <StepTitle
+                title={steps[current].title}
+                ModalTitle={steps[current].ModalTitle}
+                imageUrl={steps[current].imageUrl || ""}
+                ModalBody={steps[current].ModalBody || ""}
+              />
+            )}
+          </p>
           {steps[current].content}
 
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">
@@ -714,9 +732,9 @@ const RetirementPlan: React.FC = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-row justify-center items-center mb-5">
+          {/* <div className="flex flex-row justify-center items-center mb-5">
             {current > 0 && current < 3 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

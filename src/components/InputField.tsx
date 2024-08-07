@@ -6,11 +6,11 @@ const { Text } = Typography;
 import "@/components/css/InputField.css";
 
 interface InputFieldProps {
-  label: string;
+  label: React.ReactNode;
   imgUrl: string;
   value: string;
   ModalTitle: string;
-  ModalBody: string;
+  ModalBody: React.ReactNode;
   onChange: (value: string) => void;
   addonAfter?: string;
   placeholder?: string;
@@ -66,11 +66,14 @@ const InputField: React.FC<InputFieldProps> = ({
     <Form.Item>
       <Row gutter={10} className="flex flex-row justify-start items-center">
         <div className="w-[60px] flex justify-start items-center pl-3">
-          <img src={imgUrl} alt="icons" className="w-10" />
+          {/* <img src={imgUrl} alt="icons" className="w-7" /> */}
         </div>
         <div>
-          <div className="flex flex-row justify-start items-center gap-2">
-            <Text className={`font-sans w-[190px] flex ${label.startsWith("16. ความคุ้มครองที่จำเป็น" || "19." || "20.") ? "text-red-600" : "text-[#243286]"}`}>{label}{!readOnly && <span className="text-red-600 ">*</span>}</Text>
+          <div className="flex flex-row justify-start items-center">
+            <div className={`font-sans w-[180px] flex-wrap text-[#243286]`}>
+              <Text className="whitespace-pre-line font-sans text-[#243286]">{label}</Text>
+              {!readOnly && <span className="text-red-600 ml-1">*</span>}
+            </div>
             <img src={tooltip} alt="tooltip" onClick={showModal} className={`cursor-pointer ${ModalTitle === "-" ? "hidden" : ""}`} />
           </div>
           <div>
@@ -106,7 +109,7 @@ const InputField: React.FC<InputFieldProps> = ({
         closable={false}
         className="custom-modal font-sans"
       >
-        <div className="custom-modal-body font-sans" dangerouslySetInnerHTML={{ __html: ModalBody }} />
+        <div className="custom-modal-body font-sans"  >{ModalBody}</div>
       </Modal>
     </Form.Item>
   );

@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import protection from "@/assets/images/protection.png"
 import { useRecoilState, useRecoilValue } from "recoil";
 import DotsComponent from "@/components/DotsComponent";
+import StepTitle from '@/components/StepTitle';
 import {
   protectionPlanState,
   totalDebtsSelector,
@@ -248,28 +249,31 @@ const ProtectionPlan: React.FC = () => {
 
   const steps = [
     {
-      title: "Protection Plan",
+      title: "",
       content: (
         <div className="flex flex-col justify-center items-center text-[2rem] mb-4">
           {/* <h1 className=" font-bold">Protection Plan</h1> */}
-          <h1 className=" text-center">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว <br />ในกรณีที่ต้องจากไป</h1>
+          <h1 className=" text-center">แผนการคุ้มครอง <br />รายได้ให้กับครอบครัว</h1>
 
         </div>
       )
     },
     {
       title: "ค่าใช้จ่าย",
+      ModalTitle: "ค่าใช้จ่าย",
+      imageUrl: ProtectionPlan11,
+      ModalBody: "เงินที่ต้องจ่ายเพื่อแลกกับสินค้า หรือบริการต่าง ๆ หรือค่าใช้จ่ายที่เกิดจากเหตุการณ์ไม่คาดคิด เป็นต้น",
       content: (
         <>
           <InputField
-            label="1.ค่าใช้จ่ายภายในครอบครัว"
+            label="1.ค่าใช้จ่ายภายในครอบครัวต่อเดือน"
             value={formData.initialMonthlyExpense}
             onChange={handleInputChange("initialMonthlyExpense")}
-            addonAfter="ต่อเดือน"
-            placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+            addonAfter="บาท"
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan12}
-            ModalBody="จำนวนเงินที่ได้ใช้จ่าย เพื่อซื้อสินค้าและบริการต่าง ๆ ที่ใช้ในการดำรงชีพ สำหรับครอบครัว"
-            ModalTitle="1.ค่าใช้จ่ายภายในครอบครัว"
+            ModalBody="จำนวนเงินที่ใช้จ่ายที่ใช้ในการดำรงชีพสำหรับครอบครัวในแต่ละเดือน"
+            ModalTitle="1.ค่าใช้จ่ายภายในครอบครัวต่อเดือน"
           />
           <InputField
             label="2.ค่าใช้จ่ายภายในครอบครัวต่อปี"
@@ -277,9 +281,10 @@ const ProtectionPlan: React.FC = () => {
             onChange={() => { }}
             readOnly
             placeholder=""
-            addonAfter="ต่อปี"
+            addonAfter="บาท"
             imgUrl={ProtectionPlan13}
-            ModalBody="จำนวนเงินที่แสดงให้เห็นถึงภาพรวม ของค่าใช้จ่ายในครอบครัวตลอดทั้งปี"
+            ModalBody="จำนวนเงินของค่าใช้จ่ายในครอบครัวตลอดทั้งปี  คำนวณจาก (ข้อ 1. X 12 เดือน)
+"
             ModalTitle="2.ค่าใช้จ่ายภายในครอบครัวต่อปี"
 
           />
@@ -289,25 +294,25 @@ const ProtectionPlan: React.FC = () => {
             value={formData.numberOfYears}
             onChange={handleInputChange("numberOfYears")}
             addonAfter="ปี"
-            placeholder="กรุณากรอกจำนวนปี"
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan14}
-            ModalBody={`จำนวนปีที่คาดว่าจะต้องดูแลครอบครัว เช่น จำนวนปีในการดูแลบุตร ดูแลบิดามารดา`}
+            ModalBody={`จำนวนปีที่คาดว่าจะต้องดูแลครอบครัว เช่น จำนวนปีในการดูแลบุตรและคู่ชีวิต ดูแลบิดามารดา ในกรณีที่เราจากไปแล้ว`}
             ModalTitle="3.จำนวนปีที่ต้องดูแลครอบครัว"
           />
           <InputField
-            label="4.เงินสำรองฉุกเฉิน (ต่อปี)"
+            label={<>4.จำนวนเงินสำรองฉุกเฉิน<br />(ต่อปี)</>}
             value={formData.adjustedYearlyExpenses}
             onChange={handleInputChange("adjustedYearlyExpenses")}
             addonAfter="บาท"
-            placeholder="กรุณากรอกข้อมูลเงินสำรองฉุกเฉิน"
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan15}
-            ModalBody="การเก็บเงินสำรองไว้ใช้ในยามฉุกเฉิน โดยคิดเป็นครึ่งหนึ่งของเงินที่คุณได้รับทั้ง หมดในแต่ละเดือน"
-            ModalTitle="4.เงินสำรองฉุกเฉิน (ต่อปี)"
+            ModalBody="เงินเก็บฉุกเฉินที่เราเตรียมไว้เผื่อเหตุการณ์ไม่คาดฝันหรือค่าใช้จ่ายในสิ่งที่จำเป็นอย่างเร่งด่วน เช่น เงินสำรองเมื่อเกิดการตกงาน เงินสำรองสำหรับค่ารักษาพยาบาลที่ไม่คาดคิด"
+            ModalTitle="4.จำนวนเงินสำรองฉุกเฉิน (ต่อปี)"
           />
           <InflationComponent
             iconsImg={ProtectionPlan16}
             title="5. เงินเฟ้อ"
-            textModal=" ภาวะที่ราคาสินค้าและบริการต่างๆ มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ 'ของแพงขึ้น'"
+            textModal="ภาวะที่ราคาสินค้าและบริการต่างๆ มีแนวโน้มที่จะสูงขึ้นเรื่อยๆ เมื่อเทียบกับช่วงเวลาที่ผ่านมา ทำให้เงินที่เรามีอยู่ซื้อของได้น้อยลง หรือพูดอีกอย่างคือ 'ของแพงขึ้น'"
             defaultValue={formData.inflationRate}
             onChange={handleInputChange("inflationRate")}
             options={[
@@ -326,7 +331,7 @@ const ProtectionPlan: React.FC = () => {
             readOnly
             addonAfter="บาท"
             imgUrl={ProtectionPlan17}
-            ModalBody={`-`}
+            ModalBody={`เงินทั้งหมดที่ต้องเตรียมไว้ในกรณีที่เกิดการจากไปเพื่อให้ครอบครัวมีเงินก้อนนี้ในการใช้ชีวิต โดยมีการคิดอัตราเงินเฟ้อไว้แล้ว`}
             ModalTitle="6.เงินสำรองที่จำเป็นต้องจัดเตรียมไว้"
           />
 
@@ -334,6 +339,9 @@ const ProtectionPlan: React.FC = () => {
       )
     }, {
       title: "หนี้สินค้างชำระ",
+      ModalTitle: "หนี้สินค้างชำระ",
+      imageUrl: ProtectionPlan21,
+      ModalBody: "หนี้ที่ต้องชำระตามที่ตกลงไว้กับเจ้าหนี้ทั้งหมด เช่น ค่าผ่อนบ้าน ค่าผ่อนรถ เป็นต้น",
       content: (
         <>
           <InputField
@@ -341,7 +349,7 @@ const ProtectionPlan: React.FC = () => {
             value={formData.homePayments}
             onChange={handleInputChange("homePayments")}
             addonAfter="บาท"
-            placeholder=""
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan22}
             ModalBody={`จำนวนเงินทั้งหมดที่ยังค้างชำระสำหรับที่อยู่อาศัย นับตั้งแต่วันที่กู้เงินมาจนถึงปัจจุบัน`}
             ModalTitle="7.ค่าผ่อนบ้านคงค้างทั้งหมด"
@@ -351,7 +359,7 @@ const ProtectionPlan: React.FC = () => {
             value={formData.carPayments}
             onChange={handleInputChange("carPayments")}
             addonAfter="บาท"
-            placeholder=""
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan23}
             ModalBody={`จำนวนเงินทั้งหมดที่ยังค้างชำระสำหรับรถ (ยานพาหนะทุกชนิด) นับตั้งแต่วันที่กู้เงินมาจนถึงปัจจุบัน`}
             ModalTitle="8.ค่าผ่อนรถคงค้างทั้งหมด"
@@ -361,9 +369,9 @@ const ProtectionPlan: React.FC = () => {
             value={formData.otherDebts}
             onChange={handleInputChange("otherDebts")}
             addonAfter="บาท"
-            placeholder=""
+            placeholder="กรุณากรอกข้อมูล"
             imgUrl={ProtectionPlan24}
-            ModalBody={`หนี้สินที่เกิดขึ้นจากค่าใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้บ้าน หนี้รถ `}
+            ModalBody={`หนี้สินที่เกิดขึ้นจากค่าใช้จ่ายส่วนตัวหรือการกู้ยืมเงิน เพื่อวัตถุประสงค์ต่างๆ นอกเหนือจากหนี้บ้าน หนี้รถ`}
             ModalTitle="9.หนี้สินอื่นๆ"
           />
           <InputField
@@ -373,7 +381,7 @@ const ProtectionPlan: React.FC = () => {
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan25}
-            ModalBody={`-`}
+            ModalBody={`จำนวนหนี้สินทั้งหมดที่ต้องจ่ายในกรณีที่เกิดการจากไป คำนวณจาก (ข้อ 7. + ข้อ 8. + ข้อ 9.)`}
             ModalTitle="10.รวมหนี้สิน"
           />
           <div className="">
@@ -385,7 +393,7 @@ const ProtectionPlan: React.FC = () => {
               readOnly
 
               imgUrl={ProtectionPlan26}
-              ModalBody={`-`}
+              ModalBody={`จำนวนเงินหนี้สินที่ต้องจ่ายทั้งหมดและเงินสำรองที่ทิ้งไว้ให้คนข้างหลัง คำนวณจาก (ข้อ 6. + ข้อ 10.)`}
               ModalTitle="11.จำนวนเงินที่ต้องการ"
             />
           </div>
@@ -393,24 +401,27 @@ const ProtectionPlan: React.FC = () => {
       )
     },
     {
-      title: "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)",
+      title: <>สิ่งที่เตรียมไว้แล้ว<br />(มีสภาพคล่อง)</>,
+      ModalTitle: "สิ่งที่เตรียมไว้แล้ว(มีสภาพคล่อง)",
+      imageUrl: ProtectionPlan31,
+      ModalBody: "สิ่งของหรือทรัพย์สินที่สามารถเปลี่ยนให้เป็นเงินสดได้อย่างรวดเร็วและง่ายดายเมื่อต้องการ โดยไม่สูญเสียมูลค่ามากนัก หรือสามารถนำมาใช้ในการชำระหนี้หรือค่าใช้จ่ายต่างๆ ได้ทันที",
       content: (<>
         <InputField
-          label="12.เงินฝากธนาคาร"
+          label="12.เงินฝาก"
           value={formData.bankDeposit}
           onChange={handleInputChange("bankDeposit")}
           addonAfter="บาท"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={ProtectionPlan32}
           ModalBody={`เงินที่ฝากไว้กับสถาบันการเงิน เช่น ธนาคาร สหกรณ์ หรือบริษัทหลักทรัพย์ เพื่อเก็บรักษาและอาจได้รับดอกเบี้ยตอบแทน`}
-          ModalTitle="12.เงินฝากธนาคาร"
+          ModalTitle="12.เงินฝาก"
         />
         <InputField
           label="13.ทุนประกันชีวิต"
           value={formData.lifeInsuranceFund}
           onChange={handleInputChange("lifeInsuranceFund")}
           addonAfter="บาท"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={ProtectionPlan33}
           ModalBody={`จำนวนเงินสูงสุดที่บริษัทประกันภัยจะจ่ายให้กับผู้เอาประกัน หรือผู้รับผลประโยชน์ ในกรณีที่เกิดเหตุการณ์ตามที่ระบุไว้ในกรมธรรม์ประกันภัย เช่น การเสียชีวิต การเจ็บป่วย การสูญเสียทรัพย์สิน เป็นต้น`}
           ModalTitle="13.ทุนประกันชีวิต"
@@ -420,9 +431,9 @@ const ProtectionPlan: React.FC = () => {
           value={formData.otherAssets}
           onChange={handleInputChange("otherAssets")}
           addonAfter="บาท"
-          placeholder="กรุณากรอกค่าใช้จ่ายของคุณ"
+          placeholder="กรุณากรอกข้อมูล"
           imgUrl={ProtectionPlan34}
-          ModalBody={`สิ่งของหรือวัตถุ ที่มีรูปร่างและไม่มีรูปร่าง ที่มีมูลค่าทางเศรษฐกิจ เช่น ที่ดิน ลิขสิทธิ์ `}
+          ModalBody={`สิ่งของหรือวัตถุที่มีมูลค่าทางเศรษฐกิจและสามารถนำมาเปลี่ยนเป็นเงินสดได้ไม่ยากนัก เช่น ทอง เครื่องประดับ ที่ดิน`}
           ModalTitle="14.ทรัพย์สินอื่น ๆ"
         />
         <InputField
@@ -432,19 +443,19 @@ const ProtectionPlan: React.FC = () => {
           addonAfter="บาท"
           readOnly
           imgUrl={ProtectionPlan35}
-          ModalBody={`-`}
+          ModalBody={`จำนวนเงินที่คำนวนมาจาก  (ข้อ 12. + ข้อ 13. + ข้อ 14.)`}
           ModalTitle="15.รวมสิ่งที่เตรียมไว้แล้ว"
         />
         <div className=" ">
           <InputField
-            label="16.ความคุ้มครองที่จำเป็น"
+            label="16.ความคุ้มครองที่จำเป็นเพิ่มเติม"
             value={coverage}
             onChange={() => { }}
             addonAfter="บาท"
             readOnly
             imgUrl={ProtectionPlan36}
-            ModalBody={`-`}
-            ModalTitle="16.ความคุ้มครองที่จำเป็น"
+            ModalBody={`จำนวนเงินที่คำนวนมาจาก  (ข้อ 11. - ข้อ 15.)`}
+            ModalTitle="16.ความคุ้มครองที่จำเป็นเพิ่มเติม"
           />
         </div>
       </>)
@@ -453,7 +464,7 @@ const ProtectionPlan: React.FC = () => {
       title: "สรุปผล",
       content: (<>
         {/* <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]"> */}
-        <div className="  rounded-lg p-5 shadow-lg mb-5">
+        <div className="  rounded-lg p-5  mb-5">
           <div className="text-[1rem] mb-3 flex flex-row justify-between items-center">
             <p>ค่าใช้จ่าย</p>
             <button
@@ -525,14 +536,14 @@ const ProtectionPlan: React.FC = () => {
               <p>15.รวมสิ่งที่เตรียมไว้แล้ว</p>
               <p>{convertMoney(calculateTotalAssets(formData))} บาท</p>
             </div>
-            <div className="flex flex-row justify-between mt-5 text-red-500">
+            <div className="flex flex-row justify-between mt-5 text-red-500 font-bold">
               <p>16.ความคุ้มครองที่จำเป็น</p>
               <p>{convertMoney(calculateTotalAssets(formData))} บาท</p>
             </div>
-            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+            {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
               <p>ผลลัพธ์</p>
               <p>{convertMoney(calculateCoverage(formData))} บาท</p>
-            </div>
+            </div> */}
           </div>
 
         </div>
@@ -558,12 +569,22 @@ const ProtectionPlan: React.FC = () => {
 
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : "shadow-xl"}`}>
-          <p className="text-xl mb-3">{current == 0 ? ""
-            : steps[current].title === "ค่าใช้จ่าย" ? <div className="flex flex-row items-center justify-start pl-3 gap-[126px]"><div className="flex flex-row items-center justify-start gap-2"><img src={ProtectionPlan11} alt="" className="w-9" />{steps[current].title}</div><img src={tooltip} alt="tooltip" onClick={showModal} className="cursor-pointer" /></div>
-              : steps[current].title === "หนี้สินค้างชำระ" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan21} alt="" className="w-8" />{steps[current].title}</div>
-                : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <div className="flex flex-row items-center justify-start gap-5 pl-3"><img src={ProtectionPlan31} alt="" className="w-10" />{steps[current].title}</div>
-                  : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>}</p>
+        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : ""}`}>
+          <p className="text-xl mb-3">
+            {steps[current].title && (
+              <StepTitle
+                title={steps[current].title}
+                ModalTitle={steps[current].ModalTitle}
+                imageUrl={steps[current].imageUrl || ""}
+                ModalBody={steps[current].ModalBody || ""}
+              />
+            )}
+            {/* {current == 0 ? ""
+            : steps[current].title === "ค่าใช้จ่าย" ? <StepTitle title={steps[current].title} ModalTitle="ค่าใช้จ่าย" imageUrl={ProtectionPlan11} ModalBody="เงินที่ต้องจ่ายเพื่อแลกกับสินค้า หรือบริการต่าง ๆ หรือค่าใช้จ่ายที่เกิดจากเหตุการณ์ไม่คาดคิด เป็นต้น" />
+              : steps[current].title === "หนี้สินค้างชำระ" ? <StepTitle title={steps[current].title} ModalTitle="หนี้สินค้างชำระ" imageUrl={ProtectionPlan21} ModalBody="หนี้ที่ต้องชำระตามที่ตกลงไว้กับเจ้าหนี้ทั้งหมด เช่น ค่าผ่อนบ้าน ค่าผ่อนรถ เป็นต้น" />
+                : steps[current].title === "สิ่งที่เตรียมไว้แล้ว (มีสภาพคล่อง)" ? <StepTitle title={steps[current].title} ModalTitle={`<>สิ่งที่เตรียมไว้แล้ว<br />(มีสภาพคล่อง)</>`} imageUrl={ProtectionPlan31} ModalBody="สิ่งของหรือทรัพย์สินที่สามารถเปลี่ยนให้เป็นเงินสดได้อย่างรวดเร็วและง่ายดายเมื่อต้องการ โดยไม่สูญเสียมูลค่ามากนัก หรือสามารถนำมาใช้ในการชำระหนี้หรือค่าใช้จ่ายต่างๆ ได้ทันที" />
+                  : <div className="flex flex-row justify-center text-3xl">{steps[current].title}</div>} */}
+          </p>
           {steps[current].content}
           <div className="steps-action h-20 flex flex-row justify-center items-center gap-10 ">
             {current > 0 && (
@@ -594,9 +615,9 @@ const ProtectionPlan: React.FC = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-row justify-center items-center mb-5">
+          {/* <div className="flex flex-row justify-center items-center mb-5">
             {current > 0 && current < 4 && <img src={allImages} alt="" className="w-[200px] mt-5" />}
-          </div>
+          </div> */}
 
         </div>
       </div>
