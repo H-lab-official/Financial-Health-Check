@@ -393,7 +393,7 @@ const HealthPlan: React.FC = () => {
           ModalTitle="2.ค่าห้องต่อวันประมาณ"
         />
         <div>
-          <div className="flex flex-row justify-start items-center -ml-3 mb-2 gap-8">
+          <div className="flex flex-row justify-start items-center -ml-[1px] mb-2 gap-8">
             <div className="flex flex-row justify-center items-center gap-5">
               <img src={HealthPlan14} alt="" className="w-8" />
               <h1 className="text-xl mb-3">สวัสดิการที่คาดหวังจะได้</h1>
