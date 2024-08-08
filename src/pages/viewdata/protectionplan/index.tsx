@@ -187,10 +187,10 @@ const Vieweprotectionplan: React.FC = () => {
                       <p>16.ความคุ้มครองที่จำเป็น</p>
                       <p>{convertMoney(calculateTotalAssets(protectionPlanData))} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+                    {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
                       <p>ผลลัพธ์</p>
                       <p>{convertMoney(calculateCoverage(protectionPlanData))} บาท</p>
-                    </div>
+                    </div> */}
                   </div>
 
                 </div>

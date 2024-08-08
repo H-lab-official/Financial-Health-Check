@@ -212,7 +212,9 @@ const Summary: React.FC = () => {
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className="fixed top-0 z-40"><NavBar /></div>
       <div className="bg-white rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3">
-        <div className='text-[#0E2B81] text-2xl flex justify-center'>กรุณาจัดลำดับความสำคัญ</div>
+        <div><span className='text-[#0E2B81] text-2xl flex justify-center'>กรุณาจัดลำดับความสำคัญ</span>
+          <span className='text-[#0E2B81] text-lg flex justify-center'>(สามารถลากเพื่อเลือกลำดับความสำคัญ)</span></div>
+
         <DragDropList items={items} setItems={setItems} />
       </div>
       <div className="steps-action h-20 flex flex-row justify-center items-center gap-10">

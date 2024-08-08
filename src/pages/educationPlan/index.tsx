@@ -731,10 +731,10 @@ const EducationPlan: React.FC = () => {
               <p>14. รวมที่ขาดอยู่</p>
               <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
             </div>
-            <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+            {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
               <p>ผลลัพธ์</p>
               <p>{convertMoney(toFloat(RequiredScholarships) - toFloat(TotalPreparationAssets))} บาท</p>
-            </div>
+            </div> */}
           </div>
         </div>
       ),

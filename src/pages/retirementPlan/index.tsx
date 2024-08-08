@@ -494,8 +494,7 @@ const RetirementPlan: React.FC = () => {
           placeholder=""
           addonAfter="บาท"
           imgUrl={RetirementPlan115}
-          ModalBody={<>การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ<br />คำนวณจาก (ข้อ 7.) x ((1 – ข้อ 11. ^ ข้อ.12) / (1 – ข้อ 11.))
-            หรือ คำนวณจาก (ข้อ 7.) และคิดผลอัตราเงินเฟ้อ และจำนวนปีเกษียณที่ต้องเตรียมค่าใช้จ่ายไว้
+          ModalBody={<>การรวบรวมรายการค่าใช้จ่ายทั้งหมดที่คาดว่าจะเกิดขึ้นในอนาคต เพื่อนำมาคำนวณและวางแผนการใช้เงินให้เพียงพอต่อความต้องการ
           </>}
           ModalTitle="14.รวมค่าใช้จ่ายที่ต้องเตรียม"
         />
@@ -582,7 +581,7 @@ const RetirementPlan: React.FC = () => {
         <div className="text-[1rem] mb-3 flex flex-row justify-between items-center "><p>ค่าใช้จ่ายหลังเกษียณ</p><button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 2)}>แก้ไข</button></div>
         <div className=" text-black text-[0.8rem]">
           <div className="flex flex-row justify-between">
-            <p>1.กินอยู่</p>
+            <p>1.ค่าใช้จ่ายประจำวัน (ค่าอาหาร ค่าที่อยู่อาศัย)</p>
             <p>{convertMoney(formData.livingCosts)} บาท/เดือน</p>
           </div>
           <div className="flex flex-row justify-between">
@@ -664,10 +663,10 @@ const RetirementPlan: React.FC = () => {
             <p>20.ต่อปีที่ต้องเก็บได้</p>
             <p>{convertMoney(mustBeSaved)} บาท</p>
           </div>
-          <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
+          {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
             <p>ผลลัพธ์</p>
             <p>{convertMoney(totalMissing)} บาท</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
