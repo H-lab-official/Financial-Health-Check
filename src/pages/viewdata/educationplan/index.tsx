@@ -119,14 +119,14 @@ const Vieweducationplan: React.FC = () => {
       <div className="flex flex-col justify-center items-center text-[#0E2B81] font-sans">
         <div className=" fixed top-0 z-40"><NavBar /></div>
         {educationPlan ? (
-          <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+          <div className="bg-white rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
             <div className="flex flex-col justify-center items-center mb-5">
               <h1 className=" text-[1.9rem] font-bold text-center">Education Plan</h1>
               <h1 className={` text-[1.8rem]`}>คุณ {educationPlan.nickname}</h1>
               <img src={Education2} alt="Education2" width={200} />
             </div>
-            <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
-              <div className="  rounded-lg p-5 shadow-lg mb-5">
+            <div className="steps-content h-auto mx-auto  rounded-md gap-5  w-[375px]">
+              <div className="  rounded-lg p-5  mb-5">
                 <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อการศึกษาบุตร</p></div>
                 <div className=" text-black text-[0.8rem]">
                   <div className="flex flex-row justify-between">
@@ -181,7 +181,7 @@ const Vieweducationplan: React.FC = () => {
                   <div className="flex flex-row justify-between">
                     <p>8. อัตราการเฟ้อของค่าเทอมต่อปี</p>
                     <p>{(parseFloat(educationPlan.inflationRate) * 100).toFixed(0)} %</p>
-                   
+
                   </div>
                   <div className="flex flex-row justify-between">
                     <p>9. รวมทุนการศึกษาที่จำเป็น</p>
@@ -219,15 +219,6 @@ const Vieweducationplan: React.FC = () => {
             </div>
             <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
               <>
-                {shareLink && linkButton && <ShareOnSocial
-                  link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
-                  linkFavicon={logo}
-                  linkTitle={"Education Plan Data"}
-                >
-                  <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8] font-sans">
-                    <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
-                  </button>
-                </ShareOnSocial>}
                 {!linkButton && (
                   <div className='flex flex-row justify-center items-center gap-5'>
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
@@ -238,6 +229,16 @@ const Vieweducationplan: React.FC = () => {
                     </Button>
                   </div>
                 )}
+                {shareLink && linkButton && <ShareOnSocial
+                  link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
+                  linkFavicon={logo}
+                  linkTitle={"Education Plan Data"}
+                >
+                  <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8] font-sans">
+                    <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
+                  </button>
+                </ShareOnSocial>}
+
               </>
             </div>
           </div>

@@ -1,0 +1,47 @@
+/* DraggableItem.css */
+.draggable-item {
+    cursor: grab;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    padding: 2px;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .draggable-item:active {
+    cursor: grabbing;
+  }
+  
+  .draggable-item-image {
+    width: 100%;
+  }
+  
+  .draggable-item-controls {
+    position: absolute;
+    right: 1px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .control-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .control-icon {
+    width: 20px;
+  }
+  
+  .draggable-item.dragging {
+    transform: scale(1.05);
+  }
+  

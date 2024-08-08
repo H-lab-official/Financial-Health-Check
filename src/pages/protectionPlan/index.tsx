@@ -464,7 +464,7 @@ const ProtectionPlan: React.FC = () => {
       title: "สรุปผล",
       content: (<>
         {/* <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]"> */}
-        <div className="  rounded-lg p-5  mb-5">
+        <div className="  rounded-lg   mb-5">
           <div className="text-[1rem] mb-3 flex flex-row justify-between items-center">
             <p>ค่าใช้จ่าย</p>
             <button
@@ -561,7 +561,7 @@ const ProtectionPlan: React.FC = () => {
       <div className=" fixed top-0 z-40"><NavBar /></div>
 
 
-      <div className="bg-white  rounded-lg px-6 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-1 ">
+      <div className="bg-white rounded-lg px-8 mx-4 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-1 ">
         <div className="flex flex-col justify-center items-center gap-1 mb-1">
           <h1 className={` text-2xl font-bold text-center  `}>{current == 0 ? "Protection Plan" : "Protection Plan"}</h1>
           {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
@@ -569,7 +569,7 @@ const ProtectionPlan: React.FC = () => {
 
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : ""}`}>
+        <div className={`steps-content h-auto py-2   rounded-md gap-5 mb-5 w-[350px] ${current == 0 ? "" : ""}`}>
           <p className="text-xl mb-3">
             {steps[current].title && (
               <StepTitle

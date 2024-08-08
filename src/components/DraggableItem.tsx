@@ -6,7 +6,7 @@ import pic1 from '@/assets/images/icons/1.png';
 import pic2 from '@/assets/images/icons/2.png';
 import pic3 from '@/assets/images/icons/3.png';
 import pic4 from '@/assets/images/icons/4.png';
-
+import '@/components/css/DraggableItem.css'
 const ItemType = 'ITEM';
 const imageMap = {
   '1': pic1,
@@ -24,9 +24,12 @@ interface DraggableItemProps {
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({ item, index, moveItem, moveItemUp, moveItemDown }) => {
-  const [, ref] = useDrag({
+  const [{ isDragging }, ref] = useDrag({
     type: ItemType,
     item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   const [, drop] = useDrop({
@@ -40,21 +43,15 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, index, moveItem, mo
   });
 
   const image = imageMap[item as keyof typeof imageMap];
+  const opacity = isDragging ? 0.5 : 1;
 
   return (
-    <div ref={(node) => ref(drop(node))} className="relative w-full flex flex-row items-center justify-start p-2 border rounded-lg shadow-md cursor-move bg-white">
-      <div className="flex-grow flex items-center">
-        <img src={image} alt={`icon-${index}`} className="w-[90%]" />
-       
-      </div>
-      <div className="absolute flex flex-col right-1">
-        <button onClick={() => moveItemUp(index)} className="mb-1 p-1 bg-gray-200 rounded">
-          <img src={Up} alt="Up" className="w-4 h-4" />
-        </button>
-        <button onClick={() => moveItemDown(index)} className="p-1 bg-gray-200 rounded">
-          <img src={Down} alt="Down" className="w-4 h-4" />
-        </button>
-      </div>
+    <div ref={(node) => ref(drop(node))} className="draggable-item" style={{ opacity }}>
+      <img src={image} alt={`icon-${index}`} className="w-full draggable-item-image " />
+      {/* <div className="draggable-item-controls">
+        <button onClick={() => moveItemUp(index)} className="control-button"><img src={Up} alt="Up" className="control-icon" /></button>
+        <button onClick={() => moveItemDown(index)} className="control-button"><img src={Down} alt="Down" className="control-icon" /></button>
+      </div> */}
     </div>
   );
 };

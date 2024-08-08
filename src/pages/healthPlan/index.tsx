@@ -565,7 +565,7 @@ const HealthPlan: React.FC = () => {
     title: "สรุปผล",
     content: (
 
-      <div className="  rounded-lg p-5 mb-5">
+      <div className="  rounded-lg mb-5">
         <div className="text-[1rem] mb-3 flex flex-row items-center justify-between"><p>วางแผนเพื่อสุขภาพ</p>
           <button className="bg-[#243286] py-1 px-3 text-white rounded-xl" onClick={() => setCurrent(current - 3)}>แก้ไข</button>
         </div>
@@ -670,14 +670,14 @@ const HealthPlan: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center text-[#0E2B81]">
       <div className=" fixed top-0 z-40"><NavBar /></div>
-      <div className="bg-white  rounded-lg px-6 py-2 mx-6 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+      <div className="bg-white  rounded-lg  py-2 px-8 mx-4  mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
         <div className="flex flex-col justify-center items-center gap-3 mb-1">
           <h1 className=" text-2xl font-bold text-center">{current === 0 ? "Health Plan" : "Health Plan"}</h1>
           {/* {current === 4 ? "" : <ProgressBar percent={progress.percent} current={current} />} */}
           {current === 0 && <img src={allImages} alt="" className=" w-[265px] mt-5" />}
           {/* {current === 4 ? "" : <DotsComponent steps={steps} current={current} />} */}
         </div>
-        <div className={`steps-content h-auto py-2 px-3  rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : ""}`}>
+        <div className={`steps-content h-auto py-2   rounded-md gap-5 mb-5 w-[350px] ${current === 0 ? "" : ""}`}>
           <p className={`text-xl mb-3`}>
             {steps[current].title && (
               <StepTitle

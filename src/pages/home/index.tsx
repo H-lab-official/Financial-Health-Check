@@ -199,31 +199,35 @@ const HomePage: React.FC = () => {
       console.error('Error logging selection:', error);
     }
   };
-
   const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
       let updatedSelected: any;
-
+  
       if (value === '5') {
         if (prevSelected.includes('5')) {
           updatedSelected = [];
         } else {
-          updatedSelected = ['1','2','3','4'];
+          updatedSelected = ['1', '2', '3', '4'];
         }
       } else {
         if (prevSelected.includes('5')) {
           updatedSelected = [value];
         } else {
-          if (prevSelected.includes(value)) {
-            updatedSelected = prevSelected.filter((item) => item !== value);
+          if (prevSelected.length === 4 && ['1', '2', '3', '4'].every(v => prevSelected.includes(v))) {
+            updatedSelected = [value];
           } else {
-            updatedSelected = [...prevSelected, value];
+            if (prevSelected.includes(value)) {
+              updatedSelected = prevSelected.filter((item) => item !== value);
+            } else {
+              updatedSelected = [...prevSelected, value];
+            }
           }
         }
       }
       return updatedSelected;
     });
   };
+  
 
 
   const steps = [{

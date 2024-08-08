@@ -48,7 +48,7 @@ const Congratulations: React.FC = () => {
 
       >
         <div className="fixed top-0 z-40"><NavBar /></div>
-        <div className="px-5 pt-5 pb-10 my-5 w-[325px] flex flex-col justify-center items-center gap-4 rounded-lg shadow-lg mt-16">
+        <div className="px-5 pt-5 pb-10 my-5 w-[325px] flex flex-col justify-center items-center gap-4 rounded-lg  mt-16">
           <div className="mb-1 flex flex-col justify-center items-center gap-3">
             <p className="text-4xl">Congratulations</p>
             <p className="text-3xl">คุณ {name}</p>
