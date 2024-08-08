@@ -136,6 +136,9 @@ const Showdata: React.FC = () => {
   const toone = () => {
     return new Promise<void>((resolve) => {
       const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
+      console.log('====================================');
+      console.log(storedPlans);
+      console.log('====================================');
       if (storedPlans.length > 0) {
         const nextPlan = storedPlans[0];
         window.open(nextPlan, '_self');
@@ -264,9 +267,12 @@ const Showdata: React.FC = () => {
     )
   }];
   useEffect(() => {
+    const fetchData = async () => {
+      await fullDetails();
+      toone();
+    };
 
-    next()
-
+    fetchData();
   }, []);
   return (
     <div>
