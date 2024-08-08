@@ -97,24 +97,20 @@ const Showdata: React.FC = () => {
 
 
 
-  const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
-  const [, setPlans] = useState(plans);
+
+
   const [loading, setLoading] = useState(true);
 
   const fullDetails = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
-    console.log(plansFromLocalStorage);
-
-    setPlans(plansFromLocalStorage);
-
-    // Save plans to the database and get the id
     const id = await saveAddressPlans(plansFromLocalStorage);
-    // Save the id to localStorage
     localStorage.setItem('linkshare', id);
   };
 
   const toone = () => {
     return new Promise<void>((resolve) => {
+
+
       const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
 
       if (storedPlans.length > 0) {
@@ -122,7 +118,8 @@ const Showdata: React.FC = () => {
         window.open(nextPlan, '_self');
         resolve();
       } else {
-        console.log('No more plans to navigate to.');
+        const plansFromLocalStorage = getPlansFromLocalStorage();
+        localStorage.setItem('addressPlans', JSON.stringify(plansFromLocalStorage));
         resolve();
       }
     });
@@ -132,7 +129,7 @@ const Showdata: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fullDetails();
-      // await toone();
+      await toone();
       setLoading(false);
     };
 
