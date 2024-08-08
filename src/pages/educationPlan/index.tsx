@@ -506,7 +506,7 @@ const EducationPlan: React.FC = () => {
             ]}
           />
 
-          <div className="flex flex-row justify-start items-center -ml-3 mb-2 gap-8">
+          <div className="flex flex-row justify-start items-center -ml-[1px] mb-2 gap-8">
             <div className="flex flex-row justify-center items-center gap-5">
               <img src={EducationPlan17} alt="" className="w-8" />
               <h1 className="text-xl mb-3">ทุนการศึกษาที่จำเป็น&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
