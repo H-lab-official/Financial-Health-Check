@@ -31,7 +31,7 @@ const InflationComponent: React.FC<SelectOptions> = ({
     };
 
     return (
-        <div className="flex flex-row justify-start items-center mb-5 -ml-3">
+        <div className="flex flex-row justify-start items-center mb-5 -ml-[1px]">
             <div>
                 <div className="flex flex-row justify-start items-center">
                     <Text className="text-[#243286] w-[280px] font-sans">{title}</Text>

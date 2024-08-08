@@ -110,14 +110,14 @@ const Viewehealthplan: React.FC = () => {
 
 
 
-            <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+            <div className="bg-white  rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
               <div className="flex flex-col justify-center items-center mb-5">
                 <h1 className=" text-[1.9rem] font-bold text-center">Health Plan</h1>
                 <h1 className={` text-[1.8rem]`}>คุณ {healthPlanData.nickname}</h1>
                 <img src={health} alt="Education2" width={200} />
               </div>
-              <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
-                <div className="  rounded-lg p-5 shadow-lg mb-5">
+              <div className="steps-content h-auto mx-auto  rounded-md gap-5 w-[375px]">
+                <div className="  rounded-lg p-5  mb-5">
                   <div className="text-[1.4rem] mb-3"><p>วางแผนเพื่อสุขภาพ</p></div>
                   <div className=" text-black text-[0.8rem]">
 
@@ -154,7 +154,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(healthPlanData.emergencyCosts)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>6.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
+                      <p>6.งบประมาณค่ารักษาบาท/ปี <br />(เหมาจ่าย)</p>
                       <p>{convertMoney(healthPlanData.annualTreatment)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-start my-6 text-[1rem] text-[#0E2B81]">
@@ -177,7 +177,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(healthPlanData.emergencyCostsFromCompany)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>10.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
+                      <p>10.งบประมาณค่ารักษาบาท/ปี <br />(เหมาจ่าย)</p>
                       <p>{convertMoney(healthPlanData.annualTreatmentFromCompany)} บาท</p>
                     </div>
                     <div className="flex flex-row justify-start my-6 text-[1.4rem] text-[#0E2B81]">
@@ -200,7 +200,7 @@ const Viewehealthplan: React.FC = () => {
                       <p>{convertMoney(calculateEmergencyCosts(healthPlanData))} บาท</p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p>14.งบประมาณค่ารักษาบาท/ปี <br/>(เหมาจ่าย)</p>
+                      <p>14.งบประมาณค่ารักษาบาท/ปี <br />(เหมาจ่าย)</p>
                       <p>{convertMoney(calculateAnnualTreatments(healthPlanData))} บาท</p>
                     </div>
                     {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
@@ -214,6 +214,14 @@ const Viewehealthplan: React.FC = () => {
               </div>
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
+                  {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
+                    <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
+                      ย้อนกลับ
+                    </Button>
+                    <Button onClick={() => toone(healthPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px] font-sans`}>
+                      ถัดไป
+                    </Button>
+                  </div>}
                   {shareLink && linkButton && <ShareOnSocial
                     link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
                     linkFavicon={logo}
@@ -223,14 +231,7 @@ const Viewehealthplan: React.FC = () => {
                       <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
                     </button>
                   </ShareOnSocial>}
-                  {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
-                    <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
-                      ย้อนกลับ
-                    </Button>
-                    <Button onClick={() => toone(healthPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px] font-sans`}>
-                      ถัดไป
-                    </Button>
-                  </div>}
+
                 </>
               </div>
             </div>

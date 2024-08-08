@@ -112,14 +112,14 @@ const Vieweprotectionplan: React.FC = () => {
 
 
 
-            <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+            <div className="bg-white  rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
               <div className="flex flex-col justify-center items-center mb-5">
                 <h1 className=" text-[1.9rem] font-bold text-center">Protection Plan</h1>
                 <h1 className={` text-[1.8rem]`}>คุณ {protectionPlanData.nickname}</h1>
                 <img src={protection} alt="Education2" width={200} />
               </div>
-              <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
-                <div className="  rounded-lg p-5 shadow-lg mb-5">
+              <div className="steps-content h-auto mx-auto  rounded-md gap-5  w-[375px]">
+                <div className="  rounded-lg p-5  mb-5">
                   <div className="text-[1.4rem] mb-3"><p>ค่าใช้จ่าย</p></div>
                   <div className=" text-black text-[0.8rem]">
                     <div className="flex flex-row justify-between">
@@ -197,8 +197,16 @@ const Vieweprotectionplan: React.FC = () => {
 
 
               </div>
-              <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
+              <div className="steps-action h-20 flex flex-col justify-center items-center gap-2">
                 <>
+                {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
+                    <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
+                      ย้อนกลับ
+                    </Button>
+                    <Button onClick={() => toone(protectionPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px] font-sans`}>
+                      ถัดไป
+                    </Button>
+                  </div>}
                   {shareLink &&linkButton &&  <ShareOnSocial
                     link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
                     linkFavicon={logo}
@@ -208,14 +216,7 @@ const Vieweprotectionplan: React.FC = () => {
                       <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
                     </button>
                   </ShareOnSocial>}
-                  {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
-                    <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
-                      ย้อนกลับ
-                    </Button>
-                    <Button onClick={() => toone(protectionPlanData.nickname)} type="primary" className={`bg-[#003781] rounded-full w-[120px] font-sans`}>
-                      ถัดไป
-                    </Button>
-                  </div>}
+                  
                 </>
               </div>
             </div>

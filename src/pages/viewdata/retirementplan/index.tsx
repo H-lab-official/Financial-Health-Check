@@ -33,7 +33,7 @@ const Vieweretirementplan: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   // const totalMissing = useRecoilValue(totalRetirementMissingSelector);
   // const mustBeSaved = useRecoilValue(mustBeSavedSelector);
-  const {  toone, goBack} = usePlanNavigation();
+  const { toone, goBack } = usePlanNavigation();
   const [linkButton, setLinkButton] = useState(false)
   const [shareLink, setShareLink] = useState<string>("");
   const checkLocalStorageLengths = () => {
@@ -52,8 +52,8 @@ const Vieweretirementplan: React.FC = () => {
       }
     }
   };
-  const localStoreDelete=()=>{
-    
+  const localStoreDelete = () => {
+
   }
   const convertMoney = (value: any) => {
     return parseFloat(value).toLocaleString("en-US", {
@@ -84,7 +84,7 @@ const Vieweretirementplan: React.FC = () => {
 
     fetchRetirementPlan();
     checkLocalStorageLengths()
-   
+
   }, [id]);
 
   if (loading) {
@@ -114,14 +114,14 @@ const Vieweretirementplan: React.FC = () => {
         <div className=" fixed top-0 z-40"><NavBar /></div>
         {retirementPlanData ?
           (
-            <div className="bg-white shadow-md rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
+            <div className="bg-white  rounded-lg mx-auto py-2 mb-2 mt-14 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ">
               <div className="flex flex-col justify-center items-center mb-5">
                 <h1 className=" text-[1.9rem] font-bold text-center">Retirement Plan</h1>
                 <h1 className={` text-[1.8rem]`}>คุณ {retirementPlanData.nickname}</h1>
                 <img src={retirement} alt="Education2" width={200} />
               </div>
               <div className="steps-content h-auto mx-auto  rounded-md gap-5 mb-5 w-[375px]">
-                <div className="  rounded-lg p-5 shadow-lg mb-5">
+                <div className="  rounded-lg p-5  mb-5">
                   <div className="text-[1.4rem] mb-3"><p>ค่าใช้จ่ายหลังเกษียณ</p></div>
                   <div className=" text-black text-[0.8rem]">
                     <div className="flex flex-row justify-between">
@@ -134,7 +134,7 @@ const Vieweretirementplan: React.FC = () => {
                     <div className="flex flex-row justify-between">
                       <p>3.ค่ามือถือ อินเตอร์เน็ต</p>
                       <p>{convertMoney(retirementPlanData.internetCosts)} บาท/เดือน</p></div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between ">
                       <p>4.ค่าเสื้อผ้า</p>
                       <p>{convertMoney(retirementPlanData.clothingCosts)} บาท</p>
                     </div>
@@ -146,11 +146,11 @@ const Vieweretirementplan: React.FC = () => {
                       <p>6.ค่าใช้จ่ายอื่น ๆ (ขาดได้ ไม่ใช่ปัจจัย 4)</p>
                       <p>{convertMoney(retirementPlanData.otherCosts)} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between">
                       <p>7.รวมค่าใช้จ่ายต่อปี</p>
                       <p>{convertMoney(calculateTotalCosts(retirementPlanData))} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between">
                       <p>8.อายุตอนนี้</p>
                       <p>{retirementPlanData.age} ปี</p>
                     </div>
@@ -162,7 +162,7 @@ const Vieweretirementplan: React.FC = () => {
                       <p>10.คาดการณ์อายุขัย</p>
                       <p>{retirementPlanData.lifExpectancy} ปี</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between">
                       <p>11.จำนวนปีที่ทำงานได้</p>
                       <p>{calculateWorkingYears(retirementPlanData)} ปี</p>
                     </div>
@@ -170,7 +170,7 @@ const Vieweretirementplan: React.FC = () => {
                       <p>12.จำนวนปีที่ต้องเตรียม</p>
                       <p>{calculatePreparationYears(retirementPlanData)} ปี</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between">
                       <p>13.เงินเฟ้อ</p>
                       <p>{(parseFloat(retirementPlanData.inflationRate) * 100).toFixed(0)} %</p>
                       {/* <p>{parseFloat(retirementPlanData.inflationRate) * 100} %</p> */}
@@ -199,7 +199,7 @@ const Vieweretirementplan: React.FC = () => {
                       <p>18.รวมสิ่งที่เตรียมไว้แล้ว</p>
                       <p>{convertMoney(calculateisTotalPreparationAssets(retirementPlanData))} บาท</p>
                     </div>
-                    <div className="flex flex-row justify-between mt-3">
+                    <div className="flex flex-row justify-between ">
                       <p>19.รวมที่ขาดอยู่</p>
                       <p>{convertMoney(totalMissing)} บาท</p>
                     </div>
@@ -219,15 +219,6 @@ const Vieweretirementplan: React.FC = () => {
 
               <div className="steps-action h-20 flex flex-col justify-center items-center gap-5">
                 <>
-                  {shareLink &&linkButton &&  <ShareOnSocial
-                    link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
-                    linkFavicon={logo}
-                    linkTitle={"Retirement Plan Data"}
-                  >
-                    <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8] font-sans">
-                      <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
-                    </button>
-                  </ShareOnSocial>}
                   {!linkButton && <div className='flex flex-row justify-center items-center gap-5'>
                     <Button onClick={goBack} className="bg-white rounded-full w-[120px] font-sans">
                       ย้อนกลับ
@@ -236,6 +227,16 @@ const Vieweretirementplan: React.FC = () => {
                       ถัดไป
                     </Button>
                   </div>}
+                  {shareLink && linkButton && <ShareOnSocial
+                    link={`https://financial-health-check.azayagencyjourney.com${shareLink}`}
+                    linkFavicon={logo}
+                    linkTitle={"Retirement Plan Data"}
+                  >
+                    <button className="bg-[#003781] flex flex-row justify-center items-center gap-5 rounded-full w-[260px] h-10 text-white hover:bg-[#76a1d8] font-sans">
+                      <img src={exportlink} alt="exportlink" /><p className='font-sans'>แชร์ผลสรุป</p>
+                    </button>
+                  </ShareOnSocial>}
+
                 </>
               </div>
             </div>
