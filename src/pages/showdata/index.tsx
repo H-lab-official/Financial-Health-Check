@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useLocation } from "react-router";
-import { Button } from "antd";
-import { selectedState} from '@/recoil/progressState';
+import { Button, Spin } from "antd";
+import { selectedState } from '@/recoil/progressState';
 import { NavBar } from "@/components/navbar";
 import usePlanNavigation from "@/components/usePlanNavigation";
 import axios from 'axios';
-
+import LoadingPage from '@/components/loadingPage'
 const getPlansFromLocalStorage = () => {
   const plans = [];
   const questionsState = localStorage.getItem('saveQuestionsState');
@@ -116,7 +116,7 @@ const Showdata: React.FC = () => {
   const toone = () => {
     return new Promise<void>((resolve) => {
       const storedPlans = JSON.parse(localStorage.getItem('addressPlans') || '[]');
-   
+
       if (storedPlans.length > 0) {
         const nextPlan = storedPlans[0];
         window.open(nextPlan, '_self');
@@ -132,7 +132,7 @@ const Showdata: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fullDetails();
-      await toone();
+      // await toone();
       setLoading(false);
     };
 
@@ -149,14 +149,14 @@ const Showdata: React.FC = () => {
         <div className="fixed top-0 z-40"><NavBar /></div>
         <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5  w-[375px] mt-16">
 
-          <div className={`steps-action h-20 flex flex-row font-sans`}>
-           
-          
-            { (
-              <Button type="primary" onClick={toone} className={`bg-[#003781] rounded-full ${current === 0 ? "hidden" : "w-[180px]"}`}>
-                ถัดไป
-              </Button>
-            )}
+          <div className={`flex flex-col font-sans justify-center items-center gap-10 mt-20`}>
+            <Spin size="large" />
+            <p className='font-sans'>ระบบจะพาคุณไปยัง หน้าแสดงผลภายใน 2 วินาที <br /></p>
+
+            <Button type="primary" onClick={toone} className={`bg-[#003781] rounded-full w-[180px]`}>
+              ไปหน้าสรุปผล
+            </Button>
+
           </div>
         </div>
       </div>
