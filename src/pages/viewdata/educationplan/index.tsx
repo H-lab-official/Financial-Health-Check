@@ -36,7 +36,7 @@ const Vieweducationplan: React.FC = () => {
     const historyAddress = JSON.parse(localStorage.getItem('historyAddress') || '[]');
     const addressPlansLength = addressPlans.length;
     const historyAddressLength = historyAddress.length;
-    if ((addressPlansLength + historyAddressLength) === 1) {
+    if ((addressPlansLength + historyAddressLength) === 1 || (addressPlansLength + historyAddressLength) === 0) {
       setLinkButton(true);
       setShareLink(location.pathname);
     } else {
