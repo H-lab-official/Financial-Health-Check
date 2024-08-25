@@ -9,5 +9,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  server: {
+    port: 4173,  // Use port 3000 for App 1
+  },
   // base: "/Financial-Health-Check",
 });
