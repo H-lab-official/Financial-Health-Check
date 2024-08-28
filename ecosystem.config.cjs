@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'Financial-Health-Check',
+      name: 'financial-health-check',
       script: 'serve',
       args: '-s dist',
       env: {
