@@ -167,7 +167,12 @@ const HomePage: React.FC = () => {
       navigator('/error');
     }
   };
+  const clearStorage = () => {
+    localStorage.clear();
+    console.log('All localStorage items have been removed');
+  };
   useEffect(() => {
+    clearStorage()
     setTimeout(() => {
       checkUsers()
 
@@ -175,7 +180,7 @@ const HomePage: React.FC = () => {
 
     }, 1500)
   }, []);
-
+ 
   const logSelectionToDB = async (selectedPlans: any, userParams: any) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
