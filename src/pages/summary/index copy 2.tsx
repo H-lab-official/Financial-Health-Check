@@ -151,7 +151,7 @@ const Summary: React.FC = () => {
   const dataname = useRecoilValue<nameData>(nameState);
   const navigator = useNavigate();
   const { plans, goBack, handleFetchPlans, handleSavePlans } = usePlanNavigation();
-  const [, setPlans] = useState<string[]>(plans);;
+  const [, setPlans] = useState(plans);
 
   useEffect(() => {
     if (items.length === 1 && items[0] === '5') {
@@ -164,8 +164,12 @@ const Summary: React.FC = () => {
   const fullDetails = async () => {
     const plansFromLocalStorage = getPlansFromLocalStorage();
     console.log(plansFromLocalStorage);
+
     setPlans(plansFromLocalStorage);
+
+    // Save plans to the database and get the id
     const id = await saveAddressPlans(plansFromLocalStorage);
+    // Save the id to localStorage
     localStorage.setItem('linkshare', id);
   };
 
