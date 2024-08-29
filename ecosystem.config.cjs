@@ -37,8 +37,8 @@ module.exports = {
       error_file: "./logs/pm2_fe_errors.log",
       out_file: "./logs/pm2_fe_out.log",
       merge_logs: true,
-      // max_restarts: 10,
-      // restart_delay: 5000,
+      max_restarts: 10,
+      restart_delay: 5000,
       watch: process.env.NODE_ENV !== 'production' ? true : false
     }
   ]
