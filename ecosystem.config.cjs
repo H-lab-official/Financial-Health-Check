@@ -21,8 +21,8 @@ module.exports = {
       name: 'financial-health-check',
       script: 'serve',
       args: '-s dist',
-      instances: 2,
-      exec_mode: 'cluster',
+      // instances: 2,
+      // exec_mode: 'cluster',
       env: {
         PM2_SERVE_PATH: './dist',
         PM2_SERVE_PORT: 4173,
