@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,  // Use port 3000 for App 1
+    port: 4173,  // Use port 3000 for App 1
   },
   // base: "/Financial-Health-Check",
 });
