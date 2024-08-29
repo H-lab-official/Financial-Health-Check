@@ -107,7 +107,7 @@ jobs:
 
             if pm2 list | grep -q $APP_NAME; then
               echo "Restarting application: $APP_NAME"
-              pm2 restart $APP_NAME
+              pm2 start ecosystem.config.cjs --name $APP_NAME
             else
               echo "Starting application: $APP_NAME"
               pm2 start ecosystem.config.cjs --name $APP_NAME
