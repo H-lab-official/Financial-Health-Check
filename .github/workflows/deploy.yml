@@ -1,3 +1,58 @@
+# name: Deploy Financial-Health-Check App
+
+# on:
+#   push:
+#     branches:
+#       - main # Change to your specific branch
+#       # - deployprod  # Additional branch for deployment
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     env:  # Define environment variables
+#       VITE_API_URL: ${{ secrets.VITE_API_URL }}
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: "20"
+
+#       - name: Check Node.js version
+#         run: node -v
+
+#       - name: Set up SSH
+#         uses: webfactory/ssh-agent@v0.5.1
+#         with:
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+#       - name: Deploy to DigitalOcean
+#         env:
+#             HOST: ${{ secrets.SERVER_DOMAIN }}
+#             USERNAME: ${{ secrets.SERVER_USERNAME }}
+#             TARGET_DIR: /var/www/Financial-Health-Check
+#             APP_NAME: financial-health-check
+#         run: |
+#             ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
+#               export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH
+#               cd $TARGET_DIR
+#               git pull origin main
+#               npm install
+#               mv ecosystem.config.js ecosystem.config.cjs
+#               npm run build
+#               if pm2 list | grep -q $APP_NAME; then
+#                 echo "Restarting application: $APP_NAME"
+#                 pm2 restart $APP_NAME
+#               else
+#                 echo "Starting application: $APP_NAME"
+#                 pm2 start ecosystem.config.cjs --only $APP_NAME
+#               fi
+#               pm2 save
+#             EOF
+  
+
 name: Deploy Financial-Health-Check App
 
 on:
@@ -30,25 +85,32 @@ jobs:
 
       - name: Deploy to DigitalOcean
         env:
-            HOST: ${{ secrets.SERVER_DOMAIN }}
-            USERNAME: ${{ secrets.SERVER_USERNAME }}
-            TARGET_DIR: /var/www/Financial-Health-Check
-            APP_NAME: financial-health-check
+          HOST: ${{ secrets.SERVER_DOMAIN }}
+          USERNAME: ${{ secrets.SERVER_USERNAME }}
+          TARGET_DIR: /var/www/Financial-Health-Check
+          APP_NAME: financial-health-check
         run: |
-            ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
-              export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH
-              cd $TARGET_DIR
-              git pull origin main
-              npm install
+          ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
+            export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH
+            cd $TARGET_DIR
+            git pull origin main
+            npm install
+
+            # ตรวจสอบไฟล์ ecosystem.config.js และย้ายถ้ามี
+            if [ -f ecosystem.config.js ]; then
               mv ecosystem.config.js ecosystem.config.cjs
-              npm run build
-              if pm2 list | grep -q $APP_NAME; then
-                echo "Restarting application: $APP_NAME"
-                pm2 restart $APP_NAME
-              else
-                echo "Starting application: $APP_NAME"
-                pm2 start ecosystem.config.cjs --only $APP_NAME
-              fi
-              pm2 save
-            EOF
-  
+            else
+              echo "Warning: ecosystem.config.js not found, using existing ecosystem.config.cjs"
+            fi
+
+            npm run build
+
+            if pm2 list | grep -q $APP_NAME; then
+              echo "Restarting application: $APP_NAME"
+              pm2 restart $APP_NAME
+            else
+              echo "Starting application: $APP_NAME"
+              pm2 start ecosystem.config.cjs --name $APP_NAME
+            fi
+            pm2 save
+          EOF
