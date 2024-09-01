@@ -1,3 +1,5 @@
+
+type SortOrder = 'ascend' | 'descend' | null;
 import React, { useState, useEffect } from 'react';
 import { Table, Spin, Tabs, Button } from 'antd';
 import { useNavigate } from 'react-router';
@@ -22,10 +24,54 @@ const ViewAllLogs: React.FC = () => {
         const fetchLogs = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/logs`);
-                setLogs(response.data);
+                const logsData = response.data;
+
+                // Fetch names for each log
+                const logsWithNames = await Promise.all(
+                    logsData.map(async (log: any) => {
+                        const userParams = log.user_params;
+                        try {
+                            const nameResponse = await axios.get(`https://azayagencyjourney.com/api/verify_account/${userParams}`);
+                            return {
+                                ...log,
+                                name: nameResponse.data.name,
+                            };
+                        } catch (nameError) {
+                            console.error(`Error fetching name for ${userParams}:`, nameError);
+                            return {
+                                ...log,
+                                name: 'N/A', // Default to 'N/A' if there is an error
+                            };
+                        }
+                    })
+                );
+
+                setLogs(logsWithNames);
 
                 const planResponse = await axios.get(`${import.meta.env.VITE_API_URL}/planlogs`);
-                setPlanLogs(planResponse.data);
+                const planLogsData = planResponse.data;
+
+                // Fetch names for each plan log
+                const planLogsWithNames = await Promise.all(
+                    planLogsData.map(async (log: any) => {
+                        const userParams = log.user_params;
+                        try {
+                            const nameResponse = await axios.get(`https://azayagencyjourney.com/api/verify_account/${userParams}`);
+                            return {
+                                ...log,
+                                name: nameResponse.data.name,
+                            };
+                        } catch (nameError) {
+                            console.error(`Error fetching name for ${userParams}:`, nameError);
+                            return {
+                                ...log,
+                                name: 'N/A', // Default to 'N/A' if there is an error
+                            };
+                        }
+                    })
+                );
+
+                setPlanLogs(planLogsWithNames);
 
                 setLoading(false);
             } catch (error) {
@@ -63,7 +109,14 @@ const ViewAllLogs: React.FC = () => {
             dataIndex: 'user_params',
             key: 'user_params',
             sorter: (a: any, b: any) => a.user_params.localeCompare(b.user_params),
-            sortDirections: ['ascend', 'descend'],
+            sortDirections: ['ascend', 'descend'] as SortOrder[],
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+            sortDirections: ['ascend', 'descend'] as SortOrder[],
         },
         {
             title: 'Timestamp',
@@ -71,7 +124,7 @@ const ViewAllLogs: React.FC = () => {
             key: 'timestamp',
             render: (timestamp: string) => moment(timestamp).format('LLLL'),
             sorter: (a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-            sortDirections: ['ascend', 'descend'],
+            sortDirections: ['ascend', 'descend'] as SortOrder[],
         },
     ];
 
@@ -104,14 +157,6 @@ const ViewAllLogs: React.FC = () => {
         const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
         saveAs(blob, `${fileName}.xlsx`);
     };
-    const exportToExcel2 = (data: any[], fileName: string) => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-        saveAs(blob, `${fileName}.xlsx`);
-    };
 
     return (
         <div className="flex flex-col justify-center items-center text-[#0E2B81]">
@@ -130,7 +175,7 @@ const ViewAllLogs: React.FC = () => {
                                 <Table dataSource={logs} columns={generalLogsColumns} rowKey="id" />
                             </TabPane>
                             <TabPane tab="All Plan Logs" key="2">
-                                <Button onClick={() => exportToExcel2(planLogs, 'PlanLogs')} type="primary" style={{ marginBottom: 16 }}>
+                                <Button onClick={() => exportToExcel(planLogs, 'PlanLogs')} type="primary" style={{ marginBottom: 16 }}>
                                     Download Plan Logs as Excel
                                 </Button>
                                 <Table dataSource={planLogs} columns={planLogsColumns} rowKey="id" />

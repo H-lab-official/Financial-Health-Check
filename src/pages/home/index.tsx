@@ -1,9 +1,12 @@
-import { Row, Button, Flex, Spin,Input } from "antd";
+import { Row, Button, Flex, Spin, Input } from "antd";
 
 import React, { useState, useEffect } from "react";
 import LabelImages from '@/components/LabelImages'
 import { useNavigate, useLocation } from "react-router";
 import homeTop from '@/assets/images/homeTop.png'
+import NProgress from 'nprogress';
+import '@/components/css/custom-nprogress.css'
+import 'nprogress/nprogress.css';
 import namePic from '@/assets/images/Frame.svg'
 import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -135,9 +138,11 @@ const HomePage: React.FC = () => {
   };
 
   const toGoFirst = () => {
+    NProgress.start();
     setCurrentIndex(0);
     toGoNext();
     logSelectionToDB(selectedValue, name.user_params);
+    NProgress.done();
   };
 
   const checkUsers = async () => {
@@ -172,15 +177,16 @@ const HomePage: React.FC = () => {
     console.log('All localStorage items have been removed');
   };
   useEffect(() => {
+    NProgress.start();
     clearStorage()
     setTimeout(() => {
       checkUsers()
-
+      NProgress.done();
       setIsLoading(false)
 
     }, 1500)
   }, []);
- 
+
   const logSelectionToDB = async (selectedPlans: any, userParams: any) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/logs`, {
@@ -207,7 +213,7 @@ const HomePage: React.FC = () => {
   const handleOptionChange = async (value: string) => {
     setSelectedValue((prevSelected) => {
       let updatedSelected: any;
-  
+
       if (value === '5') {
         if (prevSelected.includes('5')) {
           updatedSelected = [];
@@ -232,7 +238,7 @@ const HomePage: React.FC = () => {
       return updatedSelected;
     });
   };
-  
+
 
 
   const steps = [{
@@ -285,7 +291,7 @@ const HomePage: React.FC = () => {
             value={formData.age || ""}
             name="age"
             inputMode="numeric" // Ensure the numeric keyboard is displayed
-            pattern="[0-9]*" 
+            pattern="[0-9]*"
             placeholder="กรุณากรอกอายุของคุณ"
             onChange={(e) => handleInputChange("age")(e)}
             className="bg-slate-200 rounded-full border w-full border-gray-600 h-12 pl-5 mt-2 text-[#0E2B81] text-base mb-5 font-sans"
@@ -380,10 +386,10 @@ const HomePage: React.FC = () => {
         <div className=" fixed top-0 z-40 "><NavBar /></div>
 
 
-        <div className={`bg-white   px-6  mx-6 mb-2 mt-10 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ${current===0&&"mt-16"}`}>
+        <div className={`bg-white   px-6  mx-6 mb-2 mt-10 max-w-2xl h-auto flex flex-col w-[400px] gap-3 ${current === 0 && "mt-16"}`}>
 
           <Row align={"middle"} justify={"center"}>
-            {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl w-56`} height={80} /> : null}
+            {current == 0 ? <img src={homeTop} alt="" className={`rounded-xl w-56`} height={80} loading="lazy" /> : null}
           </Row>
           <div className="steps-content h-auto p-2 rounded-md gap-5 mb-5 w-[350px]">
             <p className={`text-2xl mb-2 text-center font-bold ${current === 0 ? "hidden" : ""}`}>{steps[current].title}</p>

@@ -40,7 +40,7 @@ const ImageButton: React.FC<ImageButtonProps> = ({
         alignItems: 'center'
       }}
     >
-      <div
+      <div 
         style={{
           backgroundImage: `url(${image})`,
           backgroundSize: 'contain',

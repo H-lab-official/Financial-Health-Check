@@ -6,6 +6,10 @@ import protection from "@/assets/images/protection.png"
 import { useRecoilState, useRecoilValue } from "recoil";
 import DotsComponent from "@/components/DotsComponent";
 import StepTitle from '@/components/StepTitle';
+import NProgress from 'nprogress';
+import '@/components/css/custom-nprogress.css'
+import 'nprogress/nprogress.css';
+
 import {
   protectionPlanState,
   totalDebtsSelector,
@@ -191,6 +195,8 @@ const ProtectionPlan: React.FC = () => {
 
 
   const handleSave = async () => {
+
+    NProgress.start();
     const coverageValue = convertMoney(calculateCoverage(formData));
 
     // Save the protectiondata to localStorage
@@ -198,6 +204,7 @@ const ProtectionPlan: React.FC = () => {
 
     await saveProtectionPlan({ data: formData, nameData: dataname });
     toGoNext();
+    NProgress.done();
   };
   const handleDisabled = () => {
     if (current === 1) {
