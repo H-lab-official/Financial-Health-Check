@@ -538,7 +538,7 @@ const ProtectionPlan: React.FC = () => {
             </div>
             <div className="flex flex-row justify-between mt-5 text-red-500 font-bold">
               <p>16.ความคุ้มครองที่จำเป็น</p>
-              <p>{convertMoney(calculateTotalAssets(formData))} บาท</p>
+              <p>{convertMoney(calculateCoverage(formData))} บาท</p>
             </div>
             {/* <div className="flex flex-row justify-center mt-5 text-red-500 gap-5 font-bold text-[1rem]">
               <p>ผลลัพธ์</p>
