@@ -590,7 +590,7 @@ const HealthPlan: React.FC = () => {
           </div>
           <div className="flex flex-row justify-between mt-2">
             <p>3.ค่าห้องวันละ</p>
-            <p>{convertMoney(formData.hospitals)} บาท</p></div>
+            <p>{convertMoney(formData.hospitals2)} บาท</p></div>
           {/* <div className="flex flex-row justify-between">
                       <p>3.1.ค่าชดเชยรายวัน</p>
                       <p>{convertMoney(formData.dailyCompensationFromWelfare)} บาท</p>
