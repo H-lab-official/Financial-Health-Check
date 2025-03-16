@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'moment/locale/th'; // Import ภาษาไทย
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import type { SortOrder } from 'antd/es/table/interface';
 
 moment.locale('th'); // ตั้งค่าภาษาไทยให้กับ moment
 
@@ -22,7 +23,15 @@ const ViewAllLogs: React.FC = () => {
         const fetchLogs = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/logs`);
-                setLogs(response.data);
+                const allLogs = response.data;
+                const filterDate = moment('2024-09-01T00:00:00.000Z');
+
+                // กรอง logs โดยใช้ timestamp ที่มากกว่าหรือเท่ากับ filterDate
+                const filtered = allLogs.filter((log: any) =>
+                    moment(log.timestamp).isSameOrAfter(filterDate)
+                );
+
+                setLogs(filtered);
 
                 const planResponse = await axios.get(`${import.meta.env.VITE_API_URL}/planlogs`);
                 setPlanLogs(planResponse.data);
@@ -36,6 +45,7 @@ const ViewAllLogs: React.FC = () => {
 
         fetchLogs();
     }, []);
+    console.log(logs);
 
     const planMap: { [key: string]: string } = {
         '1': 'ProtectionPlan',
@@ -63,7 +73,7 @@ const ViewAllLogs: React.FC = () => {
             dataIndex: 'user_params',
             key: 'user_params',
             sorter: (a: any, b: any) => a.user_params.localeCompare(b.user_params),
-            sortDirections: ['ascend', 'descend'],
+            sortDirections: ['ascend', 'descend'] as SortOrder[],
         },
         {
             title: 'Timestamp',
@@ -71,7 +81,7 @@ const ViewAllLogs: React.FC = () => {
             key: 'timestamp',
             render: (timestamp: string) => moment(timestamp).format('LLLL'),
             sorter: (a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-            sortDirections: ['ascend', 'descend'],
+            sortDirections: ['ascend', 'descend'] as SortOrder[],
         },
     ];
 
