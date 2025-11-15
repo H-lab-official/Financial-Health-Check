@@ -111,7 +111,7 @@ const HomePage: React.FC = () => {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }
   };
-
+//test
   const navigateThroughSequence = (urlMap: { [key: string]: string }) => {
     const sequence = ['1', '2', '3', '4'];
 
