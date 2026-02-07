@@ -91,26 +91,13 @@ jobs:
           APP_NAME: financial-health-check
         run: |
           ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
-            export PATH=/root/.nvm/versions/node/v20.12.2/bin:$PATH
+            set -e
+            export PATH=/root/.nvm/versions/node/v20.12.2/bin:\$PATH
             cd $TARGET_DIR
             git pull origin main
             npm install
-
-            # ตรวจสอบไฟล์ ecosystem.config.js และย้ายถ้ามี
-            if [ -f ecosystem.config.js ]; then
-              mv ecosystem.config.js ecosystem.config.cjs
-            else
-              echo "Warning: ecosystem.config.js not found, using existing ecosystem.config.cjs"
-            fi
-
             npm run build
-
-            if pm2 list | grep -q $APP_NAME; then
-              echo "Restarting application: $APP_NAME"
-              pm2 restart $APP_NAME
-            else
-              echo "Starting application: $APP_NAME"
-              pm2 start ecosystem.config.cjs --name $APP_NAME
-            fi
+            pm2 delete $APP_NAME 2>/dev/null || true
+            pm2 start ecosystem.config.cjs --name $APP_NAME
             pm2 save
           EOF
